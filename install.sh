@@ -21,7 +21,7 @@ sudo echo "[ OK ] Sudo access granted."
 
 # check operating system
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" == "Darwin" ]; then # Mac OS X
 	cd /usr/bin/
 	echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
@@ -34,7 +34,7 @@ if [ "$(uname)" == "Darwin" ]; then
     sudo chmod +x ./fastboot
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
     cd /usr/bin/
 	echo "[INFO] Downloading ADB for Linux..."
     sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
@@ -47,6 +47,6 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     sudo chmod +x ./fastboot
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
     echo "[WARN] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
 fi
