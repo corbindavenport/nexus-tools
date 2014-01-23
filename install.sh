@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
@@ -11,42 +13,58 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#!/bin/bash
 
-# get sudo
+cond() {
+    if [ "$1" ] ; then
+        echo "$2"
+    else
+        echo "$3"
+    fi
+}
+info() {
+    printf "\n[INFO] $*\n"
+    return 0
+}
+okay() {
+    printf "\n\033[32m[ OK ] $*\033[00m\n"
+    return 0
+}
+warn() {
+    printf "\n\033[31m[WARN] $*\033[00m"
+    return 1
+}
 
-echo "[INFO] Nexus Tools Installer 1.0"
-echo "[INFO] Please enter sudo password for adb/fastboot install"
-sudo echo "[ OK ] Sudo access granted."
+SYSTEM=$(uname -s)
+OS=$(cond '$SYSTEM == "Darwin"' 'macosx' 'linux')
+OS_STRING=$(cond '$OS == "macosx"' 'Mac OS X' 'Linux')
 
-# check operating system
+info "Nexus Tools Installer 1.0"
 
-if [ "$(uname)" == "Darwin" ]; then # Mac OS X
-	cd /usr/bin/
-	echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
-    echo "[ OK ] ADB finished downloading."
-    echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/fastboot?raw=true" -LOk
-    echo "[ OK ] Fastboot finished downloading."
-    echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x ./adb
-    sudo chmod +x ./fastboot
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
-    cd /usr/bin/
-	echo "[INFO] Downloading ADB for Linux..."
-    sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
-    echo "[ OK ] ADB finished downloading."
-    echo "[INFO] Downloading Fastboot for Linux..."
-    sudo curl -s -o fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/linux/fastboot?raw=true" -LOk
-    echo "[ OK ] Fastboot finished downloading."
-    echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x ./adb
-    sudo chmod +x ./fastboot
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
-    echo "[WARN] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
+if [ -n "$COMSPEC" -a -x "$COMSPEC" ]; then
+    warn "Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
+    exit
+else
+    if [ $(whoami) == "root" ]; then
+        okay "Alright, we've got sudo. We can now write files to /usr/bin"
+    else
+        warn "Please run the script with sudo so we can files to /usr/bin"
+        exit
+    fi
 fi
+
+cd /usr/bin/
+
+info "Downloading ADB for ${OS_STRING}..."
+sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/${OS}/adb?raw=true" -LOk
+okay "ADB finished downloading."
+
+info "Downloading Fastboot for ${OS_STRING}..."
+sudo curl -s -o fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/${OS}/fastboot?raw=true" -LOk
+okay "Fastboot finished downloading."
+
+info "Making ADB and Fastboot executable..."
+sudo chmod +x ./adb
+sudo chmod +x ./fastboot
+okay "Done!"
+
+info "Type adb or fastboot to run."
