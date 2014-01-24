@@ -13,40 +13,67 @@
 
 #!/bin/bash
 
+ADB="/usr/bin/adb"
+FASTBOOT="/usr/bin/fastboot"
+
 # get sudo
 
-echo "[INFO] Nexus Tools Installer 1.0"
+echo "[INFO] Nexus Tools 1.1"
 echo "[INFO] Please enter sudo password for adb/fastboot install"
 sudo echo "[ OK ] Sudo access granted."
 
-# check operating system
+# check if already installed
 
+if [ -f $ADB ]
+then
+    read -p "[INFO] ADB is already present, press ENTER to overwrite or exit to cancel."
+    sudo rm $ADB
+fi
+if [ -f $FASTBOOT ]
+then
+    read -p "[INFO] Fastboot is already present, press ENTER to overwrite or exit to cancel."
+    sudo rm $FASTBOOT
+fi
+
+# detect operating system and install
+
+<<<<<<< HEAD
+<<<<<<< HEAD
 if [ "$(uname)" == "Darwin" ]; then
+=======
+=======
+>>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
+if [ "$(uname)" == "Darwin" ]; then # Mac OS X
 	cd /usr/bin/
+>>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 	echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
-    echo "[ OK ] ADB finished downloading."
+    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/fastboot?raw=true" -LOk
-    echo "[ OK ] Fastboot finished downloading."
+    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/fastboot?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x ./adb
-    sudo chmod +x ./fastboot
+    sudo chmod +x $ADB
+    sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
+<<<<<<< HEAD
+<<<<<<< HEAD
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+=======
+=======
+>>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
     cd /usr/bin/
+>>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 	echo "[INFO] Downloading ADB for Linux..."
-    sudo curl -s -o adb "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
-    echo "[ OK ] ADB finished downloading."
+    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Linux..."
-    sudo curl -s -o fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/linux/fastboot?raw=true" -LOk
-    echo "[ OK ] Fastboot finished downloading."
+    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/linux/fastboot?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x ./adb
-    sudo chmod +x ./fastboot
+    sudo chmod +x $ADB
+    sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
     echo "[WARN] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
 fi
+echo " "
