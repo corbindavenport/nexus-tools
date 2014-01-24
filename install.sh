@@ -38,14 +38,8 @@ fi
 # detect operating system and install
 
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 if [ "$(uname)" == "Darwin" ]; then
 =======
-=======
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
-=======
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 if [ "$(uname)" == "Darwin" ]; then # Mac OS X
 	cd /usr/bin/
 >>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
@@ -59,14 +53,8 @@ if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
 <<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 =======
-=======
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
-=======
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
     cd /usr/bin/
 >>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
