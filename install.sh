@@ -37,12 +37,7 @@ fi
 
 # detect operating system and install
 
-<<<<<<< HEAD
-if [ "$(uname)" == "Darwin" ]; then
-=======
 if [ "$(uname)" == "Darwin" ]; then # Mac OS X
-	cd /usr/bin/
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 	echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
@@ -52,12 +47,7 @@ if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
-<<<<<<< HEAD
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-=======
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
-    cd /usr/bin/
->>>>>>> ce5f90c9acd66c7236d42c82def7c33bf2d634f6
 	echo "[INFO] Downloading ADB for Linux..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Linux..."
