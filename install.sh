@@ -18,7 +18,7 @@ FASTBOOT="/usr/bin/fastboot"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.1"
+echo "[INFO] Nexus Tools 1.2"
 echo "[INFO] Please enter sudo password for adb/fastboot install"
 sudo echo "[ OK ] Sudo access granted."
 
@@ -65,6 +65,8 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
+    echo " "
+    exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
     echo "[INFO] Downloading ADB for Linux..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
@@ -75,7 +77,10 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
+    echo " "
+    exit 0
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
     echo "[WARN] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
+    echo " "
+    exit 0
 fi
-echo " "

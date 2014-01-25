@@ -18,21 +18,25 @@ FASTBOOT="/usr/bin/fastboot"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.1"
+echo "[INFO] Nexus Tools 1.2"
 echo "[INFO] Please enter sudo password for adb/fastboot removal"
 sudo echo "[ OK ] Sudo access granted."
 
+# check for chrome os
+
+if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then
+    sudo mount -o remount,rw /
+fi
+
 # remove files
 
-if [ -f $ADB ];
-then
+if [ -f $ADB ]; then
    sudo rm $ADB
    echo "[ OK ] ADB removed."
 else
    echo "[EROR] ADB not found in /usr/bin, skipping uninstall."
 fi
-if [ -f $FASTBOOT ];
-then
+if [ -f $FASTBOOT ]; then
    sudo rm $FASTBOOT
    echo "[ OK ] Fastboot removed."
 else
