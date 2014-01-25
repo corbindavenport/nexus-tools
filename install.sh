@@ -24,20 +24,39 @@ sudo echo "[ OK ] Sudo access granted."
 
 # check if already installed
 
-if [ -f $ADB ]
-then
+if [ -f $ADB ]; then
     read -p "[INFO] ADB is already present, press ENTER to overwrite or exit to cancel."
     sudo rm $ADB
 fi
-if [ -f $FASTBOOT ]
-then
+if [ -f $FASTBOOT ]; then
     read -p "[INFO] Fastboot is already present, press ENTER to overwrite or exit to cancel."
     sudo rm $FASTBOOT
 fi
 
 # detect operating system and install
 
-if [ "$(uname)" == "Darwin" ]; then # Mac OS X
+if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
+    sudo mount -o remount,rw /
+    cd /sbin/
+    if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
+        echo "[INFO] Downloading ADB for Chrome OS (ARM CPU)..."
+        sudo curl -s -o ./adb "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-arm?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Chrome OS (ARM CPU)..."
+        sudo curl -s -o ./fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-arm?raw=true" -LOk
+    else  # Chrome OS on Intel CPU
+        echo "[INFO] Downloading ADB for Chrome OS (Intel CPU)..."
+        sudo curl -s -o ./adb "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-x86?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
+        sudo curl -s -o ./fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-x86?raw=true" -LOk
+    fi
+    echo "[INFO] Making ADB and Fastboot executable..."
+    sudo chmod +x ./adb
+    sudo chmod +x ./fastboot
+    echo "[ OK ] Done!"
+    echo "[INFO] Type adb or fastboot to run."
+    echo " "
+    exit 0
+elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
