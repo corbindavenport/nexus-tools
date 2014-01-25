@@ -37,21 +37,20 @@ fi
 
 if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     sudo mount -o remount,rw /
-    cd /sbin/
     if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
         echo "[INFO] Downloading ADB for Chrome OS (ARM CPU)..."
-        sudo curl -s -o ./adb "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-arm?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-arm?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS (ARM CPU)..."
-        sudo curl -s -o ./fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-arm?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-arm?raw=true" -LOk
     else  # Chrome OS on Intel CPU
         echo "[INFO] Downloading ADB for Chrome OS (Intel CPU)..."
-        sudo curl -s -o ./adb "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-x86?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-x86?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
-        sudo curl -s -o ./fastboot "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-x86?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-x86?raw=true" -LOk
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x ./adb
-    sudo chmod +x ./fastboot
+    sudo chmod +x $ADB
+    sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
     echo "[INFO] Type adb or fastboot to run."
     echo " "
