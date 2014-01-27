@@ -18,7 +18,7 @@ FASTBOOT="/usr/bin/fastboot"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.2"
+echo "[INFO] Nexus Tools 1.2.1"
 echo "[INFO] Please enter sudo password for adb/fastboot install"
 sudo echo "[ OK ] Sudo access granted."
 
@@ -38,15 +38,11 @@ fi
 if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     sudo mount -o remount,rw /
     if [ "$?" -ne "0" ]; then
-        echo "[EROR] It appears your Chrome OS device is not rooted. Having root privliges is needed to install ADB and Fastboot."
-        read -p "[EROR] Would you like to root it now? " -n 1 -r
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            sudo /usr/share/vboot/bin/make_dev_ssd.sh --force --remove_rootfs_verification
-            read -p "[ OK ] Chrome OS now rooted, press ENTER to reboot and run the script again."
-            reboot
-            exit 0
-        fi
-        echo "[EROR] Chrome OS device must be rooted to continue. Now exiting."
+        echo "[INFO] It appears your Chrome OS device is not rooted. Having root privliges is needed to install ADB and Fastboot."
+        echo "[INFO] Now rooting Chrome OS..."
+        sudo /usr/share/vboot/bin/make_dev_ssd.sh --force --remove_rootfs_verification
+        read -p "[ OK ] Chrome OS now rooted, press ENTER to reboot and run the script again."
+        reboot
         exit 0
     fi
     if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
