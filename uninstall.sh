@@ -18,7 +18,7 @@ FASTBOOT="/usr/bin/fastboot"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.2"
+echo "[INFO] Nexus Tools 1.2.1"
 echo "[INFO] Please enter sudo password for adb/fastboot removal"
 sudo echo "[ OK ] Sudo access granted."
 
