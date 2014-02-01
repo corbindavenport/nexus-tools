@@ -39,10 +39,8 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     sudo mount -o remount,rw /
     if [ "$?" -ne "0" ]; then
         echo "[INFO] It appears your Chrome OS device is not rooted. Having root privliges is needed to install ADB and Fastboot."
-        echo "[INFO] Now rooting Chrome OS..."
-        sudo /usr/share/vboot/bin/make_dev_ssd.sh --force --remove_rootfs_verification
-        read -p "[ OK ] Chrome OS now rooted, press ENTER to reboot and run the script again."
-        reboot
+        echo "[INFO] Type this into the command line and reboot to root your device:"
+        echo "[INFO] sudo /usr/share/vboot/bin/make_dev_ssd.sh --force --remove_rootfs_verification"
         exit 0
     fi
     if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
