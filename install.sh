@@ -74,7 +74,7 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo " "
     exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
-	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "amd64" ]; then # Linux on Intel x86/x86_64 CPU
+	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
