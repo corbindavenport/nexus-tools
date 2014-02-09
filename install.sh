@@ -74,15 +74,15 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo " "
     exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
-	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "i486" ] || [ "$(arch)" == "i586" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
+        echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
     elif [ "$(arch)" == "arm" ]; then # Linux on ARM CPU
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-armhf-adb?raw=true" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS [ARM CPU]..."
+        echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-armhf-fastboot?raw=true" -LOk
     else
     	echo "[EROR] Your CPU platform could not be detected. Now exiting."
@@ -96,8 +96,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     echo "[INFO] Type adb or fastboot to run."
     echo " "
     exit 0
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
-    echo "[EROR] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
+else
+    echo "[EROR] Your operating system could not be detected. Now exiting."
     echo " "
     exit 0
 fi
