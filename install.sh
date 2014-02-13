@@ -15,21 +15,22 @@
 
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
+UDEV="/etc/udev/rules.d/51-android.rules"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.2.1"
-echo "[INFO] Please enter sudo password for adb/fastboot install"
+echo "[INFO] Nexus Tools 2.0"
+echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted."
 
 # check if already installed
 
 if [ -f $ADB ]; then
-    read -p "[INFO] ADB is already present, press ENTER to overwrite or exit to cancel."
+    read -p "[WARN] ADB is already present, press ENTER to overwrite or exit to cancel."
     sudo rm $ADB
 fi
 if [ -f $FASTBOOT ]; then
-    read -p "[INFO] Fastboot is already present, press ENTER to overwrite or exit to cancel."
+    read -p "[WARN] Fastboot is already present, press ENTER to overwrite or exit to cancel."
     sudo rm $FASTBOOT
 fi
 
@@ -39,21 +40,24 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     sudo mount -o remount,rw /
     if [ "$?" -ne "0" ]; then
         echo "[INFO] It appears your Chrome OS device is not rooted. Having root privliges is needed to install ADB and Fastboot."
-        echo "[INFO] Type this into the command line and reboot to root your device:"
+        echo "[INFO] Make sure your device is in Developer Mode and type this into the command line:"
         echo "[INFO] sudo /usr/share/vboot/bin/make_dev_ssd.sh --force --remove_rootfs_verification"
+        echo " "
         exit 0
     fi
     if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
-        echo "[INFO] Downloading ADB for Chrome OS (ARM CPU)..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-arm?raw=true" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS (ARM CPU)..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-arm?raw=true" -LOk
+        echo "[INFO] Downloading ADB for Chrome OS [ARM CPU]..."
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-adb?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Chrome OS [ARM CPU]..."
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-fastboot?raw=true" -LOk
     else  # Chrome OS on Intel CPU
-        echo "[INFO] Downloading ADB for Chrome OS (Intel CPU)..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/adb-x86?raw=true" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/chromeos/fastboot-x86?raw=true" -LOk
+        echo "[INFO] Downloading ADB for Chrome OS [Intel CPU]..."
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Chrome OS [Intel CPU]..."
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
     fi
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
@@ -63,9 +67,36 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     exit 0
 elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/adb?raw=true" -LOk
+    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/mac-adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/macosx/fastboot?raw=true" -LOk
+    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/mac-fastboot?raw=true" -LOk
+    echo "[INFO] Making ADB and Fastboot executable..."
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
+    sudo chmod +x $ADB
+    sudo chmod +x $FASTBOOT
+    echo "[ OK ] Done!"
+    echo "[INFO] Type adb or fastboot to run."
+    echo " "
+    exit 0
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
+	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "i486" ] || [ "$(arch)" == "i586" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+        echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
+    elif [ "$(arch)" == "arm" ]; then # Linux on ARM CPU
+        echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-adb?raw=true" -LOk
+        echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-fastboot?raw=true" -LOk
+    else
+    	echo "[EROR] Your CPU platform could not be detected. Now exiting."
+    	echo " "
+    	exit 0
+    fi
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
@@ -73,20 +104,8 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Type adb or fastboot to run."
     echo " "
     exit 0
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Linux
-    echo "[INFO] Downloading ADB for Linux..."
-    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/linux/adb?raw=true" -LOk
-    echo "[INFO] Downloading Fastboot for Linux..."
-    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/linux/fastboot?raw=true" -LOk
-    echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x $ADB
-    sudo chmod +x $FASTBOOT
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
-    echo " "
-    exit 0
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then # Cygwin on Windows
-    echo "[WARN] Nexus Tools Installer currently not compatible with Cygwin. Now exiting."
+else
+    echo "[EROR] Your operating system could not be detected. Now exiting."
     echo " "
     exit 0
 fi

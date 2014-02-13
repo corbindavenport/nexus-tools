@@ -1,4 +1,4 @@
-nexus-tools
+![alt text](http://i.imgur.com/shjM51Q.png "Nexus Tools")
 ===========
 
 Nexus Tools is an installer for the Android debug/development command-line tools ADB (Android Device Bridge) and Fastboot for Mac OS X, Linux, and Google Chrome/Chromium OS. The script does not need to be downloaded, simply copy and paste this command into the terminal and run it to install Nexus Tools:
@@ -18,6 +18,8 @@ Nexus Tools requires sudo privileges to install/uninstall the adb and fastboot t
 ---------------------------------------
 
 __XDA Thread:__ [http://forum.xda-developers.com/showthread.php?t=2564453](http://forum.xda-developers.com/showthread.php?t=2564453)
+
+__XDA Article:__ [http://www.xda-developers.com/android/set-up-adb-and...](http://www.xda-developers.com/android/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/)
 
 ---------------------------------------
 
