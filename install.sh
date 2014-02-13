@@ -15,6 +15,7 @@
 
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
+UDEV="/etc/udev/rules.d/51-android.rules"
 
 # get sudo
 
@@ -52,9 +53,11 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     else  # Chrome OS on Intel CPU
         echo "[INFO] Downloading ADB for Chrome OS [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS (Intel CPU)..."
+        echo "[INFO] Downloading Fastboot for Chrome OS [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
     fi
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
@@ -68,6 +71,8 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/mac-fastboot?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
@@ -90,6 +95,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     	echo " "
     	exit 0
     fi
+    echo "[INFO] Downloading udev list..."
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT

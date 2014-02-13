@@ -15,6 +15,7 @@
 
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
+UDEV="/etc/udev/rules.d/51-android.rules"
 
 # get sudo
 
@@ -41,6 +42,12 @@ if [ -f $FASTBOOT ]; then
    echo "[ OK ] Fastboot removed."
 else
    echo "[EROR] Fastboot not found in /usr/bin, skipping uninstall."
+fi
+if [ -f $UDEV ]; then
+   sudo rm $FASTBOOT
+   echo "[ OK ] Udev list removed."
+else
+   echo "[EROR] Udev list not found in /etc/udev/rules.d/, skipping uninstall."
 fi
 echo "[ OK ] Done uninstalling!"
 echo " "
