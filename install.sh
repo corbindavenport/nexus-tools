@@ -57,7 +57,7 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
     fi
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
