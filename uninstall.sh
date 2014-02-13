@@ -18,8 +18,8 @@ FASTBOOT="/usr/bin/fastboot"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 1.2.1"
-echo "[INFO] Please enter sudo password for adb/fastboot removal"
+echo "[INFO] Nexus Tools 2.0"
+echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted."
 
 # check for chrome os
