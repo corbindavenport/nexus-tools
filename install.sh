@@ -47,17 +47,17 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     fi
     if [ "$(arch)" == "arm" ]; then # Chrome OS on ARM CPU
         echo "[INFO] Downloading ADB for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
     else  # Chrome OS on Intel CPU
         echo "[INFO] Downloading ADB for Chrome OS [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
     fi
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
@@ -67,12 +67,12 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
     exit 0
 elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/mac-adb?raw=true" -LOk
+    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/mac-adb?raw=true" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/mac-fastboot?raw=true" -LOk
+    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/mac-fastboot?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
@@ -82,21 +82,21 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
 	if [ "$(arch)" == "i386" ] || [ "$(arch)" == "i486" ] || [ "$(arch)" == "i586" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-i386-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
     elif [ "$(arch)" == "arm" ]; then # Linux on ARM CPU
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/development/bin/linux-arm-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
     else
     	echo "[EROR] Your CPU platform could not be detected. Now exiting."
     	echo " "
     	exit 0
     fi
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/development/udev.txt" -LOk
+    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
