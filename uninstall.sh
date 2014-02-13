@@ -44,7 +44,7 @@ else
    echo "[EROR] Fastboot not found in /usr/bin, skipping uninstall."
 fi
 if [ -f $UDEV ]; then
-   sudo rm $FASTBOOT
+   sudo rm $UDEV
    echo "[ OK ] Udev list removed."
 else
    echo "[EROR] Udev list not found in /etc/udev/rules.d/, skipping uninstall."
