@@ -18,6 +18,7 @@ Nexus Tools requires sudo privileges to install/uninstall the adb and fastboot t
 ---------------------------------------
 
 __XDA Thread:__ [http://forum.xda-developers.com/showthread.php?t=2564453](http://forum.xda-developers.com/showthread.php?t=2564453)
+
 __XDA Article:__ [http://www.xda-developers.com/android/set-up-adb-and...](http://www.xda-developers.com/android/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/)
 
 ---------------------------------------
