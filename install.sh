@@ -85,7 +85,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
-    elif [ "$(arch)" == "arm" ]; then # Linux on ARM CPU
+    elif [ "$(arch)" == "arm" ] || [ "$(arch)" == "armv6l" ]; then # Linux on ARM CPU
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
