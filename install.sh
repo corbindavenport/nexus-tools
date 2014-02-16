@@ -50,7 +50,7 @@ if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then # Chrome OS
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
         echo "[INFO] Downloading Fastboot for Chrome [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
-    elif [ "$(arch)" == "arm" ]; then # Chrome on ARM CPU
+    elif [ "$(arch)" == "arm" ] || [ "$(arch)" == "armv71" ]; then # Chrome on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Chrome OS [ARM CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
