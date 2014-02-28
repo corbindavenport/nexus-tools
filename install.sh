@@ -127,6 +127,5 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     exit 0
 else
     echo "[EROR] Your operating system could not be detected. Now exiting."
-    echo " "
     exit 1
 fi
