@@ -48,7 +48,7 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
     fi
     if [ "$?" -ne "0" ]; then
         
-        echo "[INFO] It appears your Chromium/Chrome OS device is not in developer mode.
+        echo "[INFO] It appears your Chromium/Chrome OS device is not in developer mode."
         echo "[INFO] Developer mode is needed to install ADB and Fastboot."
         echo "[INFO] Make sure your device is booted in developer mode."
         echo "[INFO] To set up developer tools, use this command: sudo dev_install"
