@@ -77,6 +77,10 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo chmod 644   $UDEV
+        sudo chown root. $UDEV
+        sudo service udev restart
+        sudo killall adb
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
@@ -92,7 +96,13 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/mac-fastboot?raw=true" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+    if [ -n "$UDEV" ]; then
+        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo chmod 644 $UDEV
+        sudo chown root. $UDEV
+        sudo service udev restart
+        sudo killall adb
+    fi
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
@@ -117,7 +127,13 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     	exit 0
     fi
     echo "[INFO] Downloading udev list..."
-    sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+    if [ -n "$UDEV" ]; then
+        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo chmod 644   $UDEV
+        sudo chown root. $UDEV
+        sudo service udev restart
+        sudo killall adb
+    fi
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
