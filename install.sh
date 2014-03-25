@@ -100,7 +100,6 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     sudo chmod 644 $UDEV
     sudo chown root. $UDEV
     sudo killall adb
-    fi
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
     echo "[ OK ] Done!"
