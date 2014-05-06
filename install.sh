@@ -146,7 +146,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     exit 0
 else
     echo "[EROR] Your operating system or architecture could not be detected."
-    echo "[ERROR] OS: $OS"
+    echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+    echo "[EROR] Report the following information in the bug report:"
+    echo "[EROR] OS: $OS"
     echo "[EROR] ARCH: $ARCH"
     exit 1
 fi
