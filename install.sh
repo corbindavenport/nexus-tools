@@ -111,10 +111,10 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         if [ ! -d /etc/udev/ ]; then
-            mkdir /etc/udev/
+            sudo mkdir /etc/udev/
         fi
         if [ ! -d /etc/udev/rules.d/ ]; then
-            mkdir /etc/udev/rules.d/
+            sudo mkdir /etc/udev/rules.d/
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
