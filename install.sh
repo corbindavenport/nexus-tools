@@ -21,7 +21,7 @@ OS=$(uname -1)
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.0"
+echo "[INFO] Nexus Tools 2.3"
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted."
 
@@ -34,6 +34,17 @@ fi
 if [ -f $FASTBOOT ]; then
     read -p "[WARN] Fastboot is already present, press ENTER to overwrite or exit to cancel."
     sudo rm $FASTBOOT
+fi
+
+# check if debug is on
+
+if [ "$#" -ne 1 ]
+then
+    echo " "
+    echo "[INFO] Debugging information:"
+    echo "[INFO] OS: $OS"
+    echo "[INFO] ARCH: $ARCH"
+    echo " "
 fi
 
 # detect operating system and install
@@ -72,14 +83,14 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
         ;;
     *)
-    	echo "[EROR] Your CPU platform could not be detected. Now exiting."
+    	echo "[EROR] Your CPU platform could not be detected."
     	echo " "
     	exit 1
     esac
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
-        sudo chmod 644   $UDEV
+        sudo chmod 644 $UDEV
         sudo chown root. $UDEV
         sudo service udev restart
         sudo killall adb
@@ -100,7 +111,7 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
-        sudo chmod 644   $UDEV
+        sudo chmod 644 $UDEV
         sudo chown root. $UDEV
         sudo service udev restart
         sudo killall adb
@@ -125,14 +136,14 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
     else
-    	echo "[EROR] Your CPU platform could not be detected. Now exiting."
+    	echo "[EROR] Your CPU platform could not be detected."
     	echo " "
-    	exit 0
+    	exit 1
     fi
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
-        sudo chmod 644   $UDEV
+        sudo chmod 644 $UDEV
         sudo chown root. $UDEV
         sudo service udev restart
         sudo killall adb
@@ -150,5 +161,6 @@ else
     echo "[EROR] Report the following information in the bug report:"
     echo "[EROR] OS: $OS"
     echo "[EROR] ARCH: $ARCH"
+    echo " "
     exit 1
 fi
