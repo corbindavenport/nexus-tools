@@ -38,8 +38,7 @@ fi
 
 # check if debug is on
 
-if [ "$#" -ne 1 ]
-then
+if [ $1 = "debug" ]; then
     echo " "
     echo "[INFO] Debugging information:"
     echo "[INFO] OS: $OS"
@@ -89,6 +88,12 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
     esac
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
+        if [ ! -d /etc/udev/ ]; then
+            sudo mkdir /etc/udev/
+        fi
+        if [ ! -d /etc/udev/rules.d/ ]; then
+            sudo mkdir /etc/udev/rules.d/
+        fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV
@@ -118,8 +123,6 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
-        sudo chown root. $UDEV
-        sudo service udev restart
         sudo killall adb
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
@@ -148,6 +151,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     fi
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
+        if [ ! -d /etc/udev/ ]; then
+            sudo mkdir /etc/udev/
+        fi
+        if [ ! -d /etc/udev/rules.d/ ]; then
+            sudo mkdir /etc/udev/rules.d/
+        fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV
