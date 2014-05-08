@@ -36,16 +36,6 @@ if [ -f $FASTBOOT ]; then
     sudo rm $FASTBOOT
 fi
 
-# check if debug is on
-
-if [ $1 = "debug" ]; then
-    echo " "
-    echo "[INFO] Debugging information:"
-    echo "[INFO] OS: $OS"
-    echo "[INFO] ARCH: $ARCH"
-    echo " "
-fi
-
 # detect operating system and install
 
 if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
@@ -96,9 +86,9 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
-        sudo chown root. $UDEV
-        sudo service udev restart
-        sudo killall adb
+        sudo chown root. $UDEV 2>/dev/null
+        sudo service udev restart 2>/dev/null
+        sudo killall adb 2>/dev/null
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
@@ -123,7 +113,9 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
-        sudo killall adb
+        sudo chown root. $UDEV 2>/dev/null
+        sudo service udev restart 2>/dev/null
+        sudo killall adb 2>/dev/null
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
@@ -159,9 +151,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
-        sudo chown root. $UDEV
-        sudo service udev restart
-        sudo killall adb
+        sudo chown root. $UDEV 2>/dev/null
+        sudo service udev restart 2>/dev/null
+        sudo killall adb 2>/dev/null
     fi
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
