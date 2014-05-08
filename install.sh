@@ -16,8 +16,8 @@
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
-OUTPUT=$(arch)
 OS=$(uname)
+ARCH=$(arch)
 
 # get sudo
 
@@ -110,6 +110,12 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Making ADB and Fastboot executable..."
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
+        if [ ! -d /etc/udev/ ]; then
+            mkdir /etc/udev/
+        fi
+        if [ ! -d /etc/udev/rules.d/ ]; then
+            mkdir /etc/udev/rules.d/
+        fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV
