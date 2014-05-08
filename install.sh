@@ -60,16 +60,16 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
     case "$(arch)" in
     i*86|amd64|x86_64)
         echo "[INFO] Downloading ADB for Chrome OS [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
         echo "[INFO] Downloading Fastboot for Chrome [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
         ;;
     arm|armv*)
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
         echo "[INFO] Downloading Fastboot for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot" -LOk
         ;;
     *)
     	echo "[EROR] Your CPU platform could not be detected."
@@ -84,7 +84,7 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir /etc/udev/rules.d/
         fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV 2>/dev/null
         sudo service udev restart 2>/dev/null
@@ -99,9 +99,9 @@ if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
     exit 0
 elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/mac-adb?raw=true" -LOk
+    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/mac-fastboot?raw=true" -LOk
+    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-fastboot" -LOk
     echo "[INFO] Making ADB and Fastboot executable..."
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
@@ -111,7 +111,7 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir /etc/udev/rules.d/
         fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV 2>/dev/null
         sudo service udev restart 2>/dev/null
@@ -127,15 +127,15 @@ elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     if [ "$(arch)" == "i386" ] || [ "$(arch)" == "i486" ] || [ "$(arch)" == "i586" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "x86_64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-i386-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
     elif [ "$(arch)" == "arm" ] || [ "$(arch)" == "armv6l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-adb?raw=true" -LOk
+        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/blob/master/bin/linux-arm-fastboot?raw=true" -LOk
+        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot" -LOk
     else
     	echo "[EROR] Your CPU platform could not be detected."
     	echo " "
@@ -149,7 +149,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir /etc/udev/rules.d/
         fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/blob/master/udev.txt" -LOk
+        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV 2>/dev/null
         sudo service udev restart 2>/dev/null
