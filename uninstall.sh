@@ -19,14 +19,30 @@ UDEV="/etc/udev/rules.d/51-android.rules"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.0"
+echo "[INFO] Nexus Tools 2.3"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted."
 
 # check for chrome os
 
-if [ -f "/usr/bin/old_bins/chromeos-tpm-recovery" ]; then
-    sudo mount -o remount,rw /
+if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
+    sudo mount -o remount,rw / 2>/dev/null
+    if [ "$?" -ne "0" ]; then
+        if [ -x /usr/local/bin ]; then
+            ADB=/usr/local/bin/adb
+            FASTBOOT=/usr/local/bin/fastboot
+            UDEV=
+        fi
+        /usr/bin/crossystem 'mainfw_type?developer'
+    fi
+    if [ "$?" -ne "0" ]; then
+    echo "[INFO] It appears your Chromium/Chrome OS device is not in developer mode."
+        echo "[INFO] Developer mode is needed to install ADB and Fastboot."
+        echo "[INFO] Make sure your device is booted in developer mode."
+        echo "[INFO] To set up developer tools, use this command: sudo dev_install"
+        echo " "
+        exit 1
+    fi
 fi
 
 # remove files
@@ -49,5 +65,5 @@ if [ -f $UDEV ]; then
 else
    echo "[EROR] Udev list not found in /etc/udev/rules.d/, skipping uninstall."
 fi
-echo "[ OK ] Done uninstalling!"
+echo "[ OK ] Done uninstalling."
 echo " "
