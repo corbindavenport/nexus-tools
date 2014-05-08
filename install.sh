@@ -16,8 +16,8 @@
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
-OUTPUT=$(arch -1)
-OS=$(uname -1)
+OUTPUT=$(arch)
+OS=$(uname)
 
 # get sudo
 
