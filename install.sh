@@ -38,66 +38,7 @@ fi
 
 # detect operating system and install
 
-if [ -x "/usr/bin/crossystem" ]; then # Chrome OS
-    sudo mount -o remount,rw / 2>/dev/null
-    if [ "$?" -ne "0" ]; then
-        if [ -x /usr/local/bin ]; then
-            ADB=/usr/local/bin/adb
-            FASTBOOT=/usr/local/bin/fastboot
-            UDEV=
-        fi
-        /usr/bin/crossystem 'mainfw_type?developer'
-    fi
-    if [ "$?" -ne "0" ]; then
-        
-        echo "[INFO] It appears your Chromium/Chrome OS device is not in developer mode."
-        echo "[INFO] Developer mode is needed to install ADB and Fastboot."
-        echo "[INFO] Make sure your device is booted in developer mode."
-        echo "[INFO] To set up developer tools, use this command: sudo dev_install"
-        echo " "
-        exit 1
-    fi
-    case "$(arch)" in
-    i*86|amd64|x86_64)
-        echo "[INFO] Downloading ADB for Chrome OS [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
-        ;;
-    arm|armv*)
-        echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
-        echo "[INFO] Downloading ADB for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
-        echo "[INFO] Downloading Fastboot for Chrome OS [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot" -LOk
-        ;;
-    *)
-    	echo "[EROR] Your CPU platform could not be detected."
-    	echo " "
-    	exit 1
-    esac
-    echo "[INFO] Downloading udev list..."
-    if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/ ]; then
-            sudo mkdir /etc/udev/
-        fi
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir /etc/udev/rules.d/
-        fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
-        sudo chmod 644 $UDEV
-        sudo chown root. $UDEV 2>/dev/null
-        sudo service udev restart 2>/dev/null
-        sudo killall adb 2>/dev/null
-    fi
-    echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x $ADB
-    sudo chmod +x $FASTBOOT
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
-    echo " "
-    exit 0
-elif [ "$(uname)" == "Darwin" ]; then # Mac OS X
+if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
