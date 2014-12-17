@@ -66,7 +66,7 @@ if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo " "
     exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
-    if [ "$(uname -m)" == "i386" ] || [ "$(uname -m)" == "i486" ] || [ "$(uname -m)" == "i586" ] || [ "$(uname -m)" == "amd64" ] || [ "$(arch)" == "uname -m" ] || [ "$(uname -m)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+    if [ "$(uname -m)" == "i386" ] || [ "$(uname -m)" == "i486" ] || [ "$(uname -m)" == "i586" ] || [ "$(uname -m)" == "amd64" ] || [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
