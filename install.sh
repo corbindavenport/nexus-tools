@@ -17,7 +17,7 @@ ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
-ARCH=$(arch)
+ARCH=$(uname -m)
 
 # get sudo
 
@@ -66,12 +66,12 @@ if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo " "
     exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
-    if [ "$(arch)" == "i386" ] || [ "$(arch)" == "i486" ] || [ "$(arch)" == "i586" ] || [ "$(arch)" == "amd64" ] || [ "$(arch)" == "x86_64" ] || [ "$(arch)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+    if [ "$(uname -m)" == "i386" ] || [ "$(uname -m)" == "i486" ] || [ "$(uname -m)" == "i586" ] || [ "$(uname -m)" == "amd64" ] || [ "$(arch)" == "uname -m" ] || [ "$(uname -m)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
-    elif [ "$(arch)" == "arm" ] || [ "$(arch)" == "armv6l" ]; then # Linux on ARM CPU
+    elif [ "$(uname -m)" == "arm" ] || [ "$(uname -m)" == "armv6l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
