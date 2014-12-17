@@ -21,7 +21,7 @@ ARCH=$(uname -m)
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.3"
+echo "[INFO] Nexus Tools 2.4.1"
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted."
 
@@ -66,12 +66,12 @@ if [ "$(uname)" == "Darwin" ]; then # Mac OS X
     echo " "
     exit 0
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
-    if [ "$(uname -m)" == "i386" ] || [ "$(uname -m)" == "i486" ] || [ "$(uname -m)" == "i586" ] || [ "$(uname -m)" == "amd64" ] || [ "$(uname -m)" == "x86_64" ] || [ "$(uname -m)" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+    if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
-    elif [ "$(uname -m)" == "arm" ] || [ "$(uname -m)" == "armv6l" ]; then # Linux on ARM CPU
+    elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
