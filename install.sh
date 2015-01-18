@@ -38,7 +38,7 @@ fi
 
 # detect operating system and install
 
-if [ $OS == "Darwin" ]; then # Mac OS X
+if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
