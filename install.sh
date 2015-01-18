@@ -38,19 +38,15 @@ fi
 
 # detect operating system and install
 
-if [ "$(uname)" == "Darwin" ]; then # Mac OS X
+if [ $OS == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
     sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -LOk
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-fastboot" -LOk
-    echo "[INFO] Making ADB and Fastboot executable..."
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/ ]; then
-            sudo mkdir /etc/udev/
-        fi
         if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir /etc/udev/rules.d/
+            sudo mkdir -p /etc/udev/rules.d/
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
@@ -84,11 +80,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     fi
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/ ]; then
-            sudo mkdir /etc/udev/
-        fi
         if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir /etc/udev/rules.d/
+            sudo mkdir -p /etc/udev/rules.d/
         fi
         sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
         sudo chmod 644 $UDEV
