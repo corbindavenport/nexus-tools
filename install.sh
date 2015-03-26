@@ -23,17 +23,17 @@ ARCH=$(uname -m)
 
 echo "[INFO] Nexus Tools 2.4.1"
 echo "[INFO] Please enter sudo password for install."
-sudo echo "[ OK ] Sudo access granted." || echo "[ERROR] No sudo access!!" && exit
+sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; exit; }
 
 # check if already installed
 
 if [ -f $ADB ]; then
     read -p "[WARN] ADB is already present, press ENTER to overwrite or exit to cancel." input
-    [ $input ] && sudo rm $ADB || exit
+    [ $input ] && exit || sudo rm $ADB
 fi
 if [ -f $FASTBOOT ]; then
     read -p "[WARN] Fastboot is already present, press ENTER to overwrite or exit to cancel." input
-    [ $input ] && sudo rm $FASTBOOT || exit
+    [ $input ] && exit || sudo rm $FASTBOOT
 fi
 
 # detect operating system and install
