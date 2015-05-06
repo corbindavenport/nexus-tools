@@ -21,7 +21,7 @@ ARCH=$(uname -m)
 
 XCODE=0
 
-BASEURL="http://github.com/corbindavenport/nexus-tools/raw/raw/master"
+BASEURL="http://github.com/corbindavenport/nexus-tools/raw/master"
 
 
 _install() {
