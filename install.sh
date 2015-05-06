@@ -21,7 +21,7 @@ ARCH=$(uname -m)
 
 XCODE=0
 
-BASEURL="http://github.com/corbindavenport/nexus-tools/raw/master"
+BASEURL="http://github.com/corbindavenport/nexus-tools/raw/raw/master"
 
 
 _install() {
@@ -101,7 +101,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     echo "[INFO] Making ADB and Fastboot executable..."
     sudo chmod +x $ADB
     sudo chmod +x $FASTBOOT
-    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { "[EROR] Install failed"; }
+    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { echo "[EROR] Install failed"; }
     echo " "
     exit $XCODE
 else
