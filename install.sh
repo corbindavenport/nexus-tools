@@ -28,6 +28,10 @@ _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
 }
 
+
+
+
+
 # get sudo
 
 echo "[INFO] Nexus Tools 2.4.1"
@@ -102,19 +106,25 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         fi
         _install "$UDEV" "$BASEURL/udev.txt"
 	echo "[INFO] Fix permissions"
-        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[INFO] Fixed." || { echo "[EROR] $output"; XCODE=1; }
 	echo "[INFO] Fix ownership"
-        output=$(sudo chown root: $UDEV 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+        output=$(sudo chown root: $UDEV 2>&1) && echo "[INFO] Fixed." || { echo "[EROR] $output"; XCODE=1; }
 
         sudo service udev restart 2>/dev/null >&2
         sudo killall adb 2>/dev/null >&2
     fi
 
     echo "[INFO] Making ADB and Fastboot executable..."
-    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
-    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB OK." || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot OK." || { echo "[EROR] $output"; XCODE=1; }
 
-    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { echo "[EROR] Install failed"; }
+    if [ $XCODE -eq 0 ]; then
+	echo "[ OK ] Done!"
+	echo "[INFO] Type adb or fastboot to run."
+    else
+    	echo "[EROR] Install failed."
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+    fi
     echo " "
     exit $XCODE
 else
