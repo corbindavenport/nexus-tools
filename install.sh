@@ -29,9 +29,6 @@ _install() {
 }
 
 
-
-
-
 # get sudo
 
 echo "[INFO] Nexus Tools 2.4.1"
@@ -106,9 +103,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         fi
         _install "$UDEV" "$BASEURL/udev.txt"
 	echo "[INFO] Fix permissions"
-        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[INFO] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
 	echo "[INFO] Fix ownership"
-        output=$(sudo chown root: $UDEV 2>&1) && echo "[INFO] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+        output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
 
         sudo service udev restart 2>/dev/null >&2
         sudo killall adb 2>/dev/null >&2
