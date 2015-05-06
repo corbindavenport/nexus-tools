@@ -28,6 +28,26 @@ _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
 }
 
+_install_udev() {
+    if [ -n "$UDEV" ]; then
+        if [ ! -d /etc/udev/rules.d/ ]; then
+            sudo mkdir -p /etc/udev/rules.d/
+        fi
+
+    	echo "[INFO] Downloading udev list..."
+        _install "$UDEV" "$BASEURL/udev.txt"
+
+	echo "[INFO] Fix permissions"
+        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+	echo "[INFO] Fix ownership"
+        output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+        sudo service udev restart 2>/dev/null >&2
+        sudo killall adb 2>/dev/null >&2
+    fi
+}
+
 
 # get sudo
 
@@ -53,22 +73,9 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     _install "$ADB" "$BASEURL/bin/mac-adb" 
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
-    echo "[INFO] Downloading udev list..."
 
-    if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir -p /etc/udev/rules.d/
-        fi
-        _install "$UDEV" "$BASEURL/udev.txt"
-
-	echo "[INFO] Fix permissions"
-        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
-	echo "[INFO] Fix ownership"
-        output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
-
-        sudo service udev restart 2>/dev/null
-        sudo killall adb 2>/dev/null >&2
-    fi
+    # download udev list
+    _install_udev
 
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
@@ -99,21 +106,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     	exit 1
     fi
 
-    echo "[INFO] Downloading udev list..."
-
-    if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir -p /etc/udev/rules.d/
-        fi
-        _install "$UDEV" "$BASEURL/udev.txt"
-	echo "[INFO] Fix permissions"
-        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
-	echo "[INFO] Fix ownership"
-        output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
-
-        sudo service udev restart 2>/dev/null >&2
-        sudo killall adb 2>/dev/null >&2
-    fi
+    # download udev list
+    _install_udev
 
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB OK." || { echo "[EROR] $output"; XCODE=1; }
