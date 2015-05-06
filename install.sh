@@ -34,17 +34,30 @@ _install_udev() {
             sudo mkdir -p /etc/udev/rules.d/
         fi
 
-    	echo "[INFO] Downloading udev list..."
-        _install "$UDEV" "$BASEURL/udev.txt"
+	local install=1
 
-	echo "[INFO] Fix permissions"
-        output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+	if [ -f "$UDEV" ]; then
+		echo "[WARN] Udev rules are already present, press ENTER to overwrite or x to skip"
+		read -sn1 input 
+		[ "$input" = "" ] &&  sudo rm "$UDEV" || install=0
+	fi
+	
+	if [ $install -eq 1 ]; then
 
-	echo "[INFO] Fix ownership"
-        output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+		echo "[INFO] Downloading udev list..."
+		_install "$UDEV" "$BASEURL/udev.txt"
 
-        sudo service udev restart 2>/dev/null >&2
-        sudo killall adb 2>/dev/null >&2
+		echo "[INFO] Fix permissions"
+		output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+		echo "[INFO] Fix ownership"
+		output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+		sudo service udev restart 2>/dev/null >&2
+		sudo killall adb 2>/dev/null >&2
+	else
+		echo "[INFO] Skip.."
+	fi
     fi
 }
 
@@ -58,11 +71,13 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; ex
 # check if already installed
 
 if [ -f $ADB ]; then
-    read -n1 -p "[WARN] ADB is already present, press ENTER to overwrite or exit to cancel." input
+    echo "[WARN] ADB is already present, press ENTER to overwrite or x to cancel."
+    read -sn1 input
     [ "$input" = "" ] && sudo rm $ADB || exit 1
 fi
 if [ -f $FASTBOOT ]; then
-    read -n1 -p "[WARN] Fastboot is already present, press ENTER to overwrite or exit to cancel." input
+    echo "[WARN] Fastboot is already present, press ENTER to overwrite or x to cancel."
+    read -sn1 input
     [ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
 fi
 
