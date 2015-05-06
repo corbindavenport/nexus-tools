@@ -40,15 +40,15 @@ fi
 
 if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -Lks
+    sudo curl -Lks -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" 
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-fastboot" -Lks
+    sudo curl -Lks -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-fastboot"
     echo "[INFO] Downloading udev list..."
     if [ -n "$UDEV" ]; then
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir -p /etc/udev/rules.d/
         fi
-        sudo curl -Lks -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" 
+        sudo curl -Lks -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt"
         sudo chmod 644 $UDEV
         sudo chown root. $UDEV 2>/dev/null
         sudo service udev restart 2>/dev/null
@@ -64,15 +64,15 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
-        sudo curl -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -Lks
+        sudo curl -Lks -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb"
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
-        sudo curl -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -Lks
+        sudo curl -Lks -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot"
     elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
-        sudo curl -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -Lks
+        sudo curl -Lks -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb"
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
-        sudo curl -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot" -Lks
+        sudo curl -Lks -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot"
     else
     	echo "[EROR] Your CPU platform could not be detected."
     	echo " "
@@ -83,9 +83,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir -p /etc/udev/rules.d/
         fi
-        sudo curl -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -Lks
+        sudo curl -Lks -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt"
         sudo chmod 644 $UDEV
-        sudo chown root. $UDEV 2>/dev/null
+        sudo chown root: $UDEV 2>/dev/null
         sudo service udev restart 2>/dev/null
         sudo killall adb 2>/dev/null
     fi
