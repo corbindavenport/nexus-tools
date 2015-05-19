@@ -19,6 +19,49 @@ UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
 
+XCODE=0
+
+BASEURL="http://github.com/corbindavenport/nexus-tools/raw/master"
+
+
+_install() {
+	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
+}
+
+_install_udev() {
+    if [ -n "$UDEV" ]; then
+        if [ ! -d /etc/udev/rules.d/ ]; then
+            sudo mkdir -p /etc/udev/rules.d/
+        fi
+
+	local install=1
+
+	if [ -f "$UDEV" ]; then
+		echo "[WARN] Udev rules are already present, press ENTER to overwrite or x to skip"
+		read -sn1 input 
+		[ "$input" = "" ] &&  sudo rm "$UDEV" || install=0
+	fi
+	
+	if [ $install -eq 1 ]; then
+
+		echo "[INFO] Downloading udev list..."
+		_install "$UDEV" "$BASEURL/udev.txt"
+
+		echo "[INFO] Fix permissions"
+		output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+		echo "[INFO] Fix ownership"
+		output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+
+		sudo service udev restart 2>/dev/null >&2
+		sudo killall adb 2>/dev/null >&2
+	else
+		echo "[INFO] Skip.."
+	fi
+    fi
+}
+
+
 # get sudo
 
 echo "[INFO] Nexus Tools 2.4.1"
@@ -28,11 +71,13 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; ex
 # check if already installed
 
 if [ -f $ADB ]; then
-    read -n1 -p "[WARN] ADB is already present, press ENTER to overwrite or exit to cancel." input
+    echo "[WARN] ADB is already present, press ENTER to overwrite or x to cancel."
+    read -sn1 input
     [ "$input" = "" ] && sudo rm $ADB || exit 1
 fi
 if [ -f $FASTBOOT ]; then
-    read -n1 -p "[WARN] Fastboot is already present, press ENTER to overwrite or exit to cancel." input
+    echo "[WARN] Fastboot is already present, press ENTER to overwrite or x to cancel."
+    read -sn1 input
     [ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
 fi
 
@@ -40,62 +85,58 @@ fi
 
 if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-adb" -LOk
+    _install "$ADB" "$BASEURL/bin/mac-adb" 
     echo "[INFO] Downloading Fastboot for Mac OS X..."
-    sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/mac-fastboot" -LOk
-    echo "[INFO] Downloading udev list..."
-    if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir -p /etc/udev/rules.d/
-        fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
-        sudo chmod 644 $UDEV
-        sudo chown root. $UDEV 2>/dev/null
-        sudo service udev restart 2>/dev/null
-        sudo killall adb 2>/dev/null
-    fi
+    _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
+
+    # download udev list
+    _install_udev
+
     echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x $ADB
-    sudo chmod +x $FASTBOOT
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
+    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+
+    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { echo "[EROR] Install failed"; }
     echo " "
-    exit 0
+    exit $XCODE
+
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
+
     if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-adb" -LOk
+        _install "$ADB" "$BASEURL/bin/linux-i386-adb"
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-i386-fastboot" -LOk
+        _install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
+
     elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
-        sudo curl -s -o $ADB "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-adb" -LOk
+        _install "$ADB" "$BASEURL/bin/linux-arm-adb"
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
-        sudo curl -s -o $FASTBOOT "http://github.com/corbindavenport/nexus-tools/raw/master/bin/linux-arm-fastboot" -LOk
+        _install "$FASTBOOT" "$BASEURL/bin/linux-arm-fastboot"
+
     else
     	echo "[EROR] Your CPU platform could not be detected."
     	echo " "
     	exit 1
     fi
-    echo "[INFO] Downloading udev list..."
-    if [ -n "$UDEV" ]; then
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir -p /etc/udev/rules.d/
-        fi
-        sudo curl -s -o $UDEV "http://github.com/corbindavenport/nexus-tools/raw/master/udev.txt" -LOk
-        sudo chmod 644 $UDEV
-        sudo chown root. $UDEV 2>/dev/null
-        sudo service udev restart 2>/dev/null
-        sudo killall adb 2>/dev/null
-    fi
+
+    # download udev list
+    _install_udev
+
     echo "[INFO] Making ADB and Fastboot executable..."
-    sudo chmod +x $ADB
-    sudo chmod +x $FASTBOOT
-    echo "[ OK ] Done!"
-    echo "[INFO] Type adb or fastboot to run."
+    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB OK." || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot OK." || { echo "[EROR] $output"; XCODE=1; }
+
+    if [ $XCODE -eq 0 ]; then
+	echo "[ OK ] Done!"
+	echo "[INFO] Type adb or fastboot to run."
+    else
+    	echo "[EROR] Install failed."
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+    fi
     echo " "
-    exit 0
+    exit $XCODE
 else
     echo "[EROR] Your operating system or architecture could not be detected."
     echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"

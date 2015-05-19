@@ -21,7 +21,7 @@ UDEV="/etc/udev/rules.d/51-android.rules"
 
 echo "[INFO] Nexus Tools 2.3"
 echo "[INFO] Please enter sudo password for uninstall."
-sudo echo "[ OK ] Sudo access granted."
+sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
 # check for chrome os
 
