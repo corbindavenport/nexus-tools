@@ -64,7 +64,7 @@ _install_udev() {
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.4.1"
+echo "[INFO] Nexus Tools 2.6"
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; exit 1; }
 
