@@ -19,7 +19,7 @@ UDEV="/etc/udev/rules.d/51-android.rules"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.3"
+echo "[INFO] Nexus Tools 2.6"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
