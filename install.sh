@@ -28,7 +28,7 @@ _install() {
 }
 
 _install_udev() {
-    if [-n "$UDEV"] && ["$(expr substr $(uname -s) 1 5)" == "Linux"]; then
+    if [ -n "$UDEV" ] && [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir -p /etc/udev/rules.d/
         fi
