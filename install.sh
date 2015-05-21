@@ -23,7 +23,6 @@ XCODE=0
 
 BASEURL="http://github.com/corbindavenport/nexus-tools/raw/master"
 
-
 _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
 }
@@ -60,7 +59,6 @@ _install_udev() {
 	fi
     fi
 }
-
 
 # get sudo
 
@@ -129,11 +127,13 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot OK." || { echo "[EROR] $output"; XCODE=1; }
 
     if [ $XCODE -eq 0 ]; then
-	echo "[ OK ] Done!"
-	echo "[INFO] Type adb or fastboot to run."
+	echo "[ OK ] Done, type adb or fastboot to run!"
     else
     	echo "[EROR] Install failed."
 	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
+	echo "[EROR] ARCH: $ARCH"
     fi
     echo " "
     exit $XCODE
