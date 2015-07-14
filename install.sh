@@ -28,7 +28,7 @@ _install() {
 }
 
 _install_udev() {
-    if [ -n "$UDEV" ] && [ "$OS" == "Darwin" ]; then
+    if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir -p /etc/udev/rules.d/
         fi
