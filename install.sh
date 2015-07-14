@@ -91,8 +91,8 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     _install_udev
 
     echo "[INFO] Making ADB and Fastboot executable..."
-    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
-    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] OK" || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
 
     [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { echo "[EROR] Install failed"; }
     echo " "
@@ -107,14 +107,18 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
         _install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
 
     elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ]; then # Linux on ARM CPU
-        echo "[WARN] The ADB binaries for ARM are out of date, and do not work on Android 4.2.2+"
+        echo "[WARN] The ADB binaries for ARM are out of date, and do not work with Android 4.2.2 and higher"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         _install "$ADB" "$BASEURL/bin/linux-arm-adb"
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
         _install "$FASTBOOT" "$BASEURL/bin/linux-arm-fastboot"
 
     else
-    	echo "[EROR] Your CPU platform could not be detected."
+    	echo "[EROR] Your CPU architecture could not be detected."
+    	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+    	echo "[EROR] Report the following information in the bug report:"
+    	echo "[EROR] OS: $OS"
+    	echo "[EROR] ARCH: $ARCH"
     	echo " "
     	exit 1
     fi
