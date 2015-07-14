@@ -28,7 +28,7 @@ _install() {
 }
 
 _install_udev() {
-    if [ -n "$UDEV" ] && [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    if [ -n "$UDEV" ] && [ "$OS" == "Darwin" ]; then
         if [ ! -d /etc/udev/rules.d/ ]; then
             sudo mkdir -p /etc/udev/rules.d/
         fi
@@ -98,7 +98,7 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo " "
     exit $XCODE
 
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then # Generic Linux
+elif [ "$OS" == "Linux" ]; then # Generic Linux
 
     if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
