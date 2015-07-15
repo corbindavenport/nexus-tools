@@ -1,5 +1,9 @@
 ![alt text](http://i.imgur.com/shjM51Q.png "Nexus Tools")
-===========
+
+---------------------------------------
+**NOTE:** Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan).
+
+---------------------------------------
 
 Nexus Tools is an installer for the Android debug/development command-line tools ADB (Android Device Bridge) and Fastboot for Mac OS X and Linux. The script does not need to be downloaded, simply copy and paste this command into the terminal and run it to install ADB/Fastboot:
 ```
