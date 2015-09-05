@@ -62,7 +62,7 @@ _install_udev() {
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.6.5"
+echo "[INFO] Nexus Tools 2.6.6"
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; exit 1; }
 
@@ -107,7 +107,7 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         _install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
 
-    elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ]; then # Linux on ARM CPU
+    elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work with Android 4.2.2 and higher"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         _install "$ADB" "$BASEURL/bin/linux-arm-adb"
