@@ -1,7 +1,7 @@
 ![alt text](http://i.imgur.com/shjM51Q.png "Nexus Tools")
 
 ---------------------------------------
-**NOTE:** Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan).
+**NOTE:** Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan). If you experience problems, [read this](https://github.com/corbindavenport/nexus-tools/wiki/Fix-for-Mac-OS-X-10.11-(El-Capitan)) for more information and the fix.
 
 ---------------------------------------
 
