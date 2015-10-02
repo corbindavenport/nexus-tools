@@ -16,12 +16,20 @@
 ADB="/usr/bin/adb"
 FASTBOOT="/usr/bin/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
+OS=$(uname)
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.7"
+echo "[INFO] Nexus Tools 2.7.1"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
+
+# check for mac os x
+
+if [ "$OS" == "Darwin" ]; then
+   echo "[WARN] Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan)."
+   echo "[WARN] More info and the fix: http://bit.ly/nexustoolscapitan"
+fi
 
 # remove files
 
