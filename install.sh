@@ -94,6 +94,9 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
+    
+    echo "[INFO] Adding /usr/local/bin to $PATH..."
+    export PATH=$PATH:/usr/local/bin/
 
     [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; } || { echo "[EROR] Install failed"; }
     echo " "
@@ -130,6 +133,9 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB OK." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot OK." || { echo "[EROR] $output"; XCODE=1; }
+    
+    echo "[INFO] Adding /usr/local/bin to $PATH..."
+    export PATH=$PATH:/usr/local/bin/
 
     if [ $XCODE -eq 0 ]; then
 	echo "[ OK ] Done, type adb or fastboot to run!"
