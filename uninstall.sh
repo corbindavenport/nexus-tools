@@ -38,7 +38,7 @@ if [ -f $ADB ]; then
    echo "[ OK ] ADB removed."
 else
    if [ -f /usr/bin/adb ]; then
-     sudo rm $ADB
+      sudo rm /usr/bin/adb
       echo "[ OK ] ADB removed from /usr/bin/adb."
    else
       echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
@@ -49,7 +49,7 @@ if [ -f $FASTBOOT ]; then
    echo "[ OK ] Fastboot removed."
 else
    if [ -f /usr/bin/fastboot ]; then
-      sudo rm $ADB
+      sudo rm /usr/bin/fastboot
       echo "[ OK ] ADB removed from /usr/bin/fastboot."
    else
       echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
