@@ -13,8 +13,8 @@
 
 #!/bin/bash
 
-ADB="/usr/bin/adb"
-FASTBOOT="/usr/bin/fastboot"
+ADB="/usr/local/bin/adb"
+FASTBOOT="/usr/local/bin/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
@@ -62,7 +62,7 @@ _install_udev() {
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.7.1"
+echo "[INFO] Nexus Tools 2.8"
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; exit 1; }
 
@@ -83,7 +83,6 @@ fi
 
 if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[WARN] Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan)."
-    echo "[WARN] More info and the fix: http://bit.ly/nexustoolscapitan"
     echo "[INFO] Downloading ADB for Mac OS X..."
     _install "$ADB" "$BASEURL/bin/mac-adb" 
     echo "[INFO] Downloading Fastboot for Mac OS X..."
