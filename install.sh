@@ -82,7 +82,6 @@ fi
 # detect operating system and install
 
 if [ "$OS" == "Darwin" ]; then # Mac OS X
-    echo "[WARN] Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan)."
     echo "[INFO] Downloading ADB for Mac OS X..."
     _install "$ADB" "$BASEURL/bin/mac-adb" 
     echo "[INFO] Downloading Fastboot for Mac OS X..."
