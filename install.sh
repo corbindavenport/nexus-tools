@@ -21,7 +21,7 @@ ARCH=$(uname -m)
 
 XCODE=0
 
-BASEURL="http://github.com/corbindavenport/nexus-tools/raw/master"
+BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
 _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
