@@ -79,6 +79,11 @@ if [ -f $FASTBOOT ]; then
     [ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
 fi
 
+# check if bin folder is already created
+if [ ! -d /usr/local/bin/ ]; then
+    sudo mkdir -p /usr/local/bin/
+fi
+
 # detect operating system and install
 
 if [ "$OS" == "Darwin" ]; then # Mac OS X
