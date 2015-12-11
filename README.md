@@ -31,7 +31,7 @@ cd ~ && curl -s -o ./uninstall.sh "http://github.com/corbindavenport/nexus-tools
 ```
 ---------------------------------------
 
-__XDA Thread:__ [http://forum.xda-developers.com/showthread.php?t=2564453](http://forum.xda-developers.com/showthread.php?t=2564453)
+__XDA Thread:__ [http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
 __XDA Article:__ [http://www.xda-developers.com/android/set-up-adb-and...](http://www.xda-developers.com/android/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/)
 
