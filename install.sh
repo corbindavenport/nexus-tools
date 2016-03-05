@@ -19,8 +19,6 @@ FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
-GCC=$(gcc --version)
-DISTRO="Ubuntu"
 XCODE=0
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
@@ -62,6 +60,8 @@ _install_udev() {
 # Get sudo
 echo "[INFO] Nexus Tools 3.0"
 if [ "$OS" == "Linux" ]; then
+	GCC=$(gcc --version)
+	DISTRO="Ubuntu"
 	if [ -z "${GCC##*$DISTRO*}" ]; then
 			:
 	else
