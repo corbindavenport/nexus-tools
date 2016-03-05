@@ -13,14 +13,20 @@
 
 #!/bin/bash
 
-ADB="/usr/local/bin/adb"
-FASTBOOT="/usr/local/bin/fastboot"
+DIR="/usr/local/bin"
+ADB="$DIR/adb"
+FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
+ARCH=$(uname -m)
+GCC=$(gcc --version)
+DISTRO="Ubuntu"
+XCODE=0
+BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.8"
+echo "[INFO] Nexus Tools 3.0"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
@@ -28,7 +34,7 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exi
 
 if [ -f $ADB ]; then
    sudo rm $ADB
-   echo "[ OK ] ADB removed."
+   echo "[ OK ] ADB removed from $DIR/adb."
 else
    if [ -f /usr/bin/adb ]; then
       sudo rm /usr/bin/adb
@@ -39,7 +45,7 @@ else
 fi
 if [ -f $FASTBOOT ]; then
    sudo rm $FASTBOOT
-   echo "[ OK ] Fastboot removed."
+   echo "[ OK ] Fastboot removed from $DIR/fastboot."
 else
    if [ -f /usr/bin/fastboot ]; then
       sudo rm /usr/bin/fastboot

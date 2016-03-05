@@ -13,18 +13,19 @@
 
 #!/bin/bash
 
-ADB="/usr/local/bin/adb"
-FASTBOOT="/usr/local/bin/fastboot"
+DIR="/usr/local/bin"
+ADB="$DIR/adb"
+FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
-
+GCC=$(gcc --version)
+DISTRO="Ubuntu"
 XCODE=0
-
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
 _install() {
-	sudo curl -Lfks -o "$1" "$2" && echo "[INFO] Success." || { echo "[EROR] Download failed."; XCODE=1; }
+	sudo curl -Lfks -o "$1" "$2" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
 }
 
 _install_udev() {
@@ -37,37 +38,40 @@ _install_udev() {
 
 	if [ -f "$UDEV" ]; then
 		echo "[WARN] Udev rules are already present, press ENTER to overwrite or x to skip"
-		read -sn1 input 
+		read -sn1 input
 		[ "$input" = "" ] &&  sudo rm "$UDEV" || install=0
 	fi
-	
+
 	if [ $install -eq 1 ]; then
 
 		echo "[INFO] Downloading udev list..."
 		_install "$UDEV" "$BASEURL/udev.txt"
 
-		echo "[INFO] Fix permissions"
-		output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+		output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
 
-		echo "[INFO] Fix ownership"
-		output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] Fixed." || { echo "[EROR] $output"; XCODE=1; }
+		output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
 
 		sudo service udev restart 2>/dev/null >&2
 		sudo killall adb 2>/dev/null >&2
 	else
-		echo "[INFO] Skip.."
+		echo "[INFO] Skipping UDEV..."
 	fi
     fi
 }
 
-# get sudo
-
-echo "[INFO] Nexus Tools 2.8"
+# Get sudo
+echo "[INFO] Nexus Tools 3.0"
+if [ "$OS" == "Linux" ]; then
+	if [ -z "${GCC##*$DISTRO*}" ]; then
+			:
+	else
+		echo "[WARN] Nexus Tools is only tested to work on Ubuntu Linux, but it should work on other distributions."
+	fi
+fi
 echo "[INFO] Please enter sudo password for install."
-sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access!!"; exit 1; }
+sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
-# check if already installed
-
+# Check if already installed
 if [ -f $ADB ]; then
     echo "[WARN] ADB is already present, press ENTER to overwrite or x to cancel."
     read -sn1 input
@@ -79,26 +83,22 @@ if [ -f $FASTBOOT ]; then
     [ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
 fi
 
-# check if bin folder is already created
-if [ ! -d /usr/local/bin/ ]; then
-    sudo mkdir -p /usr/local/bin/
-fi
+# Check if bin folder is already created
+mkdir -p $DIR
 
-# detect operating system and install
-
+# Detect operating system and install
 if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading ADB for Mac OS X..."
-    _install "$ADB" "$BASEURL/bin/mac-adb" 
+    _install "$ADB" "$BASEURL/bin/mac-adb"
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
 
-    # download udev list
-    _install_udev
+		# Skip udev install because Mac OS X odesn't use it
 
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
-    
+
     echo "[INFO] Adding /usr/local/bin to PATH..."
     export PATH=$PATH:/usr/local/bin/
 
@@ -107,7 +107,6 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     exit $XCODE
 
 elif [ "$OS" == "Linux" ]; then # Generic Linux
-
     if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
         echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
         _install "$ADB" "$BASEURL/bin/linux-i386-adb"
@@ -131,34 +130,33 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     	exit 1
     fi
 
-    # download udev list
+    # Download udev list
     _install_udev
 
-    echo "[INFO] Making ADB and Fastboot executable..."
-    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB OK." || { echo "[EROR] $output"; XCODE=1; }
-    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot OK." || { echo "[EROR] $output"; XCODE=1; }
-    
-    echo "[INFO] Adding /usr/local/bin to $PATH..."
-    export PATH=$PATH:/usr/local/bin/
+    output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+
+    echo "[INFO] Adding $DIR to \$PATH..."
+    export PATH=$PATH:$DIR
 
     if [ $XCODE -eq 0 ]; then
-	echo "[ OK ] Done, type adb or fastboot to run!"
-	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+			echo "[ OK ] Done, type adb or fastboot to run!"
+			echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
     else
     	echo "[EROR] Install failed."
-	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-	echo "[EROR] ARCH: $ARCH"
+			echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+			echo "[EROR] Report the following information in the bug report:"
+			echo "[EROR] OS: $OS"
+			echo "[EROR] ARCH: $ARCH"
     fi
     echo " "
     exit $XCODE
 else
-    echo "[EROR] Your operating system or architecture could not be detected."
-    echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-    echo "[EROR] Report the following information in the bug report:"
-    echo "[EROR] OS: $OS"
-    echo "[EROR] ARCH: $ARCH"
-    echo " "
-    exit 1
+  echo "[EROR] Your operating system or architecture could not be detected."
+  echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+  echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
+  echo "[EROR] ARCH: $ARCH"
+  echo " "
+  exit 1
 fi
