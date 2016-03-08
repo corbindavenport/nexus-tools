@@ -26,6 +26,41 @@ _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
 }
 
+# If Nexus Tools is detects the ADB and/or Fastboot binaries, and it cannot detect it as part of an Linux package it can remove, it removes the binaries themselves. This is the default for Mac OS X.
+_dirty_remove() {
+	if [ -f "$DIR/nexus-tools.txt" ]; then
+		echo "[ OK ] Log file detected."
+	fi
+	if [ -f $ADB ]; then
+			echo "[WARN] ADB is already present, press ENTER to overwrite or X to cancel."
+			read -sn1 input
+			[ "$input" = "" ] && sudo rm $ADB || exit 1
+	fi
+	if [ -f $FASTBOOT ]; then
+			echo "[WARN] Fastboot is already present, press ENTER to overwrite or X to cancel."
+			read -sn1 input
+			[ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
+	fi
+}
+
+# Nexus Tools can check if a package for ADB or Fastboot is installed, and uninstall the package if needed.
+_smart_remove() {
+	if [ -x "$(command -v dpkg)" ]; then # Linux systems with dpkg
+		PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $1|grep "install ok installed")
+		if [ "" == "$PKG_OK" ]; then # Check if relevant package is installed
+				echo "[ OK] The package '$1' is not installed, install can continue."
+				_dirty_remove
+		else
+			echo "[WARN] An outdated version of ADB or Fastboot is already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
+			read -sn1 input
+			[ "$input" = "" ] && sudo apt-get --assume-yes remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
+		fi
+	else
+		echo "[INFO] Linux is detected but dpkg is either not working or not installing, now attempting dirty removal."
+		_dirty_remove
+	fi
+}
+
 _install_udev() {
     if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
         if [ ! -d /etc/udev/rules.d/ ]; then
@@ -35,9 +70,8 @@ _install_udev() {
 	local install=1
 
 	if [ -f "$UDEV" ]; then
-		echo "[WARN] Udev rules are already present, press ENTER to overwrite or x to skip"
-		read -sn1 input
-		[ "$input" = "" ] &&  sudo rm "$UDEV" || install=0
+		sudo rm "$UDEV"
+		echo "[ OK ] Udev rules are being overwritten."
 	fi
 
 	if [ $install -eq 1 ]; then
@@ -58,7 +92,7 @@ _install_udev() {
 }
 
 # Get sudo
-echo "[INFO] Nexus Tools 3.0"
+echo "[INFO] Nexus Tools 3.1"
 if [ "$OS" == "Linux" ]; then
 	GCC=$(gcc --version)
 	DISTRO="Ubuntu"
@@ -71,16 +105,23 @@ fi
 echo "[INFO] Please enter sudo password for install."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
-# Check if already installed
-if [ -f $ADB ]; then
-    echo "[WARN] ADB is already present, press ENTER to overwrite or x to cancel."
-    read -sn1 input
-    [ "$input" = "" ] && sudo rm $ADB || exit 1
-fi
-if [ -f $FASTBOOT ]; then
-    echo "[WARN] Fastboot is already present, press ENTER to overwrite or x to cancel."
-    read -sn1 input
-    [ "$input" = "" ] && sudo rm $FASTBOOT || exit 1
+# Check if ADB or Fastboot is already on this computer
+if [ "$OS" == "Linux" ]; then
+	GCC=$(gcc --version)
+	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs ADB/Fastboot binaries.
+	if [ -z "${GCC##*Ubuntu*}" ]; then
+		_smart_remove "android-tools-adb"
+		_smart_remove "android-tools-fastboot"
+	elif [ -z "${GCC##*Debian*}" ]; then
+		_smart_remove "android-tools-adb"
+		_smart_remove "android-tools-fastboot"
+	else
+		echo "[WARN] Nexus Tools cannot detect if you have an ADB/Fastboot package already installed on your system."
+		echo "[WARN] Nexus Tools will still check for ADB/Fastboot binaries, but if they are installed as a package it may overwrite the original files."
+		_dirty_remove
+	fi
+else
+	_dirty_remove
 fi
 
 # Check if bin folder is already created
@@ -93,7 +134,7 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
 
-		# Skip udev install because Mac OS X odesn't use it
+		# Skip udev install because Mac OS X doesn't use it
 
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
@@ -112,14 +153,12 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
         _install "$ADB" "$BASEURL/bin/linux-i386-adb"
         echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
         _install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
-
     elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
         echo "[WARN] The ADB binaries for ARM are out of date, and do not work with Android 4.2.2 and higher"
         echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
         _install "$ADB" "$BASEURL/bin/linux-arm-adb"
         echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
         _install "$FASTBOOT" "$BASEURL/bin/linux-arm-fastboot"
-
     else
     	echo "[EROR] Your CPU architecture could not be detected."
     	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"

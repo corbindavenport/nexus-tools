@@ -24,7 +24,7 @@ BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 3.0"
+echo "[INFO] Nexus Tools 3.1"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
