@@ -13,7 +13,7 @@
 
 #!/bin/bash
 
-DIR="/usr/local/bin"
+DIR="~/.nexustools"
 ADB="$DIR/adb"
 FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
@@ -33,25 +33,29 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exi
 if [ -f $ADB ]; then
    sudo rm $ADB
    echo "[ OK ] ADB removed from $DIR/adb."
+elif [ -f /usr/bin/adb ]; then
+   sudo rm /usr/bin/adb
+   echo "[ OK ] ADB removed from /usr/bin/adb."
+elif [ -f /usr/local/bin/adb ]; then
+   sudo rm /usr/bin/adb
+   echo "[ OK ] ADB removed from /usr/local/bin/adb."
 else
-   if [ -f /usr/bin/adb ]; then
-      sudo rm /usr/bin/adb
-      echo "[ OK ] ADB removed from /usr/bin/adb."
-   else
-      echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
-   fi
+   echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
 fi
+
 if [ -f $FASTBOOT ]; then
    sudo rm $FASTBOOT
    echo "[ OK ] Fastboot removed from $DIR/fastboot."
+elif [ -f /usr/bin/fastboot ]; then
+   sudo rm /usr/bin/fastboot
+   echo "[ OK ] ADB removed from /usr/bin/fastboot."
+elif [ -f /usr/local/bin/fastboot ]; then
+   sudo rm /usr/bin/fastboot
+   echo "[ OK ] ADB removed from /usr/local/bin/fastboot."
 else
-   if [ -f /usr/bin/fastboot ]; then
-      sudo rm /usr/bin/fastboot
-      echo "[ OK ] ADB removed from /usr/bin/fastboot."
-   else
-      echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
-   fi
+   echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
 fi
+
 if [ -f $UDEV ]; then
    sudo rm $UDEV
    echo "[ OK ] Udev list removed."
