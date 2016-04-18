@@ -9,6 +9,13 @@ and this command to un-install ADB/Fastboot:
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
 ```
+
+__Note__: If you install Nexus Tools and running 'adb' or 'fastboot' does nothing, run this command to add it to your path variable:
+
+````
+PATH=~/.nexustools:$PATH
+````
+
 These commands will download the selected script and run it. The script will download the files it needs during runtime, so it requires an internet connection. The script works on both Mac OS X and Linux (as long as the curl package is installed).
 
 Nexus Tools requires sudo privileges to install/uninstall the adb and fastboot tools to /usr/local/bin, so they can be run without typing the full directory.
@@ -28,6 +35,12 @@ and to un-install:
 ```
 cd ~ && curl -s -o ./uninstall.sh "http://github.com/corbindavenport/nexus-tools/raw/master/uninstall.sh" -LOk && chmod +x ./uninstall.sh && ./uninstall.sh && rm ./uninstall.sh
 ```
+
+__Note__: If you install Nexus Tools and running 'adb' or 'fastboot' does nothing, run this command to add it to your path variable:
+
+````
+PATH=~/.nexustools:$PATH
+````
 ---------------------------------------
 
 __XDA Thread:__ [http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
