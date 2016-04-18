@@ -134,14 +134,14 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Downloading Fastboot for Mac OS X..."
     _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
 
-		# Skip udev install because Mac OS X doesn't use it
+    # Skip udev install because Mac OS X doesn't use it
 
     echo "[INFO] Making ADB and Fastboot executable..."
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
 
     echo "[INFO] Adding $DIR to \$PATH..."
-    export PATH=$PATH:$DIR
+    PATH=~/.nexustools:$PATH
 
     [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
     echo " "
@@ -176,7 +176,7 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
 
     echo "[INFO] Adding $DIR to \$PATH..."
-    export PATH=$PATH:$DIR
+    PATH=~/.nexustools:$PATH
 
     if [ $XCODE -eq 0 ]; then
 	echo "[ OK ] Done, type adb or fastboot to run!"
