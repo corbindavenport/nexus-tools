@@ -13,7 +13,7 @@
 
 #!/bin/bash
 
-DIR="/usr/local/bin"
+DIR="~/.nexustools"
 ADB="$DIR/adb"
 FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
