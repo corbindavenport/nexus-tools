@@ -179,14 +179,14 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     export PATH=$PATH:$DIR
 
     if [ $XCODE -eq 0 ]; then
-			echo "[ OK ] Done, type adb or fastboot to run!"
-			echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+	echo "[ OK ] Done, type adb or fastboot to run!"
+	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
     else
     	echo "[EROR] Install failed."
-			echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-			echo "[EROR] Report the following information in the bug report:"
-			echo "[EROR] OS: $OS"
-			echo "[EROR] ARCH: $ARCH"
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
+	echo "[EROR] ARCH: $ARCH"
     fi
     echo " "
     exit $XCODE
