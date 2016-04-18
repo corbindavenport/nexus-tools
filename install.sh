@@ -140,8 +140,8 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
 
-    echo "[INFO] Adding /usr/local/bin to PATH..."
-    export PATH=$PATH:/usr/local/bin/
+    echo "[INFO] Adding $DIR to \$PATH..."
+    export PATH=$PATH:$DIR
 
     [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
     echo " "
