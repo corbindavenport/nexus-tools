@@ -37,7 +37,7 @@ elif [ -f /usr/bin/adb ]; then
    sudo rm /usr/bin/adb
    echo "[ OK ] ADB removed from /usr/bin/adb."
 elif [ -f /usr/local/bin/adb ]; then
-   sudo rm /usr/bin/adb
+   sudo rm /usr/local/bin/adb
    echo "[ OK ] ADB removed from /usr/local/bin/adb."
 else
    echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
@@ -50,7 +50,7 @@ elif [ -f /usr/bin/fastboot ]; then
    sudo rm /usr/bin/fastboot
    echo "[ OK ] ADB removed from /usr/bin/fastboot."
 elif [ -f /usr/local/bin/fastboot ]; then
-   sudo rm /usr/bin/fastboot
+   sudo rm /usr/local/bin/fastboot
    echo "[ OK ] ADB removed from /usr/local/bin/fastboot."
 else
    echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
