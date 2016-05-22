@@ -142,7 +142,7 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
     PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
 
-    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
+    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
     echo " "
     exit $XCODE
 
@@ -178,7 +178,7 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     PATH="$PATH:$HOME/.nexustools"
 
     if [ $XCODE -eq 0 ]; then
-	echo "[ OK ] Done, type adb or fastboot to run!"
+	echo "[ OK ] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."
 	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
     else
     	echo "[EROR] Install failed."
