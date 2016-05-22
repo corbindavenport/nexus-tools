@@ -13,9 +13,8 @@
 
 #!/bin/bash
 
-DIR="$HOME/.nexustools"
-ADB="$DIR/adb"
-FASTBOOT="$DIR/fastboot"
+ADB="$HOME/.nexustools/adb"
+FASTBOOT="$HOME/.nexustools/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
@@ -28,7 +27,7 @@ _install() {
 
 # If Nexus Tools is detects the ADB and/or Fastboot binaries, and it cannot detect it as part of an Linux package it can remove, it removes the binaries themselves. This is the default for Mac OS X.
 _dirty_remove() {
-	if [ -f "$DIR/nexus-tools.txt" ]; then
+	if [ -f "$HOME/.nexustools/nexus-tools.txt" ]; then
 		echo "[ OK ] Log file detected."
 	fi
 	if [ -f $ADB ]; then
@@ -125,7 +124,7 @@ else
 fi
 
 # Check if bin folder is already created
-mkdir -p $DIR
+mkdir -p $HOME/.nexustools
 
 # Detect operating system and install
 if [ "$OS" == "Darwin" ]; then # Mac OS X
@@ -140,7 +139,7 @@ if [ "$OS" == "Darwin" ]; then # Mac OS X
     output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
 
-    echo "[INFO] Adding $DIR to \$PATH..."
+    echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
     PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
 
     [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
@@ -175,8 +174,8 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
     output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
     output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
 
-    echo "[INFO] Adding $DIR to \$PATH..."
-    PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
+    echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
+    PATH="$PATH:$HOME/.nexustools"
 
     if [ $XCODE -eq 0 ]; then
 	echo "[ OK ] Done, type adb or fastboot to run!"
