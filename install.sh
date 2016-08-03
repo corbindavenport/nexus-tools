@@ -61,10 +61,10 @@ _smart_remove() {
 }
 
 _install_udev() {
-    if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
-        if [ ! -d /etc/udev/rules.d/ ]; then
-            sudo mkdir -p /etc/udev/rules.d/
-        fi
+	if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
+		if [ ! -d /etc/udev/rules.d/ ]; then
+			sudo mkdir -p /etc/udev/rules.d/
+		fi
 
 	local install=1
 
@@ -87,16 +87,15 @@ _install_udev() {
 	else
 		echo "[INFO] Skipping UDEV..."
 	fi
-    fi
+	fi
 }
 
 # Get sudo
-echo "[INFO] Nexus Tools 3.1"
+echo "[INFO] Nexus Tools 3.2"
 if [ "$OS" == "Linux" ]; then
-	GCC=$(gcc --version)
-	DISTRO="Ubuntu"
-	if [ -z "${GCC##*$DISTRO*}" ]; then
-			:
+	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
+	if [ -z "${DIST##*Ubuntu*}" ] || [ -z "${DIST##*Debian*}" ]; then
+		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
 		echo "[WARN] Nexus Tools is only tested to work on Ubuntu Linux, but it should work on other distributions."
 	fi
@@ -106,12 +105,12 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exi
 
 # Check if ADB or Fastboot is already on this computer
 if [ "$OS" == "Linux" ]; then
-	GCC=$(gcc --version)
+	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
 	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs ADB/Fastboot binaries.
-	if [ -z "${GCC##*Ubuntu*}" ]; then
+	if [ -z "${DIST##*Ubuntu*}" ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
-	elif [ -z "${GCC##*Debian*}" ]; then
+	elif [ -z "${DIST##*Debian*}" ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
 	else
@@ -127,68 +126,103 @@ fi
 mkdir -p $HOME/.nexustools
 
 # Detect operating system and install
-if [ "$OS" == "Darwin" ]; then # Mac OS X
-    echo "[INFO] Downloading ADB for Mac OS X..."
-    _install "$ADB" "$BASEURL/bin/mac-adb"
-    echo "[INFO] Downloading Fastboot for Mac OS X..."
-    _install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
+if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 
-    # Skip udev install because Mac OS X doesn't use it
+	echo "[EROR] Bash on Windows 10 does not yet support UDEV, which is required for ADB and Fastboot to work."
 
-    echo "[INFO] Making ADB and Fastboot executable..."
-    output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
-    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
+	# For when bash supports Udev...
+	: '
+	echo "[INFO] Downloading ADB for Bash on Windows 10 [Intel CPU]..."
+	_install "$ADB" "$BASEURL/bin/linux-i386-adb"
+	echo "[INFO] Downloading Fastboot for Bash on Windows 10 [Intel CPU]..."
+	_install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
 
-    echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
-    PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
+	# Download udev list
+	_install_udev
 
-    [ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
-    echo " "
-    exit $XCODE
+	output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+
+	echo "[INFO] Adding $HOME/.nexustools to $HOME/.bashrc..."
+	#PATH="$PATH:$HOME/.nexustools"
+	echo 'export PATH=$HOME/.nexustools:$PATH' >>$HOME/.bashrc
+
+	if [ $XCODE -eq 0 ]; then
+		echo "[ OK ] Type adb or fastboot to run, you may need to open a new bash window for it to work."
+		echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+	else
+		echo "[EROR] Install failed."
+		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+		echo "[EROR] Report the following information in the bug report:"
+		echo "[EROR] OS: $OS"
+		echo "[EROR] ARCH: $ARCH"
+	fi
+	echo " "
+
+	'
+	exit $XCODE
+elif [ "$OS" == "Darwin" ]; then # Mac OS X
+	echo "[INFO] Downloading ADB for Mac OS X..."
+	_install "$ADB" "$BASEURL/bin/mac-adb"
+	echo "[INFO] Downloading Fastboot for Mac OS X..."
+	_install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
+
+	# Skip udev install because Mac OS X doesn't use it
+
+	echo "[INFO] Making ADB and Fastboot executable..."
+	output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
+
+	echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
+	PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
+
+	[ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
+	echo " "
+	exit $XCODE
 
 elif [ "$OS" == "Linux" ]; then # Generic Linux
-    if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
-        echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
-        _install "$ADB" "$BASEURL/bin/linux-i386-adb"
-        echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
-        _install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
-    elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
-        echo "[WARN] The ADB binaries for ARM are out of date, and do not work with Android 4.2.2 and higher"
-        echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
-        _install "$ADB" "$BASEURL/bin/linux-arm-adb"
-        echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
-        _install "$FASTBOOT" "$BASEURL/bin/linux-arm-fastboot"
-    else
-    	echo "[EROR] Your CPU architecture could not be detected."
-    	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-    	echo "[EROR] Report the following information in the bug report:"
-    	echo "[EROR] OS: $OS"
-    	echo "[EROR] ARCH: $ARCH"
-    	echo " "
-    	exit 1
-    fi
+	if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
+		echo "[INFO] Downloading ADB for Linux [Intel CPU]..."
+		_install "$ADB" "$BASEURL/bin/linux-i386-adb"
+		echo "[INFO] Downloading Fastboot for Linux [Intel CPU]..."
+		_install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
+	elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
+		echo "[WARN] The ADB binaries for ARM are out of date, and do not work with Android 4.2.2 and higher"
+		echo "[INFO] Downloading ADB for Linux [ARM CPU]..."
+		_install "$ADB" "$BASEURL/bin/linux-arm-adb"
+		echo "[INFO] Downloading Fastboot for Linux [ARM CPU]..."
+		_install "$FASTBOOT" "$BASEURL/bin/linux-arm-fastboot"
+	else
+		echo "[EROR] Your CPU architecture could not be detected."
+		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+		echo "[EROR] Report the following information in the bug report:"
+		echo "[EROR] OS: $OS"
+		echo "[EROR] ARCH: $ARCH"
+		echo " "
+		exit 1
+	fi
 
-    # Download udev list
-    _install_udev
+	# Download udev list
+	_install_udev
 
-    output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
-    output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
 
-    echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
-    PATH="$PATH:$HOME/.nexustools"
+	echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
+	PATH="$PATH:$HOME/.nexustools"
 
-    if [ $XCODE -eq 0 ]; then
+	if [ $XCODE -eq 0 ]; then
 	echo "[ OK ] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."
 	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
-    else
-    	echo "[EROR] Install failed."
+	else
+		echo "[EROR] Install failed."
 	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
 	echo "[EROR] Report the following information in the bug report:"
 	echo "[EROR] OS: $OS"
 	echo "[EROR] ARCH: $ARCH"
-    fi
-    echo " "
-    exit $XCODE
+	fi
+	echo " "
+	exit $XCODE
 else
   echo "[EROR] Your operating system or architecture could not be detected."
   echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"

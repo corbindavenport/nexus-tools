@@ -36,11 +36,6 @@ and to un-install:
 cd ~ && curl -s -o ./uninstall.sh "http://github.com/corbindavenport/nexus-tools/raw/master/uninstall.sh" -LOk && chmod +x ./uninstall.sh && ./uninstall.sh && rm ./uninstall.sh
 ```
 
-__Note__: If you install Nexus Tools and running 'adb' or 'fastboot' does nothing, run this command to add it to your path variable:
-
-````
-PATH=~/.nexustools:$PATH
-````
 ---------------------------------------
 
 __XDA Thread:__ [http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
