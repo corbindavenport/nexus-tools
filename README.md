@@ -1,7 +1,9 @@
 ![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
 ================
 
-Nexus Tools is an installer for the Android debug/development command-line tools ADB (Android Device Bridge) and Fastboot for Mac OS X and Linux. The script does not need to be downloaded, simply copy and paste this command into the terminal and run it to install ADB/Fastboot:
+Nexus Tools is an installer for the Android debug/development command-line tools ADB (Android Device Bridge) and Fastboot for Mac OS X and Linux. Chrome OS isn't officially supported, but [it is possible to get it working](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help).
+
+The script does not need to be downloaded, simply copy and paste this command into the terminal and run it to install ADB/Fastboot:
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
 ```
