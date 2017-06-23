@@ -20,8 +20,6 @@ PATH=~/.nexustools:$PATH
 
 These commands will download the selected script and run it. The script will download the files it needs during runtime, so it requires an internet connection. The script works on both Mac OS X and Linux (as long as the curl package is installed).
 
-Nexus Tools requires sudo privileges to install/uninstall the adb and fastboot tools to /usr/local/bin, so they can be run without typing the full directory.
-
 ---------------------------------------
 
 __Alternate Install__
