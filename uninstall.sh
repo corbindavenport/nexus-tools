@@ -13,48 +13,49 @@
 
 #!/bin/bash
 
-ADB="/usr/local/bin/adb"
-FASTBOOT="/usr/local/bin/fastboot"
+DIR="$HOME/.nexustools"
+ADB="$DIR/adb"
+FASTBOOT="$DIR/fastboot"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
+ARCH=$(uname -m)
+XCODE=0
+BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 
 # get sudo
 
-echo "[INFO] Nexus Tools 2.8"
+echo "[INFO] Nexus Tools 3.2"
 echo "[INFO] Please enter sudo password for uninstall."
 sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
-
-# check for mac os x
-
-if [ "$OS" == "Darwin" ]; then
-   echo "[WARN] Nexus Tools has been reported to have problems on Mac OS X 10.11 (El Capitan)."
-   echo "[WARN] More info and the fix: http://bit.ly/nexustoolscapitan"
-fi
 
 # remove files
 
 if [ -f $ADB ]; then
    sudo rm $ADB
-   echo "[ OK ] ADB removed."
+   echo "[ OK ] ADB removed from $DIR/adb."
+elif [ -f /usr/bin/adb ]; then
+   sudo rm /usr/bin/adb
+   echo "[ OK ] ADB removed from /usr/bin/adb."
+elif [ -f /usr/local/bin/adb ]; then
+   sudo rm /usr/local/bin/adb
+   echo "[ OK ] ADB removed from /usr/local/bin/adb."
 else
-   if [ -f /usr/bin/adb ]; then
-      sudo rm /usr/bin/adb
-      echo "[ OK ] ADB removed from /usr/bin/adb."
-   else
-      echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
-   fi
+   echo "[INFO] ADB not found in /usr/local/bin or /usr/bin, skipping uninstall."
 fi
+
 if [ -f $FASTBOOT ]; then
    sudo rm $FASTBOOT
-   echo "[ OK ] Fastboot removed."
+   echo "[ OK ] Fastboot removed from $DIR/fastboot."
+elif [ -f /usr/bin/fastboot ]; then
+   sudo rm /usr/bin/fastboot
+   echo "[ OK ] ADB removed from /usr/bin/fastboot."
+elif [ -f /usr/local/bin/fastboot ]; then
+   sudo rm /usr/local/bin/fastboot
+   echo "[ OK ] ADB removed from /usr/local/bin/fastboot."
 else
-   if [ -f /usr/bin/fastboot ]; then
-      sudo rm /usr/bin/fastboot
-      echo "[ OK ] ADB removed from /usr/bin/fastboot."
-   else
-      echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
-   fi
+   echo "[INFO] Fastboot not found in /usr/local/bin or /usr/bin, skipping uninstall."
 fi
+
 if [ -f $UDEV ]; then
    sudo rm $UDEV
    echo "[ OK ] Udev list removed."
