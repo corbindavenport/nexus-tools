@@ -60,6 +60,7 @@ _smart_remove() {
 	fi
 }
 
+# Function for copying udex.txt to proper location
 _install_udev() {
 	if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
 		if [ ! -d /etc/udev/rules.d/ ]; then
@@ -87,6 +88,31 @@ _install_udev() {
 	else
 		echo "[INFO] Skipping UDEV..."
 	fi
+	fi
+}
+
+# Function for adding Nexus Tools directory to $PATH
+_add_path() {
+	if [ "$OS" == "Darwin" ]; then # Mac OS X
+		if [[ ":$PATH:" == *":$HOME/.nexustools:"* ]]; then
+			# Nexus Tools directory already in $PATH
+			echo "[ OK ] $HOME/.nexustools/ is already in PATH."
+		else
+			# Nexus Tools directory needs to be added to $PATH
+			echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
+			# Refresh path
+			source $HOME/.bash_profile
+			echo "[ OK ] Added $HOME/.nexustools/ to PATH."
+		fi
+	elif [ "$OS" == "Linux" ]; then # Generic Linux
+		if [[ ":$PATH:" == *":$HOME/.nexustools:"* ]]; then
+			# Nexus Tools directory already in $PATH
+			echo "[ OK ] $HOME/.nexustools/ is already in PATH."
+		else
+			# Nexus Tools directory needs to be added to $PATH
+			PATH="$PATH:$HOME/.nexustools"
+			echo "[ OK ] Added $HOME/.nexustools/ to PATH."
+		fi
 	fi
 }
 
@@ -127,55 +153,20 @@ mkdir -p $HOME/.nexustools
 
 # Detect operating system and install
 if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
-
 	echo "[EROR] Bash on Windows 10 does not yet support UDEV, which is required for ADB and Fastboot to work."
-
-	# For when bash supports Udev...
-	: '
-	echo "[INFO] Downloading ADB for Bash on Windows 10 [Intel CPU]..."
-	_install "$ADB" "$BASEURL/bin/linux-i386-adb"
-	echo "[INFO] Downloading Fastboot for Bash on Windows 10 [Intel CPU]..."
-	_install "$FASTBOOT" "$BASEURL/bin/linux-i386-fastboot"
-
-	# Download udev list
-	_install_udev
-
-	output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
-	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
-
-	echo "[INFO] Adding $HOME/.nexustools to $HOME/.bashrc..."
-	#PATH="$PATH:$HOME/.nexustools"
-	echo 'export PATH=$HOME/.nexustools:$PATH' >>$HOME/.bashrc
-
-	if [ $XCODE -eq 0 ]; then
-		echo "[ OK ] Type adb or fastboot to run, you may need to open a new bash window for it to work."
-		echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
-	else
-		echo "[EROR] Install failed."
-		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-		echo "[EROR] Report the following information in the bug report:"
-		echo "[EROR] OS: $OS"
-		echo "[EROR] ARCH: $ARCH"
-	fi
-	echo " "
-
-	'
 	exit $XCODE
 elif [ "$OS" == "Darwin" ]; then # Mac OS X
 	echo "[INFO] Downloading ADB for Mac OS X..."
 	_install "$ADB" "$BASEURL/bin/mac-adb"
 	echo "[INFO] Downloading Fastboot for Mac OS X..."
 	_install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
-
 	# Skip udev install because Mac OS X doesn't use it
-
 	echo "[INFO] Making ADB and Fastboot executable..."
 	output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
 	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
-
-	echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
-	PATH=~/.nexustools:$PATH echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
-
+	# Add Nexus Tools directory to path
+	_add_path
+	# All done!
 	[ $XCODE -eq 0 ] && { echo "[ OK ] Done!"; echo "[INFO] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."; echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"; } || { echo "[EROR] Install failed"; }
 	echo " "
 	exit $XCODE
@@ -201,34 +192,30 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		echo " "
 		exit 1
 	fi
-
 	# Download udev list
 	_install_udev
-
 	output=$(sudo chmod +x $ADB 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
-	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked ADB as executable." || { echo "[EROR] $output"; XCODE=1; }
-
-	echo "[INFO] Adding $HOME/.nexustools to \$PATH..."
-	PATH="$PATH:$HOME/.nexustools"
-
+	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[ OK ] Marked Fastboot as executable." || { echo "[EROR] $output"; XCODE=1; }
+	# Add Nexus Tools directory to path
+	_add_path
+	# All done!
 	if [ $XCODE -eq 0 ]; then
-	echo "[ OK ] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."
-	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+		echo "[ OK ] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."
+		echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
 	else
 		echo "[EROR] Install failed."
-	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-	echo "[EROR] ARCH: $ARCH"
+		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+		echo "[EROR] Report the following information in the bug report:"
+		echo "[EROR] OS: $OS"
+		echo "[EROR] ARCH: $ARCH"
 	fi
 	echo " "
 	exit $XCODE
 else
-  echo "[EROR] Your operating system or architecture could not be detected."
-  echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-  echo "[EROR] Report the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-  echo "[EROR] ARCH: $ARCH"
-  echo " "
-  exit 1
+	echo "[EROR] Your operating system or architecture could not be detected."
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+	echo "[EROR] Report the following information in the bug report:"echo "[EROR] OS: $OS"
+	echo "[EROR] ARCH: $ARCH"
+	echo " "
+	exit 1
 fi
