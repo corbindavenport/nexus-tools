@@ -25,7 +25,7 @@ _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
 }
 
-# If Nexus Tools is detects the ADB and/or Fastboot binaries, and it cannot detect it as part of an Linux package it can remove, it removes the binaries themselves. This is the default for Mac OS X.
+# If Nexus Tools is detects the ADB and/or Fastboot binaries, and it cannot detect it as part of an Linux package it can remove, it removes the binaries themselves. This is the default for macOS.
 _dirty_remove() {
 	if [ -f "$HOME/.nexustools/nexus-tools.txt" ]; then
 		echo "[ OK ] Log file detected."
@@ -93,7 +93,7 @@ _install_udev() {
 
 # Function for adding Nexus Tools directory to $PATH
 _add_path() {
-	if [ "$OS" == "Darwin" ]; then # Mac OS X
+	if [ "$OS" == "Darwin" ]; then # macOS
 		if [[ ":$PATH:" == *":$HOME/.nexustools:"* ]]; then
 			# Nexus Tools directory already in $PATH
 			echo "[ OK ] $HOME/.nexustools/ is already in PATH."
@@ -155,12 +155,12 @@ mkdir -p $HOME/.nexustools
 if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	echo "[EROR] Bash on Windows 10 does not yet support UDEV, which is required for ADB and Fastboot to work."
 	exit $XCODE
-elif [ "$OS" == "Darwin" ]; then # Mac OS X
-	echo "[INFO] Downloading ADB for Mac OS X..."
+elif [ "$OS" == "Darwin" ]; then # macOS
+	echo "[INFO] Downloading ADB for macOS..."
 	_install "$ADB" "$BASEURL/bin/mac-adb"
-	echo "[INFO] Downloading Fastboot for Mac OS X..."
+	echo "[INFO] Downloading Fastboot for macOS..."
 	_install "$FASTBOOT" "$BASEURL/bin/mac-fastboot"
-	# Skip udev install because Mac OS X doesn't use it
+	# Skip udev install because macOS doesn't use it
 	echo "[INFO] Making ADB and Fastboot executable..."
 	output=$(sudo chmod +x $ADB 2>&1) && echo "[INFO] ADB now executable." || { echo "[EROR] $output"; XCODE=1; }
 	output=$(sudo chmod +x $FASTBOOT 2>&1) && echo "[INFO] Fastboot now executable." || { echo "[EROR] $output"; XCODE=1; }
