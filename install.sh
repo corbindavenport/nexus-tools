@@ -15,6 +15,7 @@
 
 DIR="$HOME/.nexustools"
 UDEV="/etc/udev/rules.d/51-android.rules"
+UDEVURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
@@ -36,33 +37,18 @@ _smart_remove() {
 
 # Function for copying udex.txt to proper location
 _install_udev() {
-	if [ -n "$UDEV" ] && [ "$OS" == "Linux" ]; then
-		if [ ! -d /etc/udev/rules.d/ ]; then
-			sudo mkdir -p /etc/udev/rules.d/
-		fi
-
-		local install=1
-
-		if [ -f "$UDEV" ]; then
-			sudo rm "$UDEV"
-		fi
-
-		if [ $install -eq 1 ]; then
-
-			echo "[ .. ] Downloading UDEV file..."
-			sudo curl -Lfks -o "$UDEV" "$BASEURL/udev.txt"
-
-			output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
-
-			output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
-
-			sudo service udev restart 2>/dev/null >&2
-			sudo killall adb 2>/dev/null >&2
-		else
-			echo "[ OK ] Skipping UDEV."
-		fi
-
+	if [ ! -d /etc/udev/rules.d/ ]; then
+		sudo mkdir -p /etc/udev/rules.d/
 	fi
+	if [ -f "$UDEV" ]; then
+		sudo rm "$UDEV"
+	fi
+	echo "[ .. ] Downloading UDEV file..."
+	sudo curl -Lfk --progress-bar -o "$UDEV" "$UDEVURL"
+	output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
+	sudo service udev restart 2>/dev/null >&2
+	sudo killall adb 2>/dev/null >&2
 }
 
 # Function for adding Nexus Tools directory to $PATH
@@ -90,18 +76,16 @@ _add_path() {
 	fi
 }
 
-# Get sudo
+# Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
 	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
 	if [ -z "${DIST##*Ubuntu*}" ] || [ -z "${DIST##*Debian*}" ]; then
 		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
-		echo "[WARN] Nexus Tools is only tested to work on Ubuntu Linux, but it should work on other distributions."
+		echo "[WARN] Nexus Tools is only tested to work on Ubuntu and Debian, but it should work on other distributions."
 	fi
 fi
-echo "[INFO] Please enter sudo password for install."
-sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exit 1; }
 
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
@@ -142,7 +126,7 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for x86 Linux..."
-	curl -Lfks -o "$DIR/temp.zip" "$ZIP" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
 	# Unzip it
 	unzip -q -o "$DIR/temp.zip" -d "$DIR"
 	# Move all files from the zip to $DIR
@@ -151,12 +135,16 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	rm "$DIR/temp.zip"
 	rmdir "$DIR/platform-tools"
 	echo "[ OK ] Platform tools now installed in $DIR."
+	# Mark binaries in directory as executable
+	chmod -f +x $DIR/*
+	# Add Nexus Tools directory to $PATH
+	_add_path
 elif [ "$OS" == "Linux" ]; then # Generic Linux
 	if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
 		ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
 		# Download the ZIP file
 		echo "[ .. ] Downloading platform tools for x86 Linux..."
-		curl -Lfks -o "$DIR/temp.zip" "$ZIP" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
+		curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
 		# Unzip it
 		unzip -q -o "$DIR/temp.zip" -d "$DIR"
 		# Move all files from the zip to $DIR
@@ -165,6 +153,15 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		rm "$DIR/temp.zip"
 		rmdir "$DIR/platform-tools"
 		echo "[ OK ] Platform tools now installed in $DIR."
+		# Add Nexus Tools directory to $PATH
+		_add_path
+		# Mark binaries in directory as executable
+		chmod -f +x $DIR/*
+		# Download udev list
+		echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
+		echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."
+		read -sn1 udevinput
+		[ "$udevinput" = "" ] && _install_udev
 	elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
 		echo "[EROR] Your platform does not have up-to-date binaries available. Cannot continue with installation."
 		echo " "
@@ -178,30 +175,25 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		echo " "
 		exit 1
 	fi
-	# Download udev list
-	_install_udev
-	# Mark binaries in directory as executable
-	chmod -f +x $DIR/*
-	# Add Nexus Tools directory to $PATH
-	_add_path
-	# All done!
-	if [ $XCODE -eq 0 ]; then
-		echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
-		echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
-	else
-		echo "[EROR] Install failed."
-		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-		echo "[EROR] Report the following information in the bug report:"
-		echo "[EROR] OS: $OS"
-		echo "[EROR] ARCH: $ARCH"
-	fi
-	echo " "
-	exit $XCODE
 else
 	echo "[EROR] Your operating system or architecture could not be detected."
 	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"echo "[EROR] OS: $OS"
+	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
 	echo "[EROR] ARCH: $ARCH"
 	echo " "
 	exit 1
 fi
+# All done!
+if [ $XCODE -eq 0 ]; then
+	echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
+	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+else
+	echo "[EROR] Install failed."
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
+	echo "[EROR] ARCH: $ARCH"
+fi
+echo " "
+exit $XCODE
