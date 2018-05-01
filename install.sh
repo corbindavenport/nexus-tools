@@ -17,8 +17,8 @@ DIR="$HOME/.nexustools"
 UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
-XCODE=0
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
+XCODE=0
 
 # Nexus Tools can check if a package for ADB or Fastboot is installed, and uninstall the package if needed.
 _smart_remove() {
@@ -45,12 +45,11 @@ _install_udev() {
 
 		if [ -f "$UDEV" ]; then
 			sudo rm "$UDEV"
-			echo "[ OK ] Udev rules are being overwritten."
 		fi
 
 		if [ $install -eq 1 ]; then
 
-			echo "[INFO] Downloading udev list..."
+			echo "[ .. ] Downloading UDEV file..."
 			sudo curl -Lfks -o "$UDEV" "$BASEURL/udev.txt"
 
 			output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
@@ -60,7 +59,7 @@ _install_udev() {
 			sudo service udev restart 2>/dev/null >&2
 			sudo killall adb 2>/dev/null >&2
 		else
-			echo "[INFO] Skipping UDEV..."
+			echo "[ OK ] Skipping UDEV."
 		fi
 
 	fi
@@ -75,7 +74,6 @@ _add_path() {
 		else
 			# Nexus Tools directory needs to be added to $PATH
 			echo 'export PATH=$PATH:'$DIR >> ~/.bash_profile
-			# Refresh path
 			source $HOME/.bash_profile
 			echo "[ OK ] Added $DIR/ to PATH."
 		fi
@@ -85,8 +83,9 @@ _add_path() {
 			echo "[ OK ] $DIR/ is already in PATH."
 		else
 			# Nexus Tools directory needs to be added to $PATH
-			PATH="$PATH:$DIR"
-			echo "[ OK ] Added $DIR/ to PATH."
+			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
+			source $HOME/.bashrc
+			echo "[ OK ] Added $DIR/ to $HOME/.bashrc."
 		fi
 	fi
 }
@@ -183,11 +182,11 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 	_install_udev
 	# Mark binaries in directory as executable
 	chmod -f +x $DIR/*
-	# Add Nexus Tools directory to path
+	# Add Nexus Tools directory to $PATH
 	_add_path
 	# All done!
 	if [ $XCODE -eq 0 ]; then
-		echo "[ OK ] Type adb or fastboot to run, you may need to open a new Terminal window for it to work."
+		echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
 		echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
 	else
 		echo "[EROR] Install failed."

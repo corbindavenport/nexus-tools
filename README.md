@@ -1,46 +1,22 @@
 ![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
 ================
 
-Nexus Tools is an installer for ADB (Android Device Bridge) and Fastboot for macOS and Linux. Chrome OS isn't officially supported, but [it may be possible to get it working](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help).
+Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other programs. These are commonly used for Android development and device modding. __Nexus Tools works on both macOS and Linux.__
 
-The script does not need to be downloaded, simply copy and paste this command into the terminal and run it to install ADB/Fastboot:
+The installer does not need to be downloaded, simply copy and paste this command into the Terminal and press ENTER:
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
 ```
-and this command to un-install ADB/Fastboot:
+To uninstall, run this command:
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
 ```
 
-__Note__: If you install Nexus Tools and running 'adb' or 'fastboot' does nothing, run this command to add it to your path variable:
+All tools are downloaded directly from Google's servers during installation, so you're always getting the latest available versions. Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the Terminal. To update, just run the installer again.
 
-````
-PATH=~/.nexustools:$PATH
-````
+__Note for Linux users:__ Nexus Tools should work on all Linux distros that use Bash shell. Only x86/x86_64 platforms are supported.
 
-These commands will download the selected script and run it. The script will download the files it needs during runtime, so it requires an internet connection. The script works on both Mac OS X and Linux (as long as the curl package is installed).
-
----------------------------------------
-
-__Alternate Install__
-
-If you have errors with the above install command, you can try this one:
-
-```
-cd ~ && curl -s -o ./install.sh "http://github.com/corbindavenport/nexus-tools/raw/master/install.sh" -LOk && chmod +x ./install.sh && ./install.sh && rm ./install.sh
-```
-
-and to un-install:
-
-```
-cd ~ && curl -s -o ./uninstall.sh "http://github.com/corbindavenport/nexus-tools/raw/master/uninstall.sh" -LOk && chmod +x ./uninstall.sh && ./uninstall.sh && rm ./uninstall.sh
-```
-
----------------------------------------
-
-__XDA Thread:__ [http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
-
-__XDA Article:__ [http://www.xda-developers.com/android/set-up-adb-and...](http://www.xda-developers.com/android/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/)
+[XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
 ---------------------------------------
 
