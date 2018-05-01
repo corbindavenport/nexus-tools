@@ -74,7 +74,7 @@ _add_path() {
 			echo "[ OK ] $DIR/ is already in PATH."
 		else
 			# Nexus Tools directory needs to be added to $PATH
-			echo 'export PATH=$PATH:~/.nexustools' >> ~/.bash_profile
+			echo 'export PATH=$PATH:'$DIR >> ~/.bash_profile
 			# Refresh path
 			source $HOME/.bash_profile
 			echo "[ OK ] Added $DIR/ to PATH."
@@ -106,7 +106,7 @@ sudo echo "[ OK ] Sudo access granted." || { echo "[ERROR] No sudo access."; exi
 
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
-	echo "[WARN] Platform tools already installed in $DIR. press ENTER to overwrite or X to cancel."
+	echo "[WARN] Platform tools already installed in $DIR. Press ENTER to overwrite or X to cancel."
 	read -sn1 input
 	[ "$input" = "" ] && rm -rf $DIR || exit 1
 fi
