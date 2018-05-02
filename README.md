@@ -1,7 +1,9 @@
 ![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
 ================
 
-Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications. The tools are downloaded directly from Google's servers during installation, so you're always getting the latest available versions.
+Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications.
+
+The tools are downloaded directly from Google's servers during installation, so you're always getting the latest available versions. On Linux, [a UDEV rules list](https://github.com/M0Rf30/android-udev-rules) can optionally be installed, to ensure there are no issues with USB devices.
 
 ### Supported platforms
 
