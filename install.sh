@@ -16,7 +16,7 @@
 DIR="$HOME/.nexustools"
 UDEV="/etc/udev/rules.d/51-android.rules"
 UDEVURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules"
-INIURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/adb_usb.ini"
+INIURL="https://raw.githubusercontent.com/apkudo/adbusbini/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
@@ -49,8 +49,15 @@ _install_udev() {
 	sudo curl -Lfk --progress-bar -o "$UDEV" "$UDEVURL"
 	output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
 	output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
-	# Install USB Vendor ID List
-	# More info: https://github.com/M0Rf30/android-udev-rules#note
+	# Restart services
+	sudo udevadm control --reload-rules 2>/dev/null >&2
+	sudo service udev restart 2>/dev/null >&2
+	sudo killall adb 2>/dev/null >&2
+}
+
+# Function for installing USB Vendor ID list (required for some devices to connect)
+# More info: https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/
+_install_ini() {
 	if [ ! -d $HOME/.android/ ]; then
 		mkdir -p $HOME/.android/
 	fi
@@ -59,10 +66,6 @@ _install_udev() {
 	fi
 	echo "[ .. ] Downloading ADB Vendor ID file..."
 	curl -Lfk --progress-bar -o "$HOME/.android/adb_usb.ini" "$INIURL"
-	# Restart services
-	sudo udevadm control --reload-rules 2>/dev/null >&2
-	sudo service udev restart 2>/dev/null >&2
-	sudo killall adb 2>/dev/null >&2
 }
 
 # Function for adding Nexus Tools directory to $PATH
@@ -160,6 +163,8 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	_add_path
 	# Mark binaries in directory as executable
 	chmod -f +x $DIR/*
+	# Download Device ID list
+	_install_ini
 	# Download udev list
 	echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
 	echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."
@@ -180,6 +185,8 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	echo "[ OK ] Platform tools now installed in $DIR."
 	# Mark binaries in directory as executable
 	chmod -f +x $DIR/*
+	# Download Device ID list
+	_install_ini
 	# Add Nexus Tools directory to $PATH
 	_add_path
 elif [ "$OS" == "Linux" ]; then # Generic Linux
@@ -200,6 +207,8 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		_add_path
 		# Mark binaries in directory as executable
 		chmod -f +x $DIR/*
+		# Download Device ID list
+		_install_ini
 		# Download udev list
 		echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
 		echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."

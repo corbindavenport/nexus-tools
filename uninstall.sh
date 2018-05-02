@@ -19,7 +19,7 @@ ARCH=$(uname -m)
 echo "[INFO] Nexus Tools 4.0"
 
 # Nexus Tools 3.2+ (August 2016-) installs binaries in ~/.nexustools
-if [ -d $DIR ]; then
+if [ -d $HOME/.nexustools ]; then
 	echo "[WARN] Nexus Tools folder found in $HOME/.nexustools. Press ENTER to delete or X to cancel."
 	read -sn1 input
 	[ "$input" = "" ] && rm -rf $HOME/.nexustools
@@ -51,6 +51,12 @@ if [ -f /usr/bin/fastboot ]; then
     echo "[WARN] Sudo access is required to remove. Press ENTER to delete or X to cancel."
 	read -sn1 input
 	[ "$input" = "" ] && sudo rm /usr/bin/fastboot
+fi
+
+# Uninstall Device ID list
+if [ -f $HOME/.android/adb_usb.ini ]; then
+	rm $HOME/.android/adb_usb.ini
+	echo "[ OK ] Deleted $HOME/.android/adb_usb.ini"
 fi
 
 echo "[ OK ] Uninstall complete."
