@@ -3,19 +3,20 @@
 
 Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications.
 
-The tools are downloaded directly from Google's servers during installation, so you're always getting the latest available versions. On Linux, [a UDEV rules list](https://github.com/M0Rf30/android-udev-rules) can optionally be installed, to ensure there are no issues with USB devices.
+Installing these tools requires downloading the proper zip file, extracting it somewhere, and [adding the folder to your system's path](https://askubuntu.com/a/60221). Nexus Tools does all that hard work for you, and installs additional configuration files to fix common USB problems.
 
-### Supported platforms
+### Features
 
-* Mac OS X / macOS
-* Linux (x86/x86_64 only)
-* Bash on Windows 10 ([USB connections do not work](https://github.com/Microsoft/WSL/issues/2195))
+* The SDK Platform Tools package is downloaded from Google's servers, so you're always getting the latest version.
+* All files are stored in `~/.nexustools`, so sudo access is not required.
+* A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
+* Works on Linux, Bash for Windows 10 ([without USB support](https://github.com/Microsoft/WSL/issues/2195)), and Mac.
 
-[Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.
+*[Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.*
 
-### Install instructions
+### How to install
 
-The installer does not need to be downloaded, just paste this command into the terminal:
+Nexus Tools does not need to be downloaded, just paste this command into the terminal:
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/dev/install.sh)
 ```
@@ -24,7 +25,7 @@ To uninstall, run this command:
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/dev/uninstall.sh)
 ```
 
-Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. To update, just run the installer again.
+Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal (you may need to open a new terminal window for changes to take effect). To update, just run the installer again.
 
 [XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
