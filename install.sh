@@ -130,15 +130,15 @@ if [ "$OS" == "Linux" ]; then
 		_smart_remove "etc1tool"
 		_smart_remove "hprof-conv"
 		_smart_remove "dmtracedump"
-	else
-		# For other distros, check if either adb or fastboot is installed using command
-		command -v adb >/dev/null 2>&1 || { echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again." >&2; exit 1; }
-		command -v fastboot >/dev/null 2>&1 || { echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again." >&2; exit 1; }
 	fi
-elif [ "$OS" == "Darwin" ]; then # macOS
-	# For macOS, check if either adb or fastboot is installed using command
-	command -v adb >/dev/null 2>&1 || { echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again." >&2; exit 1; }
-	command -v fastboot >/dev/null 2>&1 || { echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again." >&2; exit 1; }
+fi
+if [ -x "$(command -v adb)" ]; then
+	echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again."
+	exit 1
+fi
+if [ -x "$(command -v fastboot)" ]; then
+	echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again."
+	exit 1
 fi
 
 # Detect operating system and install

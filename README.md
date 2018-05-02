@@ -6,7 +6,7 @@ Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://d
 ### Supported platforms
 
 * Mac OS X / macOS
-* Linux (only Ubuntu and Debian have been extensively tested)
+* Linux (x86/x86_64 only)
 * Bash on Windows 10 ([USB connections do not work](https://github.com/Microsoft/WSL/issues/2195))
 
 [Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.
@@ -23,8 +23,6 @@ bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/mas
 ```
 
 Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. To update, just run the installer again.
-
-__Note for Linux users:__ Nexus Tools should work on all Linux distros that use Bash shell. Only x86/x86_64 platforms are supported. Nexus Tools can optionally install [a UDEV list](https://github.com/M0Rf30/android-udev-rules), which should resolve any potential USB connectivity problems.
 
 [XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
