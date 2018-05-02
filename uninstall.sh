@@ -34,7 +34,7 @@ if [ -f /usr/local/bin/adb ]; then
 fi
 if [ -f /usr/local/bin/fastboot ]; then
 	echo "[WARN] Fasboot found in /usr/local/bin. It may have been installed there by an old version of Nexus Tools."
-    echo "[WARN] PSudo access is required to remove. ress ENTER to delete or X to cancel."
+    echo "[WARN] Sudo access is required to remove. Press ENTER to delete or X to cancel."
 	read -sn1 input
 	[ "$input" = "" ] && sudo rm /usr/local/bin/fastboot
 fi

@@ -168,7 +168,7 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 elif [ "$OS" == "Darwin" ]; then # macOS
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
-	echo "[ .. ] Downloading platform tools for x86 Linux..."
+	echo "[ .. ] Downloading platform tools for macOS..."
 	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
 	# Unzip it
 	unzip -q -o "$DIR/temp.zip" -d "$DIR"
