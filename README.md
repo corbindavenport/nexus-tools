@@ -17,11 +17,11 @@ The tools are downloaded directly from Google's servers during installation, so 
 
 The installer does not need to be downloaded, just paste this command into the terminal:
 ```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/dev/install.sh)
 ```
 To uninstall, run this command:
 ```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/dev/uninstall.sh)
 ```
 
 Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. To update, just run the installer again.
