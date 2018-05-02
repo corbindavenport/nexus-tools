@@ -1,7 +1,7 @@
 ![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
 ================
 
-Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications.
+Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) package, which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications.
 
 Installing these tools requires downloading the proper zip file, extracting it somewhere, and [adding the folder to your system's path](https://askubuntu.com/a/60221). Nexus Tools does all that hard work for you, and installs additional configuration files to fix common USB problems.
 
@@ -10,9 +10,7 @@ Installing these tools requires downloading the proper zip file, extracting it s
 * The SDK Platform Tools package is downloaded from Google's servers, so you're always getting the latest version.
 * All files are stored in `~/.nexustools`, so sudo access is not required.
 * A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
-* Works on Linux, Bash for Windows 10 ([without USB support](https://github.com/Microsoft/WSL/issues/2195)), and Mac.
-
-*[Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.*
+* Works on Linux, Bash for Windows 10 ([without USB support](https://github.com/Microsoft/WSL/issues/2195)), and Mac. [Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.
 
 ### How to install
 
