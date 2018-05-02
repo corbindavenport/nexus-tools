@@ -16,6 +16,7 @@
 DIR="$HOME/.nexustools"
 UDEV="/etc/udev/rules.d/51-android.rules"
 UDEVURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules"
+INIURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
@@ -26,7 +27,7 @@ _smart_remove() {
 	if [ -x "$(command -v dpkg)" ]; then # Linux systems with dpkg
 		PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $1|grep "install ok installed")
 		if [ "" == "$PKG_OK" ]; then # Check if relevant package is installed
-			echo "[ OK ] The package '$1' is not installed, install can continue."
+			return 1
 		else
 			echo "[WARN] An outdated version of ADB or Fastboot is already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
 			read -sn1 input
@@ -37,6 +38,7 @@ _smart_remove() {
 
 # Function for copying udex.txt to proper location
 _install_udev() {
+	# Install UDEV file
 	if [ ! -d /etc/udev/rules.d/ ]; then
 		sudo mkdir -p /etc/udev/rules.d/
 	fi
@@ -47,6 +49,18 @@ _install_udev() {
 	sudo curl -Lfk --progress-bar -o "$UDEV" "$UDEVURL"
 	output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
 	output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
+	# Install USB Vendor ID List
+	# More info: https://github.com/M0Rf30/android-udev-rules#note
+	if [ ! -d $HOME/.android/ ]; then
+		mkdir -p $HOME/.android/
+	fi
+	if [ -f "$HOME/.android/adb_usb.ini" ]; then
+		rm "$HOME/.android/adb_usb.ini"
+	fi
+	echo "[ .. ] Downloading ADB Vendor ID file..."
+	curl -Lfk --progress-bar -o "$HOME/.android/adb_usb.ini" "$INIURL"
+	# Restart services
+	sudo udevadm control --reload-rules 2>/dev/null >&2
 	sudo service udev restart 2>/dev/null >&2
 	sudo killall adb 2>/dev/null >&2
 }
@@ -100,13 +114,15 @@ mkdir -p $DIR
 # Check if ADB or Fastboot is already installed
 if [ "$OS" == "Linux" ]; then
 	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
-	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs ADB/Fastboot binaries.
-	if [ -z "${DIST##*Ubuntu*}" ]; then
+	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
+	if [ -z "${DIST##*Debian*}" ] || [ -z "${DIST##*Ubuntu*}" ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
-	elif [ -z "${DIST##*Debian*}" ]; then
-		_smart_remove "android-tools-adb"
-		_smart_remove "android-tools-fastboot"
+		_smart_remove "adb"
+		_smart_remove "fastboot"
+		_smart_remove "etc1tool"
+		_smart_remove "hprof-conv"
+		_smart_remove "dmtracedump"
 	else
 		# For other distros, check if either adb or fastboot is installed using command
 		command -v adb >/dev/null 2>&1 || { echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again." >&2; exit 1; }
@@ -120,8 +136,28 @@ fi
 
 # Detect operating system and install
 if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
-	echo "[EROR] Bash on Windows 10 does not yet support USB devices."
-	exit $XCODE
+	echo "[WARN] Bash on Windows 10 does not yet support USB devices. Installation will continue."
+	ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
+	# Download the ZIP file
+	echo "[ .. ] Downloading platform tools for x86 Linux..."
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
+	# Unzip it
+	unzip -q -o "$DIR/temp.zip" -d "$DIR"
+	# Move all files from the zip to $DIR
+	mv -f -v $DIR/platform-tools/* $DIR > /dev/null
+	# Delete the zip file and original folder
+	rm "$DIR/temp.zip"
+	rmdir "$DIR/platform-tools"
+	echo "[ OK ] Platform tools now installed in $DIR."
+	# Add Nexus Tools directory to $PATH
+	_add_path
+	# Mark binaries in directory as executable
+	chmod -f +x $DIR/*
+	# Download udev list
+	echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
+	echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."
+	read -sn1 udevinput
+	[ "$udevinput" = "" ] && _install_udev
 elif [ "$OS" == "Darwin" ]; then # macOS
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file

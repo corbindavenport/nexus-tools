@@ -1,7 +1,17 @@
 ![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
 ================
 
-Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications. These are commonly used for Android development and device modding. __Nexus Tools works on both macOS and Linux.__
+Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications. The tools are downloaded directly from Google's servers during installation, so you're always getting the latest available versions.
+
+### Supported platforms
+
+* Mac OS X / macOS
+* Linux (only Ubuntu and Debian have been extensively tested)
+* Bash on Windows 10 ([USB connections do not work](https://github.com/Microsoft/WSL/issues/2195))
+
+[Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.
+
+### Install instructions
 
 The installer does not need to be downloaded, just paste this command into the terminal:
 ```
@@ -12,9 +22,9 @@ To uninstall, run this command:
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
 ```
 
-The applications are downloaded directly from Google's servers during installation, so you're always getting the latest available versions. Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. To update, just run the installer again.
+Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. To update, just run the installer again.
 
-__Note for Linux users:__ Nexus Tools should work on all Linux distros that use Bash shell. Only x86/x86_64 platforms are supported.
+__Note for Linux users:__ Nexus Tools should work on all Linux distros that use Bash shell. Only x86/x86_64 platforms are supported. Nexus Tools can optionally install [a UDEV list](https://github.com/M0Rf30/android-udev-rules), which should resolve any potential USB connectivity problems.
 
 [XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
