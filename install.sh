@@ -100,6 +100,16 @@ _add_path() {
 	fi
 }
 
+# Function for reporting bug
+_report_bug() {
+	echo "[EROR] Your CPU architecture could not be detected."
+	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
+	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] OS: $OS"
+	echo "[EROR] ARCH: $ARCH"
+	echo " "
+}
+
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
@@ -176,8 +186,8 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	# Download Device ID list
 	_install_ini
 	# Download udev list
-	echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
-	echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."
+	echo "[INFO] Nexus Tools can install UDEV rules to fix potential USB issues."
+	echo "[INFO] Sudo access is required. Press ENTER to proceed or X to skip."
 	read -sn1 udevinput
 	[ "$udevinput" = "" ] && _install_udev
 elif [ "$OS" == "Darwin" ]; then # macOS
@@ -220,8 +230,8 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		# Download Device ID list
 		_install_ini
 		# Download udev list
-		echo "[INFO] Nexus Tools can install a UDEV rules file, which fixes potential USB issues."
-		echo "[INFO] Sudo access is required for UDEV installation. Press ENTER to proceed or X to skip."
+		echo "[INFO] Nexus Tools can install UDEV rules to fix potential USB issues."
+		echo "[INFO] Sudo access is required. Press ENTER to proceed or X to skip."
 		read -sn1 udevinput
 		[ "$udevinput" = "" ] && _install_udev
 	elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
@@ -229,33 +239,19 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		echo " "
 		exit 1
 	else
-		echo "[EROR] Your CPU architecture could not be detected."
-		echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-		echo "[EROR] Report the following information in the bug report:"
-		echo "[EROR] OS: $OS"
-		echo "[EROR] ARCH: $ARCH"
-		echo " "
+		_report_bug
 		exit 1
 	fi
 else
-	echo "[EROR] Your operating system or architecture could not be detected."
-	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-	echo "[EROR] ARCH: $ARCH"
-	echo " "
+	_report_bug
 	exit 1
 fi
 # All done!
 if [ $XCODE -eq 0 ]; then
 	echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
-	echo "[INFO] If you found Nexus Tools helpful, please consider donating to support development: bit.ly/donatenexustools"
+	echo "[INFO] Please consider donating to support development: bit.ly/donatenexustools"
 else
-	echo "[EROR] Install failed."
-	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-	echo "[EROR] ARCH: $ARCH"
+	_report_bug
 fi
 echo " "
 exit $XCODE
