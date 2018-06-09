@@ -20,6 +20,7 @@ INIURL="https://raw.githubusercontent.com/apkudo/adbusbini/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
+DIST=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 XCODE=0
 
 # Nexus Tools can check if a package for ADB or Fastboot is installed, and uninstall the package if needed.
@@ -121,8 +122,7 @@ _report_bug() {
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
-	DIST="awk -F= '/^NAME/{print $2}' /etc/os-release"
-	if [ -z "${DIST##*Ubuntu*}" ] || [ -z "${DIST##*Debian*}" ] || [ -z "${DIST##*Fedora*}" ]; then
+	if [ "$DIST" == "Ubuntu" ] || [ "$DIST" == "Debian" ] || [ "$DIST" == "Fedora" ]; then
 		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
 		echo "[WARN] Nexus Tools is only tested to work on Ubuntu, Fedora, and Debian."
@@ -151,9 +151,8 @@ mkdir -p $DIR
 
 # Check if ADB or Fastboot is already installed
 if [ "$OS" == "Linux" ]; then
-	DIST="awk -F= '/^NAME/{print $2}' /etc/os-release"
 	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
-	if [ -z "${DIST##*Debian*}" ] || [ -z "${DIST##*Ubuntu*}" ]; then
+	if [ "$DIST" == "Ubuntu" ] || [ "$DIST" == "Debian" ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
 		_smart_remove "adb"
@@ -161,7 +160,7 @@ if [ "$OS" == "Linux" ]; then
 		_smart_remove "etc1tool"
 		_smart_remove "hprof-conv"
 		_smart_remove "dmtracedump"
-	elif [ -z "${DIST##*Fedora*}" ]; then
+	elif [ "$DIST" == "Fedora" ]; then
 		_smart_remove "android-tools"
 	fi
 fi
