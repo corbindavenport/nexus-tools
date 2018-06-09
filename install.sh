@@ -40,7 +40,7 @@ _smart_remove() {
 		else
 			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
 			read -sn1 input
-			[ "$input" = "" ] && sudo yum -y -q remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
+			[ "$input" = "" ] && sudo yum -y remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
 		fi
 	fi
 }
