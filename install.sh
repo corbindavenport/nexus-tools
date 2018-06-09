@@ -33,6 +33,14 @@ _smart_remove() {
 			read -sn1 input
 			[ "$input" = "" ] && sudo apt-get --assume-yes remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
 		fi
+	elif [ -x "$(command -v yum)" ]; then # Linux systems with rpm
+		if [ yum list installed "$1" >/dev/null 2>&1 ]; then # Check if relevant package is installed
+			return 1
+		else
+			echo "[WARN] An outdated version of ADB or Fastboot is already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
+			read -sn1 input
+			[ "$input" = "" ] && sudo yum -y remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
+		fi
 	fi
 }
 
@@ -113,11 +121,11 @@ _report_bug() {
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
-	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
-	if [ -z "${DIST##*Ubuntu*}" ] || [ -z "${DIST##*Debian*}" ]; then
+	DIST="awk -F= '/^NAME/{print $2}' /etc/os-release"
+	if [ -z "${DIST##*Ubuntu*}" ] || [ -z "${DIST##*Debian*}" ] || [ -z "${DIST##*Fedora*}" ]; then
 		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
-		echo "[WARN] Nexus Tools is only tested to work on Ubuntu and Debian, but it should work on other distributions."
+		echo "[WARN] Nexus Tools is only tested to work on Ubuntu, Fedora, and Debian."
 	fi
 fi
 
@@ -143,7 +151,7 @@ mkdir -p $DIR
 
 # Check if ADB or Fastboot is already installed
 if [ "$OS" == "Linux" ]; then
-	DIST=`grep DISTRIB_ID /etc/*-release | awk -F '=' '{print $2}'`
+	DIST="awk -F= '/^NAME/{print $2}' /etc/os-release"
 	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
 	if [ -z "${DIST##*Debian*}" ] || [ -z "${DIST##*Ubuntu*}" ]; then
 		_smart_remove "android-tools-adb"
@@ -153,6 +161,8 @@ if [ "$OS" == "Linux" ]; then
 		_smart_remove "etc1tool"
 		_smart_remove "hprof-conv"
 		_smart_remove "dmtracedump"
+	elif [ -z "${DIST##*Fedora*}" ]; then
+		_smart_remove "android-tools"
 	fi
 fi
 if [ -x "$(command -v adb)" ]; then
