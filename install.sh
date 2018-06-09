@@ -35,7 +35,7 @@ _smart_remove() {
 			[ "$input" = "" ] && sudo apt-get --assume-yes remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
 		fi
 	elif [ -x "$(command -v yum)" ]; then # Linux systems with rpm
-		if [ yum list installed "$1" >/dev/null 2>&1 ]; then # Check if relevant package is installed
+		if [ $(yum list installed "$1") ]; then # Check if relevant package is installed
 			return 1
 		else
 			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
