@@ -111,6 +111,16 @@ if [ "$OS" == "Linux" ]; then
 	fi
 fi
 
+# Check that required applications are installed
+if ! [ -x "$(command -v curl)" ]; then
+  echo "[EROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
+  exit 1
+fi
+if ! [ -x "$(command -v unzip)" ]; then
+  echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
+  exit 1
+fi
+
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
 	echo "[WARN] Platform tools already installed in $DIR. Press ENTER to overwrite or X to cancel."
