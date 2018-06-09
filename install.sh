@@ -30,7 +30,7 @@ _smart_remove() {
 		if [ "" == "$PKG_OK" ]; then # Check if relevant package is installed
 			return 1
 		else
-			echo "[WARN] An outdated version of ADB or Fastboot is already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
+			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
 			read -sn1 input
 			[ "$input" = "" ] && sudo apt-get --assume-yes remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
 		fi
@@ -38,7 +38,7 @@ _smart_remove() {
 		if [ yum list installed "$1" >/dev/null 2>&1 ]; then # Check if relevant package is installed
 			return 1
 		else
-			echo "[WARN] An outdated version of ADB or Fastboot is already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
+			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
 			read -sn1 input
 			[ "$input" = "" ] && sudo yum -y -q remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
 		fi
@@ -122,7 +122,7 @@ _report_bug() {
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
-	if [ "$DIST" == "Ubuntu" ] || [ "$DIST" == "Debian" ] || [ "$DIST" == "Fedora" ]; then
+	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == "Debian" ] || [ "$DIST" == "Fedora" ]; then
 		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
 		echo "[WARN] Nexus Tools is only tested to work on Ubuntu, Fedora, and Debian."
@@ -149,10 +149,10 @@ fi
 # Make the new directory
 mkdir -p $DIR
 
-# Check if ADB or Fastboot is already installed
+# Check if platform tools are already installed
 if [ "$OS" == "Linux" ]; then
 	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
-	if [ "$DIST" == "Ubuntu" ] || [ "$DIST" == "Debian" ]; then
+	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == "Debian" ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
 		_smart_remove "adb"
