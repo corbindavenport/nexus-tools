@@ -122,7 +122,7 @@ _report_bug() {
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
 if [ "$OS" == "Linux" ]; then
-	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == "Debian" ] || [ "$DIST" == "Fedora" ]; then
+	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == '"Debian GNU/Linux"' ] || [ "$DIST" == "Fedora" ]; then
 		echo "[ OK ] You are running Nexus Tools on a supported platform."
 	else
 		echo "[WARN] Nexus Tools is only tested to work on Ubuntu, Fedora, and Debian."
@@ -152,7 +152,7 @@ mkdir -p $DIR
 # Check if platform tools are already installed
 if [ "$OS" == "Linux" ]; then
 	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
-	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == "Debian" ]; then
+	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == '"Debian GNU/Linux"' ]; then
 		_smart_remove "android-tools-adb"
 		_smart_remove "android-tools-fastboot"
 		_smart_remove "adb"
