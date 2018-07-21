@@ -10,7 +10,7 @@ Installing these tools requires downloading the proper zip file, extracting it s
 * The SDK Platform Tools package is downloaded from Google's servers, so you're always getting the latest version.
 * All files are stored in `~/.nexustools`, so sudo access is not required.
 * A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
-* Works on Linux, Bash for Windows 10 ([without USB support](https://github.com/Microsoft/WSL/issues/2195)), and Mac. [Chrome OS may also work](https://github.com/corbindavenport/nexus-tools/wiki/Chrome-OS-Help), but it is currently unsupported.
+* Works on Linux, Bash for Windows 10 ([without USB support](https://github.com/Microsoft/WSL/issues/2195)), and Mac.
 
 ### How to install
 
@@ -23,7 +23,7 @@ To uninstall, run this command:
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/dev/uninstall.sh)
 ```
 
-Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal (you may need to open a new terminal window for changes to take effect). To update, just run the installer again.
+Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. **You may need to open a new terminal window for changes to take effect.** To update, just run the installer again.
 
 [XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
 
