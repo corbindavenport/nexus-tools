@@ -19,7 +19,7 @@ UDEV="/etc/udev/rules.d/51-android.rules"
 OS=$(uname)
 ARCH=$(uname -m)
 XCODE=0
-BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
+BASEURL="https://githubusercontent.com/corbindavenport/nexus-tools/raw/master"
 
 _install() {
 	sudo curl -Lfks -o "$1" "$2" && echo "[ OK ] Download succeeded."|| { echo "[EROR] Download failed."; XCODE=1; }
