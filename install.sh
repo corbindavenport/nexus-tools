@@ -183,6 +183,9 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	# Add Nexus Tools directory to $PATH
 	_add_path
 elif [ "$OS" == "Linux" ]; then # Generic Linux
+	if [ -d "/usr/share/themes/CrosAdapta" ]; then
+		echo "[WARN] Linux on Chrome OS doesn't support USB devices yet, you'll only be able to use ADB over Wi-Fi. Installation will continue."
+	fi
 	if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
 		ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
 		# Download the ZIP file
