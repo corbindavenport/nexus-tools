@@ -23,28 +23,6 @@ BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 DIST=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 XCODE=0
 
-# Nexus Tools can check if a package for ADB or Fastboot is installed, and uninstall the package if needed.
-_smart_remove() {
-	if [ -x "$(command -v dpkg)" ]; then # Linux systems with dpkg
-		PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $1|grep "install ok installed")
-		if [ "" == "$PKG_OK" ]; then # Check if relevant package is installed
-			return 1
-		else
-			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
-			read -sn1 input
-			[ "$input" = "" ] && sudo apt-get --assume-yes remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
-		fi
-	elif [ -x "$(command -v yum)" ]; then # Linux systems with rpm
-		if yum list installed "$1"; then # Check if relevant package is installed
-			return 1
-		else
-			echo "[WARN] One or more platform tools are already installed, as part of the '$1' system package. Press ENTER to remove it or X to cancel."
-			read -sn1 input
-			[ "$input" = "" ] && sudo yum -y remove $1 && echo "[ OK ] The '$1' package was removed." || exit 1
-		fi
-	fi
-}
-
 # Function for copying udex.txt to proper location
 _install_udev() {
 	# Install UDEV file
@@ -150,20 +128,6 @@ fi
 mkdir -p $DIR
 
 # Check if platform tools are already installed
-if [ "$OS" == "Linux" ]; then
-	# If someone wants to add support, this should work with any distro using dpkg for package management. Just change the paramteter to whatever package installs Android Platform Tools (ADB/Fastboot/etc).
-	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == '"Debian GNU/Linux"' ]; then
-		_smart_remove "android-tools-adb"
-		_smart_remove "android-tools-fastboot"
-		_smart_remove "adb"
-		_smart_remove "fastboot"
-		_smart_remove "etc1tool"
-		_smart_remove "hprof-conv"
-		_smart_remove "dmtracedump"
-	elif [ "$DIST" == "Fedora" ]; then
-		_smart_remove "android-tools"
-	fi
-fi
 if [ -x "$(command -v adb)" ]; then
 	echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again."
 	exit 1
