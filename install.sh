@@ -99,13 +99,6 @@ _report_bug() {
 
 # Start the script
 echo "[INFO] Nexus Tools 4.0"
-if [ "$OS" == "Linux" ]; then
-	if [ "$DIST" == '"Ubuntu"' ] || [ "$DIST" == '"Debian GNU/Linux"' ] || [ "$DIST" == "Fedora" ]; then
-		echo "[ OK ] You are running Nexus Tools on a supported platform."
-	else
-		echo "[WARN] Nexus Tools is only tested to work on Ubuntu, Fedora, and Debian."
-	fi
-fi
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
