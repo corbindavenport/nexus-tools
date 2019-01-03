@@ -87,11 +87,11 @@ _add_path() {
 	fi
 }
 
-# Function for reporting bug
+# Function for reporting bugs
 _report_bug() {
-	echo "[EROR] Your CPU architecture could not be detected."
+	echo "[EROR] Your CPU architecture or operating system could not be detected."
 	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Report the following information in the bug report:"
+	echo "[EROR] Please include the following information in the bug report:"
 	echo "[EROR] OS: $OS"
 	echo "[EROR] ARCH: $ARCH"
 	echo " "
@@ -144,7 +144,7 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	# Delete the zip file and original folder
 	rm "$DIR/temp.zip"
 	rmdir "$DIR/platform-tools"
-	echo "[ OK ] Platform tools now installed in $DIR."
+	echo "[ OK ] Platform Tools now installed in $DIR."
 	# Add Nexus Tools directory to $PATH
 	_add_path
 	# Mark binaries in directory as executable
@@ -168,7 +168,7 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	# Delete the zip file and original folder
 	rm "$DIR/temp.zip"
 	rmdir "$DIR/platform-tools"
-	echo "[ OK ] Platform tools now installed in $DIR."
+	echo "[ OK ] Platform Tools now installed in $DIR."
 	# Mark binaries in directory as executable
 	chmod -f +x $DIR/*
 	# Download Device ID list
@@ -191,7 +191,7 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		# Delete the zip file and original folder
 		rm "$DIR/temp.zip"
 		rmdir "$DIR/platform-tools"
-		echo "[ OK ] Platform tools now installed in $DIR."
+		echo "[ OK ] Platform Tools now installed in $DIR."
 		# Add Nexus Tools directory to $PATH
 		_add_path
 		# Mark binaries in directory as executable
@@ -204,7 +204,7 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 		read -sn1 udevinput
 		[ "$udevinput" = "" ] && _install_udev
 	elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
-		echo "[EROR] Your platform does not have up-to-date binaries available. Cannot continue with installation."
+		echo "[EROR] Google does not provide Platform Tools for ARM Linux. Installation cannot continue."
 		echo " "
 		exit 1
 	else
