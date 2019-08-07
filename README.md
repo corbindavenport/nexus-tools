@@ -7,13 +7,15 @@ Installing these tools requires downloading the proper files, extracting them so
 
 ### Features
 
-* Works on x86 Linux, Bash for Windows 10¹, Linux on Chromebooks¹, and Mac.
+* Works on Linux, Bash for Windows 10¹, Linux on Chromebooks², and Mac. An x86 processor is required on all platforms.
 * The SDK Platform Tools package is downloaded from Google's servers, so you're always getting the latest version.
 * All files are stored in `~/.nexustools`, so sudo access is not required.
 * A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
 * Can be easily removed.
 
-¹*ADB, Fastboot, and other tools on these platforms cannot connect to Android devices over USB. However, it is possible to [use ADB over a Wi-Fi connection](https://play.google.com/store/apps/details?id=com.ttxapps.wifiadb).*
+¹*Windows Subsystem for Linux doesn't support USB connections. However, it is possible to [use ADB over a Wi-Fi connection](https://play.google.com/store/apps/details?id=com.ttxapps.wifiadb).*
+
+²*Chrome OS 75 or newer is required for [USB support](https://www.androidpolice.com/2019/06/26/chrome-os-75/).*
 
 ### How to install
 

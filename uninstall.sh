@@ -16,7 +16,7 @@
 OS=$(uname)
 ARCH=$(uname -m)
 
-echo "[INFO] Nexus Tools 4.0"
+echo "[INFO] Nexus Tools 4.1"
 
 # Nexus Tools 3.2+ (August 2016-Now) installs binaries in ~/.nexustools
 if [ -d $HOME/.nexustools ]; then

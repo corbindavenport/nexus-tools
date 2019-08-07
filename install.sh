@@ -57,39 +57,20 @@ _install_ini() {
 
 # Function for adding Nexus Tools directory to $PATH
 _add_path() {
-	if [ "$OS" == "Darwin" ]; then # macOS
-		if [[ ":$PATH:" == *":$DIR:"* ]]; then
-			# Nexus Tools directory already in $PATH
-			echo "[ OK ] $DIR/ is already in PATH."
-		else
-			# Nexus Tools directory needs to be added to $PATH
-			if [ -f $HOME/.bashrc ]; then
-				echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
-				source $HOME/.bashrc
-				echo "[ OK ] Added $DIR/ to $HOME/.bashrc."
-			fi
-			if [ -f $HOME/.zshrc ]; then
-				echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
-				source $HOME/.zshrc
-				echo "[ OK ] Added $DIR/ to $HOME/.zshrc."
-			fi
+	if [[ ":$PATH:" == *":$DIR:"* ]]; then
+		# Nexus Tools directory already in $PATH
+		echo "[ OK ] $DIR/ is already in PATH."
+	else
+		# Nexus Tools directory needs to be added to $PATH
+		if [ -f $HOME/.bashrc ]; then
+			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
+			source $HOME/.bashrc
+			echo "[ OK ] Added $DIR/ to $HOME/.bashrc."
 		fi
-	elif [ "$OS" == "Linux" ]; then # Generic Linux
-		if [[ ":$PATH:" == *":$DIR:"* ]]; then
-			# Nexus Tools directory already in $PATH
-			echo "[ OK ] $DIR/ is already in PATH."
-		else
-			# Nexus Tools directory needs to be added to $PATH
-			if [ -f $HOME/.bashrc ]; then
-				echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
-				source $HOME/.bashrc
-				echo "[ OK ] Added $DIR/ to $HOME/.bashrc."
-			fi
-			if [ -f $HOME/.zshrc ]; then
-				echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
-				source $HOME/.zshrc
-				echo "[ OK ] Added $DIR/ to $HOME/.zshrc."
-			fi
+		if [ -f $HOME/.zshrc ]; then
+			echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
+			source $HOME/.zshrc
+			echo "[ OK ] Added $DIR/ to $HOME/.zshrc."
 		fi
 	fi
 }
@@ -105,7 +86,7 @@ _report_bug() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.0"
+echo "[INFO] Nexus Tools 4.1"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
@@ -139,7 +120,7 @@ fi
 
 # Detect operating system and install
 if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
-	echo "[WARN] Bash on Windows 10 does not yet support USB devices. Installation will continue."
+	echo "[WARN] Bash on Windows 10 doesn't support USB devices, you'll only be able to use ADB over Wi-Fi."
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for x86 Linux..."
@@ -184,7 +165,7 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	_add_path
 elif [ "$OS" == "Linux" ]; then # Generic Linux
 	if [ -d "/usr/share/themes/CrosAdapta" ]; then
-		echo "[WARN] Linux on Chrome OS doesn't support USB devices yet, you'll only be able to use ADB over Wi-Fi. Installation will continue."
+		echo "[WARN] Chrome OS 75 or higher is required for USB support."
 	fi
 	if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
 		ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
@@ -225,7 +206,7 @@ fi
 # All done!
 if [ $XCODE -eq 0 ]; then
 	echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
-	echo "[INFO] Please consider donating to support development: bit.ly/donatenexustools"
+	echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
 else
 	_report_bug
 fi
