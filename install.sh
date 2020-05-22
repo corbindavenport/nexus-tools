@@ -87,7 +87,13 @@ _report_bug() {
 # Function for Google Analytics
 _analytics() {
 	# Generate random user ID string
-	UUID=$(uuidgen)
+	if [ -x "$(command -v uuidgen)" ]; then
+		UUID=$(uuidgen)
+	elif [ -f "/proc/sys/kernel/random/uuid" ]; then
+		UUID=$(cat /proc/sys/kernel/random/uuid)
+	else
+		UUID="00000000-0000-0000-0000-000000000000"
+	fi
 	# Get exact OS
 	if [ -d "/mnt/c/Windows" ]; then
 		REALOS="Windows"
