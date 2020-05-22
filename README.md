@@ -1,5 +1,4 @@
-![Nexus Tools logo](https://i.imgur.com/2l38Zqb.png)
-================
+# Nexus Tools
 
 Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) package, which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, [Systrace](https://developer.android.com/studio/profile/systrace-commandline.html), and other applications.
 
@@ -13,7 +12,7 @@ Installing these tools requires downloading the proper files, extracting them so
 * A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
 * Can be easily removed.
 
-¹*Windows Subsystem for Linux doesn't support USB connections. However, it is possible to [use ADB over a Wi-Fi connection](https://play.google.com/store/apps/details?id=com.ttxapps.wifiadb).*
+¹*Windows Subsystem for Linux doesn't support USB connections. However, it is possible to use ADB over a Wi-Fi connection using a [third-party app](https://play.google.com/store/apps/details?id=com.ttxapps.wifiadb) or [Android 11+](https://www.androidpolice.com/2020/03/18/android-11-developer-preview-2-fully-supports-wireless-adb/).*
 
 ²*Chrome OS 75 or newer is required for [USB support](https://www.androidpolice.com/2019/06/26/chrome-os-75/).*
 
@@ -30,7 +29,9 @@ bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/mas
 
 Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. **You may need to open a new terminal window for changes to take effect.** To update, just run the installer again.
 
-[XDA thread for Nexus Tools](http://forum.xda-developers.com/general/general/tool-nexus-tools-2-8-featured-xda-t3258661)
+### Analytics
+
+Nexus Tools uses Google Analytics to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable this by downloading the installation script, deleting everything in the `_analytics()` function, and running the modified script.
 
 ---------------------------------------
 
