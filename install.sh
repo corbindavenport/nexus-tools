@@ -20,7 +20,6 @@ INIURL="https://raw.githubusercontent.com/apkudo/adbusbini/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
-DIST=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 XCODE=0
 
 # Function for copying udex.txt to proper location
@@ -85,8 +84,24 @@ _report_bug() {
 	echo " "
 }
 
+# Function for Google Analytics
+_analytics() {
+	# Generate random user ID string
+	UUID=$(uuidgen)
+	# Get exact OS
+	if [ -d "/mnt/c/Windows" ]; then
+		REALOS="Windows"
+	elif [ -d "/usr/share/themes/CrosAdapta" ]; then
+		REALOS="ChromeOS"
+	else
+		REALOS="$OS"
+	fi
+	# Make curl request
+	curl -s -o /dev/null "https://www.google-analytics.com/collect?v=1&t=event&tid=UA-74707662-1&cid=$UUID&dp=$REALOS%2F$ARCH"
+}
+
 # Start the script
-echo "[INFO] Nexus Tools 4.1"
+echo "[INFO] Nexus Tools 4.2"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
@@ -97,6 +112,9 @@ if ! [ -x "$(command -v unzip)" ]; then
   echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
   exit 1
 fi
+
+# Start Analytics
+_analytics
 
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
@@ -115,6 +133,16 @@ if [ -x "$(command -v adb)" ]; then
 fi
 if [ -x "$(command -v fastboot)" ]; then
 	echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again."
+	exit 1
+fi
+
+# Block installation on non-x86 platforms
+if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then
+	echo "[ OK ] Your hardware platform is supported, yay!"
+else
+	echo "[EROR] Your hardware platform is detected as $ARCH, but Google only provides Platform Tools for x86-based platforms."
+	echo "[EROR] Installation cannot continue."
+	echo " "
 	exit 1
 fi
 
@@ -167,43 +195,35 @@ elif [ "$OS" == "Linux" ]; then # Generic Linux
 	if [ -d "/usr/share/themes/CrosAdapta" ]; then
 		echo "[WARN] Chrome OS 75 or higher is required for USB support."
 	fi
-	if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then # Linux on Intel x86/x86_64 CPU
-		ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
-		# Download the ZIP file
-		echo "[ .. ] Downloading platform tools for x86 Linux..."
-		curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
-		# Unzip it
-		unzip -q -o "$DIR/temp.zip" -d "$DIR"
-		# Move all files from the zip to $DIR
-		mv -f -v $DIR/platform-tools/* $DIR > /dev/null
-		# Delete the zip file and original folder
-		rm "$DIR/temp.zip"
-		rmdir "$DIR/platform-tools"
-		echo "[ OK ] Platform Tools now installed in $DIR."
-		# Add Nexus Tools directory to $PATH
-		_add_path
-		# Mark binaries in directory as executable
-		chmod -f +x $DIR/*
-		# Download Device ID list
-		_install_ini
-		# Download udev list
-		echo "[INFO] Nexus Tools can install UDEV rules to fix potential USB issues."
-		echo "[INFO] Sudo access is required. Press ENTER to proceed or X to skip."
-		read -sn1 udevinput
-		[ "$udevinput" = "" ] && _install_udev
-	elif [ "$ARCH" == "arm" ] || [ "$ARCH" == "armv6l" ] || [ "$ARCH" == "armv7l" ]; then # Linux on ARM CPU
-		echo "[EROR] Google does not provide Platform Tools for ARM Linux. Installation cannot continue."
-		echo " "
-		exit 1
-	else
-		_report_bug
-		exit 1
-	fi
+	ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
+	# Download the ZIP file
+	echo "[ .. ] Downloading platform tools for x86 Linux..."
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
+	# Unzip it
+	unzip -q -o "$DIR/temp.zip" -d "$DIR"
+	# Move all files from the zip to $DIR
+	mv -f -v $DIR/platform-tools/* $DIR > /dev/null
+	# Delete the zip file and original folder
+	rm "$DIR/temp.zip"
+	rmdir "$DIR/platform-tools"
+	echo "[ OK ] Platform Tools now installed in $DIR."
+	# Add Nexus Tools directory to $PATH
+	_add_path
+	# Mark binaries in directory as executable
+	chmod -f +x $DIR/*
+	# Download Device ID list
+	_install_ini
+	# Download udev list
+	echo "[INFO] Nexus Tools can install UDEV rules to fix potential USB issues."
+	echo "[INFO] Sudo access is required. Press ENTER to proceed or X to skip."
+	read -sn1 udevinput
+	[ "$udevinput" = "" ] && _install_udev
 else
 	_report_bug
 	exit 1
 fi
-# All done!
+
+# All done
 if [ $XCODE -eq 0 ]; then
 	echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
 	echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
