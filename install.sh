@@ -103,7 +103,7 @@ _analytics() {
 		REALOS="$OS"
 	fi
 	# Make curl request
-	curl -s -o /dev/null "https://www.google-analytics.com/collect?v=1&t=event&tid=UA-74707662-1&cid=$UUID&dp=$REALOS%2F$ARCH"
+	curl -s -o /dev/null "https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$UUID&dp=$REALOS%2F$ARCH"
 }
 
 # Start the script
