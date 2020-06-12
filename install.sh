@@ -143,7 +143,7 @@ if [ -x "$(command -v fastboot)" ]; then
 fi
 
 # Block installation on non-x86 platforms
-if [ "$ARCH" == "i386" ] || [ "$ARCH" == "i486" ] || [ "$ARCH" == "i586" ] || [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "i686" ]; then
+if [ "$ARCH" = "i386" ] || [ "$ARCH" = "i486" ] || [ "$ARCH" = "i586" ] || [ "$ARCH" = "amd64" ] || [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "i686" ]; then
 	echo "[ OK ] Your hardware platform is supported, yay!"
 else
 	echo "[EROR] Your hardware platform is detected as $ARCH, but Google only provides Platform Tools for x86-based platforms."
@@ -178,7 +178,7 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	echo "[INFO] Sudo access is required. Press ENTER to proceed or X to skip."
 	read -sn1 udevinput
 	[ "$udevinput" = "" ] && _install_udev
-elif [ "$OS" == "Darwin" ]; then # macOS
+elif [ "$OS" = "Darwin" ]; then # macOS
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for macOS..."
@@ -197,7 +197,7 @@ elif [ "$OS" == "Darwin" ]; then # macOS
 	_install_ini
 	# Add Nexus Tools directory to $PATH
 	_add_path
-elif [ "$OS" == "Linux" ]; then # Generic Linux
+elif [ "$OS" = "Linux" ]; then # Generic Linux
 	if [ -d "/usr/share/themes/CrosAdapta" ]; then
 		echo "[WARN] Chrome OS 75 or higher is required for USB support."
 	fi
