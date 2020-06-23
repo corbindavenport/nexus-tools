@@ -13,6 +13,9 @@
 
 #!/bin/bash
 
+# true or false to allow Google Analytics
+ALLOW_ANALYTICS=true
+
 DIR="$HOME/.nexustools"
 UDEV="/etc/udev/rules.d/51-android.rules"
 UDEVURL="https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules"
@@ -21,6 +24,7 @@ OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 XCODE=0
+
 
 # Function for copying udex.txt to proper location
 _install_udev() {
@@ -119,8 +123,10 @@ if ! [ -x "$(command -v unzip)" ]; then
   exit 1
 fi
 
-# Start Analytics
-_analytics
+# Start Analytics if allowed
+if [ "$ALLOW_ANALYTICS" = true ] ; then
+    _analytics
+fi
 
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
