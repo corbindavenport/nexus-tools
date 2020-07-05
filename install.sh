@@ -21,6 +21,7 @@ OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
 XCODE=0
+ANALYTICS=$1
 
 # Function for copying udex.txt to proper location
 _install_udev() {
@@ -86,24 +87,28 @@ _report_bug() {
 
 # Function for Google Analytics
 _analytics() {
-	# Generate random user ID string
-	if [ -x "$(command -v uuidgen)" ]; then
-		UUID=$(uuidgen)
-	elif [ -f "/proc/sys/kernel/random/uuid" ]; then
-		UUID=$(cat /proc/sys/kernel/random/uuid)
+	if [ "$ANALYTICS" != "no-analytics" ]; then
+		# Generate random user ID string
+		if [ -x "$(command -v uuidgen)" ]; then
+			UUID=$(uuidgen)
+		elif [ -f "/proc/sys/kernel/random/uuid" ]; then
+			UUID=$(cat /proc/sys/kernel/random/uuid)
+		else
+			UUID="00000000-0000-0000-0000-000000000000"
+		fi
+		# Get exact OS
+		if [ -d "/mnt/c/Windows" ]; then
+			REALOS="Windows"
+		elif [ -d "/usr/share/themes/CrosAdapta" ]; then
+			REALOS="ChromeOS"
+		else
+			REALOS="$OS"
+		fi
+		# Make curl request
+		curl -s -o /dev/null "https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$UUID&dp=$REALOS%2F$ARCH"
 	else
-		UUID="00000000-0000-0000-0000-000000000000"
+		echo "[ OK ] Google Analytics are disabled."
 	fi
-	# Get exact OS
-	if [ -d "/mnt/c/Windows" ]; then
-		REALOS="Windows"
-	elif [ -d "/usr/share/themes/CrosAdapta" ]; then
-		REALOS="ChromeOS"
-	else
-		REALOS="$OS"
-	fi
-	# Make curl request
-	curl -s -o /dev/null "https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$UUID&dp=$REALOS%2F$ARCH"
 }
 
 # Start the script

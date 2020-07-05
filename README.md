@@ -19,10 +19,13 @@ Installing these tools requires downloading the proper files, extracting them so
 ### How to install
 
 Nexus Tools does not need to be downloaded, just paste this command into the terminal:
+
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
 ```
+
 To uninstall, run this command:
+
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
 ```
@@ -31,7 +34,11 @@ Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands 
 
 ### Analytics
 
-Nexus Tools uses Google Analytics to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable this by downloading the installation script, deleting everything in the `_analytics()` function, and running the modified script.
+Nexus Tools uses Google Analytics to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable Google Analytics by adding the `no-analytics` parameter to the install command, like this:
+
+```
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh) no-analytics
+```
 
 ---------------------------------------
 
