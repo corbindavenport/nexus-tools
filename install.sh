@@ -112,7 +112,7 @@ _analytics() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.2.1"
+echo "[INFO] Nexus Tools 4.3"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
