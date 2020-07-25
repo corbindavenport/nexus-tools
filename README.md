@@ -6,7 +6,7 @@ Installing these tools requires downloading the proper files, extracting them so
 
 <i>Nexus Tools is being sponsored by the following tool; please help to support us by taking a look and signing up to a free trial.</i>
 
-<a href="https://tracking.gitads.io/?repo=nexus-tools"><img src="https://images.gitads.io/nexustools" alt="GitAds"/> </a>
+<a href="https://tracking.gitads.io/?repo=nexus-tools"><img src="https://images.gitads.io/nexus-tools" alt="GitAds"/></a>
 
 ### Features
 
