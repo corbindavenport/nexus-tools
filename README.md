@@ -4,10 +4,6 @@ Nexus Tools is a simple installer for the [Android SDK Platform Tools](https://d
 
 Installing these tools requires downloading the proper files, extracting them somewhere, and [adding the files' folder to your system's path](https://askubuntu.com/a/60221). Nexus Tools does all that hard work for you, and installs additional configuration files to fix common USB problems.
 
-<i>Nexus Tools is being sponsored by the following tool; please help to support us by taking a look and signing up to a free trial.</i>
-
-<a href="https://tracking.gitads.io/?repo=nexus-tools"><img src="https://images.gitads.io/nexus-tools" alt="GitAds"/></a>
-
 ### Features
 
 * Works on Linux, Bash for Windows 10¹, Linux on Chromebooks², and Mac. An x86 processor is required on all platforms.
