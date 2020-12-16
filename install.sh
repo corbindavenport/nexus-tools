@@ -113,7 +113,7 @@ _analytics() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.3"
+echo "[INFO] Nexus Tools 4.4"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
@@ -237,7 +237,7 @@ fi
 
 # All done
 if [ $XCODE -eq 0 ]; then
-	echo "[INFO] Installation complete! You may need to open a new Terminal window for commands to work."
+	echo "[INFO] Installation complete! Open a new Terminal window to apply changes."
 	echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
 else
 	_report_bug
