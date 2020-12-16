@@ -62,15 +62,16 @@ _add_path() {
 		echo "[ OK ] $DIR/ is already in PATH."
 	else
 		# Nexus Tools directory needs to be added to $PATH
-		if [ -f "$HOME/.bashrc" ]; then
+		if [[ $SHELL == *"bash"* ]]; then
 			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
 			source "$HOME/.bashrc"
-			echo "[ OK ] Added $DIR/ to $HOME/.bashrc."
-		fi
-		if [ -f "$HOME/.zshrc" ]; then
+			echo "[ OK ] Bash shell detected, added $DIR/ to $HOME/.bashrc."
+		elif [[ $SHELL == *"zsh"* ]]; then
 			echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
 			source "$HOME/.zshrc"
-			echo "[ OK ] Added $DIR/ to $HOME/.zshrc."
+			echo "[ OK ] Z Shell detected, added $DIR/ to $HOME/.zshrc."
+		else
+			echo "[WARN] Shell could not be detected, you will need to manually add $DIR to your PATH."
 		fi
 	fi
 }
