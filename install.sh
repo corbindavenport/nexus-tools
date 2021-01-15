@@ -151,6 +151,8 @@ fi
 # Block installation on non-x86 platforms
 if [ "$ARCH" = "i386" ] || [ "$ARCH" = "i486" ] || [ "$ARCH" = "i586" ] || [ "$ARCH" = "amd64" ] || [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "i686" ]; then
 	echo "[ OK ] Your hardware platform is supported, yay!"
+elif [ "$ARCH" = "arm64" && "$OS" = "Darwin" ]; then
+	echo "[WARN] Google doesn't provide native Apple Silicon binaries yet, x86_64 binaries will be installed."
 else
 	echo "[EROR] Your hardware platform is detected as $ARCH, but Google only provides Platform Tools for x86-based platforms."
 	echo "[EROR] Installation cannot continue."
