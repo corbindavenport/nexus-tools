@@ -6,7 +6,7 @@ Installing these tools requires downloading the proper files, extracting them so
 
 ### Features
 
-* Works on Linux, Bash for Windows 10¹, Linux on Chromebooks², and Mac. An x86 processor is required on all platforms.
+* Works on Linux, Bash for Windows 10¹, Linux on Chromebooks², and Mac. An x86 processor is required on all platforms, except macOS³.
 * The SDK Platform Tools package is downloaded from Google's servers, so you're always getting the latest version.
 * All files are stored in `~/.nexustools`, so sudo access is not required.
 * A [USB Vendor ID list](https://apkudo.com/one-true-adb_usb-ini-to-rule-them-all/) and [UDEV rules file](https://github.com/M0Rf30/android-udev-rules/blob/master/51-android.rules) are installed to fix common USB connection issues (UDEV file only applies to Linux and is optional).
@@ -15,6 +15,8 @@ Installing these tools requires downloading the proper files, extracting them so
 ¹*Windows Subsystem for Linux doesn't support USB connections. However, it is possible to use ADB over a Wi-Fi connection using a [third-party app](https://play.google.com/store/apps/details?id=com.ttxapps.wifiadb) or [Android 11+](https://www.androidpolice.com/2020/03/18/android-11-developer-preview-2-fully-supports-wireless-adb/).*
 
 ²*Chrome OS 75 or newer is required for [USB support](https://www.androidpolice.com/2019/06/26/chrome-os-75/).*
+
+³*Platform tools run in Rosetta 2 compatibility layer on Apple Silicon Macs, because Google doesn't provide native ARM binaries.*
 
 ### How to install
 
