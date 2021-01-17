@@ -20,7 +20,6 @@ INIURL="https://raw.githubusercontent.com/apkudo/adbusbini/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
-XCODE=0
 ANALYTICS=$1
 
 # Function for copying udex.txt to proper location
@@ -34,8 +33,8 @@ _install_udev() {
 	fi
 	echo "[ .. ] Downloading UDEV file..."
 	sudo curl -Lfk --progress-bar -o "$UDEV" "$UDEVURL"
-	output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; XCODE=1; }
-	output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; XCODE=1; }
+	output=$(sudo chmod 644 $UDEV 2>&1) && echo "[ OK ] UDEV permissions fixed." || { echo "[EROR] $output"; }
+	output=$(sudo chown root: $UDEV 2>&1) && echo "[ OK ] UDEV ownership fixed." || { echo "[EROR] $output"; }
 	# Restart services
 	sudo udevadm control --reload-rules 2>/dev/null >&2
 	sudo service udev restart 2>/dev/null >&2
@@ -76,16 +75,6 @@ _add_path() {
 	fi
 }
 
-# Function for reporting bugs
-_report_bug() {
-	echo "[EROR] Your CPU architecture or operating system could not be detected."
-	echo "[EROR] Report bugs at: github.com/corbindavenport/nexus-tools/issues"
-	echo "[EROR] Please include the following information in the bug report:"
-	echo "[EROR] OS: $OS"
-	echo "[EROR] ARCH: $ARCH"
-	echo " "
-}
-
 # Function for Google Analytics
 _analytics() {
 	if [ "$ANALYTICS" != "no-analytics" ]; then
@@ -113,16 +102,16 @@ _analytics() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.4"
+echo "[INFO] Nexus Tools 4.5"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
   echo "[EROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
-  exit 1
+  exit
 fi
 if ! [ -x "$(command -v unzip)" ]; then
   echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
-  exit 1
+  exit
 fi
 
 # Start Analytics
@@ -132,20 +121,23 @@ _analytics
 if [ -d $DIR ]; then
 	echo "[WARN] Platform tools already installed in $DIR. Press ENTER to overwrite or X to cancel."
 	read -sn1 input
-	[ "$input" = "" ] && rm -rf $DIR || exit 1
+	[ "$input" = "" ] && rm -rf $DIR || exit
 fi
 
 # Make the new directory
 mkdir -p $DIR
 
+# Add directory to current session's path
+export PATH=$PATH:$DIR
+
 # Check if platform tools are already installed
 if [ -x "$(command -v adb)" ]; then
 	echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again."
-	exit 1
+	exit
 fi
 if [ -x "$(command -v fastboot)" ]; then
 	echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again."
-	exit 1
+	exit
 fi
 
 # Block installation on non-x86 platforms
@@ -157,7 +149,7 @@ else
 	echo "[EROR] Your hardware platform is detected as $ARCH, but Google only provides Platform Tools for x86-based platforms."
 	echo "[EROR] Installation cannot continue."
 	echo " "
-	exit 1
+	exit
 fi
 
 # Detect operating system and install
@@ -166,7 +158,7 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for x86 Linux..."
-	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; }
 	# Unzip it
 	unzip -q -o "$DIR/temp.zip" -d "$DIR"
 	# Move all files from the zip to $DIR
@@ -190,7 +182,7 @@ elif [ "$OS" = "Darwin" ]; then # macOS
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for macOS..."
-	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; }
 	# Unzip it
 	unzip -q -o "$DIR/temp.zip" -d "$DIR"
 	# Move all files from the zip to $DIR
@@ -212,7 +204,7 @@ elif [ "$OS" = "Linux" ]; then # Generic Linux
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for x86 Linux..."
-	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; XCODE=1; }
+	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; }
 	# Unzip it
 	unzip -q -o "$DIR/temp.zip" -d "$DIR"
 	# Move all files from the zip to $DIR
@@ -233,16 +225,14 @@ elif [ "$OS" = "Linux" ]; then # Generic Linux
 	read -sn1 udevinput
 	[ "$udevinput" = "" ] && _install_udev
 else
-	_report_bug
-	exit 1
+	echo "[EROR] Your OS or CPU architecture doesn't seem to be supported."
+	echo "[EROR] Detected OS: $OS"
+	echo "[EROR] Detected arch: $ARCH"
+	exit
 fi
 
 # All done
-if [ $XCODE -eq 0 ]; then
-	echo "[INFO] Installation complete! Open a new Terminal window to apply changes."
-	echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
-else
-	_report_bug
-fi
+echo "[INFO] Installation complete! Open a new Terminal window to apply changes."
+echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
 echo " "
-exit $XCODE
+exit
