@@ -57,6 +57,8 @@ _install_ini() {
 # Function for adding Nexus Tools directory to $PATH
 _add_path() {
 	if [[ ":$PATH:" == *":$DIR:"* ]]; then
+	echo $DIR
+	echo $PATH
 		# Nexus Tools directory already in $PATH
 		echo "[ OK ] $DIR/ is already in PATH."
 	else
@@ -102,7 +104,7 @@ _analytics() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.5"
+echo "[INFO] Nexus Tools 4.5.1"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
@@ -126,9 +128,6 @@ fi
 
 # Make the new directory
 mkdir -p $DIR
-
-# Add directory to current session's path
-export PATH=$PATH:$DIR
 
 # Check if platform tools are already installed
 if [ -x "$(command -v adb)" ]; then
