@@ -57,8 +57,6 @@ _install_ini() {
 # Function for adding Nexus Tools directory to $PATH
 _add_path() {
 	if [[ ":$PATH:" == *":$DIR:"* ]]; then
-	echo $DIR
-	echo $PATH
 		# Nexus Tools directory already in $PATH
 		echo "[ OK ] $DIR/ is already in PATH."
 	else
@@ -103,8 +101,17 @@ _analytics() {
 	fi
 }
 
+# Function for opening completion webpage
+_open_webpage() {
+	if [ "$OS" = "Darwin" ]; then
+		open "https://corbin.io/nexus-tools-exit.html" &>/dev/null &
+	else
+		xdg-open "https://corbin.io/nexus-tools-exit.html" &>/dev/null &
+	fi
+}
+
 # Start the script
-echo "[INFO] Nexus Tools 4.5.1"
+echo "[INFO] Nexus Tools 4.6"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
@@ -231,7 +238,7 @@ else
 fi
 
 # All done
+_open_webpage
 echo "[INFO] Installation complete! Open a new Terminal window to apply changes."
-echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
 echo " "
 exit
