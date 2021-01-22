@@ -233,5 +233,6 @@ fi
 # All done
 echo "[INFO] Installation complete! Open a new Terminal window to apply changes."
 echo "[INFO] Donate to support development: bit.ly/donatenexustools or patreon.com/corbindavenport"
+echo "[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw"
 echo " "
 exit
