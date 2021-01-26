@@ -20,7 +20,6 @@ INIURL="https://raw.githubusercontent.com/apkudo/adbusbini/master/adb_usb.ini"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools/raw/master"
-CURRENT_SHELL=$(ps -p "$$" -o 'comm=')
 ANALYTICS=$1
 
 # Function for copying udex.txt to proper location
@@ -62,14 +61,14 @@ _add_path() {
 		echo "[ OK ] $DIR/ is already in PATH."
 	else
 		# Nexus Tools directory needs to be added to $PATH
-		if [[ $CURRENT_SHELL == *"bash"* ]]; then
-			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
-			source "$HOME/.bashrc"
-			echo "[ OK ] Bash shell detected, added $DIR/ to $HOME/.bashrc."
-		elif [[ $CURRENT_SHELL == *"zsh"* ]]; then
+		if [[ "$SHELL" =~ "zsh" ]]; then
 			echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
 			source "$HOME/.zshrc"
 			echo "[ OK ] Z Shell detected, added $DIR/ to $HOME/.zshrc."
+		elif [[ "$SHELL" =~ "bash" ]]; then
+			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
+			source "$HOME/.bashrc"
+			echo "[ OK ] Bash shell detected, added $DIR/ to $HOME/.bashrc."
 		else
 			echo "[WARN] Shell could not be detected, you will need to manually add $DIR to your PATH."
 		fi
