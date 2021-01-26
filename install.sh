@@ -61,14 +61,14 @@ _add_path() {
 		echo "[ OK ] $DIR/ is already in PATH."
 	else
 		# Nexus Tools directory needs to be added to $PATH
-		if [[ $SHELL == *"bash"* ]]; then
-			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
-			source "$HOME/.bashrc"
-			echo "[ OK ] Bash shell detected, added $DIR/ to $HOME/.bashrc."
-		elif [[ $SHELL == *"zsh"* ]]; then
+		if [[ $ZSH_VERSION ]]; then
 			echo 'export PATH=$PATH:'$DIR >> $HOME/.zshrc
 			source "$HOME/.zshrc"
 			echo "[ OK ] Z Shell detected, added $DIR/ to $HOME/.zshrc."
+		elif [[ $BASH_VERSION ]]; then
+			echo 'export PATH=$PATH:'$DIR >> $HOME/.bashrc
+			source "$HOME/.bashrc"
+			echo "[ OK ] Bash shell detected, added $DIR/ to $HOME/.bashrc."
 		else
 			echo "[WARN] Shell could not be detected, you will need to manually add $DIR to your PATH."
 		fi
@@ -103,7 +103,9 @@ _analytics() {
 
 # Function for opening completion webpage
 _open_webpage() {
-	if [ "$OS" = "Darwin" ]; then
+	if [ -d "/mnt/c/Windows" ]; then
+		/mnt/c/Windows/explorer.exe "https://corbin.io/nexus-tools-exit.html" &>/dev/null &
+	elif [ "$OS" = "Darwin" ]; then
 		open "https://corbin.io/nexus-tools-exit.html" &>/dev/null &
 	else
 		xdg-open "https://corbin.io/nexus-tools-exit.html" &>/dev/null &
