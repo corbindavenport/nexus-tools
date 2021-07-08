@@ -130,9 +130,12 @@ _analytics
 
 # Delete existing Nexus Tools installation if it exists
 if [ -d $DIR ]; then
-	echo "[WARN] Platform tools already installed in $DIR. Press ENTER to overwrite or X to cancel."
-	read -sn1 input
-	[ "$input" = "" ] && rm -rf $DIR || exit
+	# Verify folder isn't just empty
+	if [ -f "$DIR/adb" ]; then
+		echo "[WARN] Platform tools already installed in $DIR. Press ENTER to overwrite or X to cancel."
+		read -sn1 input
+		[ "$input" = "" ] && rm -rf $DIR || exit
+	fi
 fi
 
 # Make the new directory
@@ -140,11 +143,11 @@ mkdir -p $DIR
 
 # Check if platform tools are already installed
 if [ -x "$(command -v adb)" ]; then
-	echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall ADB and try again."
+	echo "[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please uninstall ADB and try again."
 	exit
 fi
 if [ -x "$(command -v fastboot)" ]; then
-	echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please manually uninstall Fastboot and try again."
+	echo "[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please uninstall Fastboot and try again."
 	exit
 fi
 
@@ -187,6 +190,16 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	read -sn1 udevinput
 	[ "$udevinput" = "" ] && _install_udev
 elif [ "$OS" = "Darwin" ]; then # macOS
+	# Install Rosetta if required
+	if [ "$ARCH" = "arm64" ]; then
+		if [[ ! -f "/Library/Apple/System/Library/LaunchDaemons/com.apple.oahd.plist" ]]; then
+			echo "[WARN] Apple Rosetta compatibility layer must be installed. Press ENTER to install or X to cancel."
+			read -sn1 input
+			[ "$input" = "" ] && /usr/sbin/softwareupdate --install-rosetta --agree-to-license || exit
+		else
+			echo "[ OK ] Rosetta compatibility layer is already installed."
+		fi
+	fi
 	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for macOS..."
