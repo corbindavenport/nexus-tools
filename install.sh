@@ -190,7 +190,8 @@ if [ -d "/mnt/c/Windows" ]; then # Windows 10 Bash
 	read -sn1 udevinput
 	[ "$udevinput" = "" ] && _install_udev
 elif [ "$OS" = "Darwin" ]; then # macOS
-	# Install Rosetta if required
+	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
+	# Install Rosetta x86 emulation layer if needed
 	if [ "$ARCH" = "arm64" ]; then
 		if [[ ! -f "/Library/Apple/System/Library/LaunchDaemons/com.apple.oahd.plist" ]]; then
 			echo "[WARN] Apple Rosetta compatibility layer must be installed. Press ENTER to install or X to cancel."
@@ -200,7 +201,6 @@ elif [ "$OS" = "Darwin" ]; then # macOS
 			echo "[ OK ] Rosetta compatibility layer is already installed."
 		fi
 	fi
-	ZIP="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
 	# Download the ZIP file
 	echo "[ .. ] Downloading platform tools for macOS..."
 	curl -Lfk --progress-bar -o "$DIR/temp.zip" "$ZIP"|| { echo "[EROR] Download failed."; }
