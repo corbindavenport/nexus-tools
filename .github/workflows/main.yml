@@ -1,0 +1,28 @@
+name: Build on Push
+
+on:
+  push:
+    branches: [ dart ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        include:
+          - os: ubuntu-latest
+            output-name: nexustools-linux
+          - os: macOS-latest
+            output-name: nexustools-mac
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: DanTup/gh-actions/setup-dart@master
+      - run: mkdir build
+      - run: dart2native bin/nexustools.dart -v -o build/${{ matrix.output-name }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: native-executables
+          path: build
