@@ -1,7 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'dart:io' as io;
+import 'package:uuid/uuid.dart';
 
 String platform = io.Platform.operatingSystem;
+List supportedCPUs = ['i386', 'i486', 'i586', 'amd64', 'x86_64', 'i686'];
 
 // Function for obtaining Nexus Tools path
 // Credit: https://stackoverflow.com/a/25498458
@@ -55,9 +57,38 @@ void addPath() {
   // TODO
 }
 
+// Function get current CPU architecture
+Future<String> getCPUArchitecture() async {
+  var info = await io.Process.run('uname', ['-m']);
+  var cpu = info.stdout.toString().replaceAll('\n', '');
+  return cpu;
+}
+
 // Function for Google Analytics reporting
-void connectAnalytics() {
-  // TODO
+void connectAnalytics() async {
+  var uuid = Uuid();
+  var id = uuid.v4();
+  // Get exact operating system
+  var realOS = '';
+  var isWSL = await io.Directory('/mnt/c/Windows').exists();
+  var isChromeOS = await io.Directory('/usr/share/themes/CrosAdapta').exists();
+  if (isWSL) {
+    realOS = 'wsl';
+  } else if (isChromeOS) {
+    realOS = 'chrome-os';
+  } else {
+    realOS = io.Platform.operatingSystem;
+  }
+  realOS = Uri.encodeComponent(realOS);
+  var cpu = await getCPUArchitecture();
+  // Send analytics data
+  var net = Uri.parse(
+      'https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$id&dp=$realOS%2F$cpu');
+  try {
+    await http.get(net);
+  } catch (_) {
+    // Do nothing
+  }
 }
 
 // Function for opening competion webpage
@@ -90,5 +121,16 @@ void main(List<String> arguments) async {
   checkIfInstalled(dir, 'adb', 'ADB');
   // Check if Fastboot is already installed
   checkIfInstalled(dir, 'fastboot', 'Fastboot');
-  // TODO: Do the installation
+  // Proceed with installation
+  var cpu = await getCPUArchitecture();
+  if (supportedCPUs.contains(cpu)) {
+    print('[ OK ] Your hardware platform is supported, yay!');
+  } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
+    print(
+        '[WARN] Google doesn not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
+  } else {
+    print(
+        '[EROR] Your hardware platform is detected as $cpu, but Google only provides Platform Tools for x86-based platforms.');
+    io.exit(1);
+  }
 }
