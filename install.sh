@@ -113,7 +113,7 @@ _open_webpage() {
 }
 
 # Start the script
-echo "[INFO] Nexus Tools 4.7"
+echo "[INFO] Nexus Tools 4.7 (Bash)"
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
