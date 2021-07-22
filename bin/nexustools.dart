@@ -23,6 +23,23 @@ String nexusToolsDir() {
   return '$home/.nexustools';
 }
 
+// Function for checking if an executable is already installed
+void checkIfInstalled(String dir, String command, String commandName) async {
+  var info = await io.Process.run('which', [command]);
+  if (info.stdout.toString().contains(dir)) {
+    // Executable is installed in the Nexus Tools directory
+    return;
+  } else if (info.stdout.toString().isEmpty) {
+    // Executable isn't installed at all
+  } else {
+    // Executable is installed but not inside the Nexus Tools directory
+    var location = info.stdout.toString().replaceAll('\n', '');
+    print(
+        '[EROR] $commandName is already installed at $location. Please uninstall $commandName and try again.');
+    io.exit(1);
+  }
+}
+
 // Function for copying udex.txt to proper location
 void installUdev() {
   // TODO
@@ -70,30 +87,8 @@ void main(List<String> arguments) async {
     await io.Directory(dir).create(recursive: true);
   }
   // Check if ADB is already installed
-  try {
-    var adb = await io.Process.run('whereis', ['adb']);
-    if (adb.stdout.toString().contains('.nexustools')) {
-      // ADB is installed in the right directory
-      return;
-    } else {
-      print(
-          '[EROR] ADB is already installed and Nexus Tools cannot remove it automatically. Please uninstall ADB and try again.');
-    }
-  } catch (e) {
-    // ADB is not installed, do nothing
-  }
+  checkIfInstalled(dir, 'adb', 'ADB');
   // Check if Fastboot is already installed
-  try {
-    var fastboot = await io.Process.run('whereis', ['fastboot']);
-    if (fastboot.stdout.toString().contains('.nexustools')) {
-      // ADB is installed in the right directory
-      return;
-    } else {
-      print(
-          '[EROR] Fastboot is already installed and Nexus Tools cannot remove it automatically. Please uninstall ADB and try again.');
-    }
-  } catch (e) {
-    // ADB is not installed, do nothing
-  }
+  checkIfInstalled(dir, 'fastboot', 'Fastboot');
   // TODO: Do the installation
 }
