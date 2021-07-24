@@ -68,12 +68,12 @@ Future addPath(String path) async {
 void openWebpage(String url) async {
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
   if (isWSL) {
-    await io.Process.run('/mnt/c/Windows/explorer.exe', ['https://corbin.io/nexus-tools-exit.html']);
+    await io.Process.run('/mnt/c/Windows/explorer.exe', [url]);
   } else if (io.Platform.isWindows) {
-    await io.Process.run('explorer', ['https://corbin.io/nexus-tools-exit.html']);
+    await io.Process.run('explorer', [url]);
   } else if (io.Platform.isMacOS) {
-    await io.Process.run('open', ['https://corbin.io/nexus-tools-exit.html']);
+    await io.Process.run('open', [url]);
   } else if (io.Platform.isLinux) {
-    await io.Process.run('xdg-open', ['https://corbin.io/nexus-tools-exit.html']);
+    await io.Process.run('xdg-open', [url]);
   }
 }
