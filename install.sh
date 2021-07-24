@@ -10,10 +10,15 @@ DOWNLOAD=''
 _run_executable() {
 	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
 	unzip -q -o ./temp.zip
+	rm ./temp.zip
 	chmod +x ./nexustools*
+	if [ "$OS" = "Darwin" ]; then
+		echo "[WARN] Nexus Tools is not a signed executable, sudo permission is required to add Nexus Tools as a security exception."
+		echo "[WARN] More info: https://github.com/corbindavenport/nexus-tools/wiki/Nexus-Tools-on-macOS"
+		sudo xattr -cr ./nexustools*
+	fi
 	./nexustools* $1
 	rm ./nexustools*
-	rm ./temp.zip
 }
 
 # Check that required applications are installed
