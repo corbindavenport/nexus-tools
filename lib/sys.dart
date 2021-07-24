@@ -4,26 +4,37 @@ Map envVars = io.Platform.environment;
 
 // Function for checking if an executable is already installed
 void checkIfInstalled(String dir, String command, String commandName) async {
-  var info = await io.Process.run('which', [command]);
-  if (info.stdout.toString().contains(dir)) {
+  var info = '';
+  if (io.Platform.isWindows) {
+    var cmd = await io.Process.run('where', [command]);
+    info = cmd.stdout.toString();
+  } else {
+    var cmd = await io.Process.run('which', [command]);
+    info = cmd.stdout.toString();
+  }
+  if (info.contains(dir)) {
     // Executable is installed in the Nexus Tools directory
     return;
-  } else if (info.stdout.toString().isEmpty) {
+  } else if (info.isEmpty) {
     // Executable isn't installed at all
   } else {
     // Executable is installed but not inside the Nexus Tools directory
-    var location = info.stdout.toString().replaceAll('\n', '');
-    print(
-        '[EROR] $commandName is already installed at $location. Please uninstall $commandName and try again.');
+    var location = info.replaceAll('\n', '');
+    print('[EROR] $commandName is already installed at $location. Please uninstall $commandName and try again.');
     io.exit(1);
   }
 }
 
 // Function get current CPU architecture
 Future<String> getCPUArchitecture() async {
-  var info = await io.Process.run('uname', ['-m']);
-  var cpu = info.stdout.toString().replaceAll('\n', '');
-  return cpu;
+  if (io.Platform.isWindows) {
+    var cpu = envVars['PROCESSOR_ARCHITECTURE'];
+    return cpu;
+  } else {
+    var info = await io.Process.run('uname', ['-m']);
+    var cpu = info.stdout.toString().replaceAll('\n', '');
+    return cpu;
+  }
 }
 
 // Function for adding a directory to the system/shell $PATH

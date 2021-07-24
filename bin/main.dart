@@ -9,7 +9,9 @@ String macZip =
     'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
 String linuxZip =
     'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
-List supportedCPUs = ['i386', 'i486', 'i586', 'amd64', 'x86_64', 'i686'];
+String windowsZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
+List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
 
 // Function for obtaining Nexus Tools path
@@ -20,15 +22,17 @@ String nexusToolsDir() {
     home = envVars['HOME'];
   } else if (io.Platform.isLinux) {
     home = envVars['HOME'];
-  }
-  /*else if (io.Platform.isWindows) {
+  } else if (io.Platform.isWindows) {
     home = envVars['UserProfile'];
   }
-  */
   if (home.endsWith('/')) {
     home = home.substring(0, home.length - 1);
   }
-  return '$home/.nexustools';
+  if (io.Platform.isWindows) {
+    return '$home\\NexusTools';
+  } else {
+    return '$home/.nexustools';
+  }
 }
 
 // Function for installing Platform Tools package
@@ -40,9 +44,11 @@ Future installPlatformTools() async {
     zip = macZip;
   } else if (io.Platform.isLinux) {
     zip = linuxZip;
+  } else if (io.Platform.isWindows) {
+    zip = windowsZip;
   }
   // Download file
-  print('[....] Downloading Platform Tools package.');
+  print('[....] Downloading Platform Tools package, please wait.');
   var net = Uri.parse(zip);
   try {
     var data = await http.readBytes(net);
@@ -54,12 +60,18 @@ Future installPlatformTools() async {
     print('[EROR] There was an error downloading Platform Tools: $error');
     io.exit(1);
   }
-  // Move files out of platform-tools subdirectory
-  await io.Process.run('/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
-  // Delete subdirectory
-  await io.Process.run('rmdir', ['$dir/platform-tools']);
+  // Move files out of platform-tools subdirectory and delete the subdirectory
+  if (io.Platform.isWindows) {
+    await io.Process.run('move', ['$dir\\platform-tools\\*', '$dir'], runInShell: true);
+    await io.Process.run('rmdir', ['/Q', '/S', '$dir\\platform-tools'], runInShell: true);
+  } else {
+    await io.Process.run('/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
+    await io.Process.run('/bin/sh', ['-c', 'rm -rf $dir/platform-tools']);
+  }
   // Mark binaries in directory as executable
-  await io.Process.run('/bin/sh', ['-c', 'chmod -f +x $dir/*']);
+  if (io.Platform.isLinux || io.Platform.isMacOS) {
+    await io.Process.run('/bin/sh', ['-c', 'chmod -f +x $dir/*']);
+  }
   // Give a progress report
   print('[ OK ] Platform Tools now installed in $dir.');
   // Add binaries to path
@@ -104,10 +116,10 @@ void main(List<String> arguments) async {
   }
   // Check if directory already exists
   var dir = nexusToolsDir();
-  var dirExists = await io.Directory(dir).exists();
-  if (dirExists) {
-    io.stdout
-        .write('[WARN] Platform tools installed in $dir. Continue? [Y/N] ');
+  var installExists = false;
+  installExists = await io.Directory('$dir').exists();
+  if (installExists) {
+    io.stdout.write('[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       return;
@@ -115,6 +127,7 @@ void main(List<String> arguments) async {
   } else {
     // Make the directory
     await io.Directory(dir).create(recursive: true);
+    print('[ OK ] Created folder at $dir.');
   }
   // Check if ADB is already installed
   sys.checkIfInstalled(dir, 'adb', 'ADB');
