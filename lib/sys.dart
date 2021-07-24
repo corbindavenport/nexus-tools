@@ -51,12 +51,12 @@ Future addPath(String path) async {
     } else if (envVars['SHELL'].toString().contains('zsh')) {
       // Z Shell
       var file = io.File(envVars['HOME'] + '/.zshrc');
-      await file.writeAsString('export PATH=$path:', mode: io.FileMode.append);
+      await file.writeAsString('\nexport PATH=\$PATH:$path', mode: io.FileMode.append);
       print('[ OK ] Z Shell detected, added $path to ' + file.path);
     } else if (envVars['SHELL'].toString().contains('bash')) {
       // Bash
       var file = io.File(envVars['HOME'] + '/.bashrc');
-      await file.writeAsString('export PATH=$path:', mode: io.FileMode.append);
+      await file.writeAsString('\nexport PATH=\$PATH:$path', mode: io.FileMode.append);
       print('[ OK ] Bash Shell detected, added $path to ' + file.path);
     } else {
       print('[WARN] Shell could not be detected, you will need to manually add $path to your PATH.');
