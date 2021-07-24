@@ -75,7 +75,40 @@ Future installPlatformTools() async {
   // Give a progress report
   print('[ OK ] Platform Tools now installed in $dir.');
   // Add binaries to path
-  sys.addPath(dir);
+  await sys.addPath(dir);
+  // Add help link to folder
+  if (io.Platform.isWindows || io.Platform.isMacOS) {
+    var file = io.File('$dir\\About Nexus Tools.url');
+    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+  } else if (io.Platform.isLinux) {
+    var file = io.File('$dir/About Nexus Tools.desktop');
+    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+  }
+  // Install drivers on Windows
+  if (io.Platform.isWindows) {
+    print('[WARN] Drivers may be required for ADB if they are not already installed.');
+    io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
+    var input = io.stdin.readLineSync();
+    if (input?.toLowerCase() == 'y') {
+      await installWindowsDrivers(dir);
+    }
+  }
+}
+
+// Function for installing Windows Universal ADB drivers
+// Drivers provided by ClockWorkMod: https://adb.clockworkmod.com/
+Future installWindowsDrivers(String dir) async {
+  print('[....] Downloading drivers, please wait.');
+  var net = Uri.parse('https://github.com/koush/adb.clockworkmod.com/releases/latest/download/UniversalAdbDriverSetup.msi');
+  try {
+    var data = await http.readBytes(net);
+    var file = io.File('$dir\\ADB Drivers.msi');
+    await file.writeAsBytes(data, mode: io.FileMode.writeOnly);
+    print('[....] Opening driver installer.');
+    await io.Process.run('start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'], runInShell: true);
+  } catch (e) {
+    print('[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
+  }
 }
 
 // Function for Google Analytics reporting
@@ -158,5 +191,11 @@ void main(List<String> arguments) async {
   await installPlatformTools();
   // We're done!
   sys.openWebpage('https://corbin.io/nexus-tools-exit.html');
-  print('[INFO] Installation complete! Open a new Terminal window/tab to apply changes.');
+  var appName = '';
+  if (io.Platform.isWindows) {
+    appName = 'Command Line';
+  } else {
+    appName = 'Terminal';
+  }
+  print('[INFO] Installation complete! Open a new $appName window to apply changes.');
 }

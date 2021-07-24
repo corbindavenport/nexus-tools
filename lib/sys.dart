@@ -38,13 +38,17 @@ Future<String> getCPUArchitecture() async {
 }
 
 // Function for adding a directory to the system/shell $PATH
-void addPath(String path) async {
+Future addPath(String path) async {
   if (envVars['PATH'].toString().contains(path)) {
     // Directory is already in $PATH
     print('[ OK ] $path is already in PATH.');
   } else {
     // Directory needs to be added to $PATH
-    if (envVars['SHELL'].toString().contains('zsh')) {
+    if (io.Platform.isWindows) {
+      var newPath = envVars['PATH'].toString() + '$path';
+      await io.Process.run('setx', ['path', newPath]);
+      print('[ OK ] Added $path to user %PATH.');
+    } else if (envVars['SHELL'].toString().contains('zsh')) {
       // Z Shell
       var file = io.File(envVars['HOME'] + '/.zshrc');
       await file.writeAsString('export PATH=$path:', mode: io.FileMode.append);
@@ -60,11 +64,13 @@ void addPath(String path) async {
   }
 }
 
-// Function for opening a web page in the default browser asyncronously
+// Function for opening a web page in the default browser
 void openWebpage(String url) async {
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
   if (isWSL) {
     await io.Process.run('/mnt/c/Windows/explorer.exe', ['https://corbin.io/nexus-tools-exit.html']);
+  } else if (io.Platform.isWindows) {
+    await io.Process.run('explorer', ['https://corbin.io/nexus-tools-exit.html']);
   } else if (io.Platform.isMacOS) {
     await io.Process.run('open', ['https://corbin.io/nexus-tools-exit.html']);
   } else if (io.Platform.isLinux) {
