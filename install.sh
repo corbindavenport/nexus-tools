@@ -5,14 +5,29 @@
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools"
+DOWNLOAD=''
+
+_run_executable() {
+	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
+	unzip -q -o ./temp.zip
+	chmod +x ./nexustools*
+	./nexustools* $1
+	rm ./nexustools*
+	rm ./temp.zip
+}
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
   echo "[EROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
   exit
 fi
+if ! [ -x "$(command -v unzip)" ]; then
+  echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
+  exit
+fi
 
 # Start Dart executable
+cd $HOME
 if [ "$OS" = "Darwin" ]; then # macOS
 	# Install Rosetta x86 emulation layer if needed
 	if [ "$ARCH" = "arm64" ]; then
@@ -24,23 +39,14 @@ if [ "$OS" = "Darwin" ]; then # macOS
 			echo "[ OK ] Rosetta compatibility layer is already installed."
 		fi
 	fi
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64"
-	curl -Lfk --progress-bar -o ./exec $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
-	chmod +x ./exec
-	./exec
-	rm ./exec
+	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"
+	_run_executable
 elif [ "$OS" = "Linux" ] && [ "$ARCH" = "x86_64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64"
-	curl -Lfk --progress-bar -o ./exec $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
-	chmod +x ./exec
-	./exec
-	rm ./exec
+	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
+	_run_executable
 elif [ "$OS" = "Linux" ] && [ "$ARCH" = "amd64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64"
-	curl -Lfk --progress-bar -o ./exec $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
-	chmod +x ./exec
-	./exec
-	rm ./exec
+	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
+	_run_executable
 else
 	echo "[EROR] Your OS or CPU architecture doesn't seem to be supported."
 	echo "[EROR] Detected OS: $OS"
