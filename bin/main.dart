@@ -6,8 +6,10 @@ import 'package:uuid/uuid.dart';
 import 'package:nexustools/sys.dart' as sys;
 
 String platform = io.Platform.operatingSystem;
-String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
-String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
+String macZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
+String linuxZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 List supportedCPUs = ['i386', 'i486', 'i586', 'amd64', 'x86_64', 'i686'];
 
 // Function for obtaining Nexus Tools path
@@ -54,10 +56,15 @@ void installPlatformTools() async {
     io.exit(1);
   }
   // Move files out of platform-tools subdirectory
-  var result = await io.Process.run('mv', ['-f', '\*', '$dir'], workingDirectory:'$dir/platform-tools/');
-  //io.stdout.write(result.stdout);
-  //io.stderr.write(result.stderr);
-  //await io.Process.run('rmdir', ['$dir/platform-tools*']);
+  await io.Process.run(
+      '/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
+  // Delete subdirectory
+  await io.Process.run('rmdir', ['$dir/platform-tools']);
+  // Mark binaries in directory as executable
+  await io.Process.run('/bin/sh', ['-c', 'chmod -f +x $dir/*']);
+  // Add binaries to path
+  addPath();
+  print('[ OK ] Platform Tools now installed in $dir.');
 }
 
 // Function for copying udex.txt to proper location
@@ -93,7 +100,8 @@ void connectAnalytics() async {
   realOS = Uri.encodeComponent(realOS);
   var cpu = await sys.getCPUArchitecture();
   // Send analytics data
-  var net = Uri.parse('https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$id&dp=$realOS%2F$cpu');
+  var net = Uri.parse(
+      'https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$id&dp=$realOS%2F$cpu');
   try {
     await http.get(net);
   } catch (_) {
@@ -107,7 +115,7 @@ void openWebpage() {}
 void main(List<String> arguments) async {
   // Start the installer
   print('[INFO] Nexus Tools 5.0');
-  // Start analytics asynchronously 
+  // Start analytics asynchronously
   if (arguments.contains('no-analytics')) {
     print('[ OK ] Google Analytics are disabled.');
   } else {
@@ -117,7 +125,8 @@ void main(List<String> arguments) async {
   var dir = nexusToolsDir();
   var dirExists = await io.Directory(dir).exists();
   if (dirExists) {
-    io.stdout.write('[WARN] Platform tools installed in $dir. Continue? [Y/N] ');
+    io.stdout
+        .write('[WARN] Platform tools installed in $dir. Continue? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       return;
@@ -135,22 +144,21 @@ void main(List<String> arguments) async {
   if (supportedCPUs.contains(cpu)) {
     print('[ OK ] Your hardware platform is supported, yay!');
   } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
-    print('[WARN] Google doesn not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
+    print(
+        '[WARN] Google doesn not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
   } else {
-    print('[EROR] Your hardware platform is detected as $cpu, but Google only provides Platform Tools for x86-based platforms.');
+    print(
+        '[EROR] Your hardware platform is detected as $cpu, but Google only provides Platform Tools for x86-based platforms.');
     io.exit(1);
   }
   // Display environment-specific warnings
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
   var isChromeOS = await io.Directory('/usr/share/themes/CrosAdapta').exists();
   if (isWSL) {
-    print('[WARN] WSL does not support USB devices, you will only be able to use ADB over Wi-Fi.');
+    print(
+        '[WARN] WSL does not support USB devices, you will only be able to use ADB over Wi-Fi.');
   } else if (isChromeOS) {
-    print ('[WARN] Chrome OS 75 or higher is required for USB support.');
-  }
-  // Install Rosetta on macOS if needed
-  if (io.Platform.isMacOS) {
-    sys.checkRosetta();
+    print('[WARN] Chrome OS 75 or higher is required for USB support.');
   }
   // Start main installation
   installPlatformTools();
