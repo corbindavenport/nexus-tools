@@ -5,18 +5,17 @@ import 'package:archive/archive.dart';
 import 'package:uuid/uuid.dart';
 import 'package:nexustools/sys.dart' as sys;
 
-String platform = io.Platform.operatingSystem;
 String macZip =
     'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
 String linuxZip =
     'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 List supportedCPUs = ['i386', 'i486', 'i586', 'amd64', 'x86_64', 'i686'];
+Map envVars = io.Platform.environment;
 
 // Function for obtaining Nexus Tools path
 // Credit: https://stackoverflow.com/a/25498458
 String nexusToolsDir() {
   var home = '';
-  Map envVars = io.Platform.environment;
   if (io.Platform.isMacOS) {
     home = envVars['HOME'];
   } else if (io.Platform.isLinux) {
@@ -33,7 +32,7 @@ String nexusToolsDir() {
 }
 
 // Function for installing Platform Tools package
-void installPlatformTools() async {
+Future installPlatformTools() async {
   var dir = nexusToolsDir();
   // Get the proper ZIP file
   var zip = '';
@@ -43,7 +42,7 @@ void installPlatformTools() async {
     zip = linuxZip;
   }
   // Download file
-  print('[....] Downloading Platform Tools package...');
+  print('[....] Downloading Platform Tools package.');
   var net = Uri.parse(zip);
   try {
     var data = await http.readBytes(net);
@@ -56,30 +55,15 @@ void installPlatformTools() async {
     io.exit(1);
   }
   // Move files out of platform-tools subdirectory
-  await io.Process.run(
-      '/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
+  await io.Process.run('/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
   // Delete subdirectory
   await io.Process.run('rmdir', ['$dir/platform-tools']);
   // Mark binaries in directory as executable
   await io.Process.run('/bin/sh', ['-c', 'chmod -f +x $dir/*']);
-  // Add binaries to path
-  addPath();
+  // Give a progress report
   print('[ OK ] Platform Tools now installed in $dir.');
-}
-
-// Function for copying udex.txt to proper location
-void installUdev() {
-  // TODO
-}
-
-// Function for installing USB Vendor ID list
-void installIni() {
-  // TODO
-}
-
-// Function for adding Nexus Tools directory to $PATH
-void addPath() {
-  // TODO
+  // Add binaries to path
+  sys.addPath(dir);
 }
 
 // Function for Google Analytics reporting
@@ -108,9 +92,6 @@ void connectAnalytics() async {
     // Do nothing
   }
 }
-
-// Function for opening competion webpage
-void openWebpage() {}
 
 void main(List<String> arguments) async {
   // Start the installer
@@ -161,5 +142,8 @@ void main(List<String> arguments) async {
     print('[WARN] Chrome OS 75 or higher is required for USB support.');
   }
   // Start main installation
-  installPlatformTools();
+  await installPlatformTools();
+  // We're done!
+  sys.openWebpage('https://corbin.io/nexus-tools-exit.html');
+  print('[INFO] Installation complete! Open a new Terminal window/tab to apply changes.');
 }
