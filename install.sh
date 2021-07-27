@@ -1,13 +1,16 @@
 #!/bin/bash
 
-# This script is a wrapper to start the Dart executable from the GitHub releases page.
+# This script is just a wrapper to start the Dart executable from the GitHub releases page.
 
+DIR="$HOME/.nexustools"
 OS=$(uname)
 ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools"
 DOWNLOAD=''
+PARAMS="$@"
 
 _run_executable() {
+	cd $DIR
 	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
 	unzip -q -o ./temp.zip
 	rm ./temp.zip
@@ -17,8 +20,8 @@ _run_executable() {
 		echo "[WARN] More info: https://github.com/corbindavenport/nexus-tools/wiki/Nexus-Tools-on-macOS"
 		sudo xattr -cr ./nexustools*
 	fi
-	./nexustools* $1
-	rm ./nexustools*
+	# Run Nexus Tools and pass all parameters to the executable
+	./nexustools* "$PARAMS"
 }
 
 # Check that required applications are installed
@@ -31,8 +34,10 @@ if ! [ -x "$(command -v unzip)" ]; then
   exit
 fi
 
+# Make the new directory
+mkdir -p $DIR
+
 # Start Dart executable
-cd $HOME
 if [ "$OS" = "Darwin" ]; then # macOS
 	# Install Rosetta x86 emulation layer if needed
 	if [ "$ARCH" = "arm64" ]; then

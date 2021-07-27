@@ -18,8 +18,8 @@ else
 fi
 
 mkdir -p ./dist
-dart compile exe "./bin/main.dart" -o "./dist/$FILENAME"
+dart compile exe "./bin/main.dart" -o "./dist/nexustools"
 cd ./dist
-zip "$FILENAME.zip" "$FILENAME"
-rm "$FILENAME"
+zip "$FILENAME.zip" "nexustools"
+rm "nexustools"
 cd ../

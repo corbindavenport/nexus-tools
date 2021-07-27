@@ -104,6 +104,31 @@ Future installPlatformTools() async {
   }
 }
 
+// Function for removing Platform Tools package
+Future removePlatformTools() async {
+  // Nexus Tools 3.2+ (August 2016-Present) installs binaries in ~/.nexustools
+  var dir = nexusToolsDir();
+  var installExists = false;
+  installExists = await io.Directory(dir).exists();
+  if (installExists) {
+    print('[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
+    print('[WARN] This will also delete Nexus Tools if it is installed to that folder.');
+    io.stdout.write(
+        '[WARN] Continue with removal? [Y/N] ');
+    var input = io.stdin.readLineSync();
+    if (input?.toLowerCase() != 'y') {
+      return;
+    } else {
+    // Proceed with deletion
+    await io.Directory(dir).delete(recursive: true);
+    print('[ OK ] Deleted directory at $dir.');
+    print('[ OK ] Nexus Tools can be re-installed at https://github.com/corbindavenport/nexus-tools.');
+  }
+  } else {
+    print('[EROR] No installation found at $dir.');
+  }
+}
+
 // Function for installing Windows Universal ADB drivers
 // Drivers provided by ClockWorkMod: https://adb.clockworkmod.com/
 Future installWindowsDrivers(String dir) async {
@@ -220,6 +245,9 @@ void main(List<String> arguments) async {
         '[INFO] Installation complete! Open a new $appName window to apply changes.');
     print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
     print('[INFO] Donate to support development: https://git.io/J4jct');
+  } else if (arguments.contains('-r') || arguments.contains('--remove')) {
+    // Start removal
+    await removePlatformTools();
   } else {
     print('[EROR] No arguments used. Run nexustools -h for help!');
   }
