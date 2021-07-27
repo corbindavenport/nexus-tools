@@ -111,19 +111,21 @@ Future removePlatformTools() async {
   var installExists = false;
   installExists = await io.Directory(dir).exists();
   if (installExists) {
-    print('[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
-    print('[WARN] This will also delete Nexus Tools if it is installed to that folder.');
-    io.stdout.write(
-        '[WARN] Continue with removal? [Y/N] ');
+    print(
+        '[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
+    print(
+        '[WARN] This will also delete Nexus Tools if it is installed to that folder.');
+    io.stdout.write('[WARN] Continue with removal? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       return;
     } else {
-    // Proceed with deletion
-    await io.Directory(dir).delete(recursive: true);
-    print('[ OK ] Deleted directory at $dir.');
-    print('[ OK ] Nexus Tools can be re-installed at https://github.com/corbindavenport/nexus-tools.');
-  }
+      // Proceed with deletion
+      await io.Directory(dir).delete(recursive: true);
+      print('[ OK ] Deleted directory at $dir.');
+      print(
+          '[ OK ] Nexus Tools can be re-installed at https://github.com/corbindavenport/nexus-tools.');
+    }
   } else {
     print('[EROR] No installation found at $dir.');
   }
@@ -221,16 +223,32 @@ Future checkInstall() async {
   }
 }
 
+void printHelp() {
+  var helpDoc = '''
+Nexus Tools $appVersion
+A downloader/management app for Android SDK Platform Tools
+
+Usage: nexustools [OPTIONS]
+
+Example: nexustools -i (this installs Platform Tools)
+
+ -i, --install                 Install/update Android Platform Tools
+ -r, --remove                  Remove Platform Tools
+ -n, --no-analytics            Run Nexus Tools without Google Analytics
+ -h, --help                    Display this help message
+  ''';
+  print(helpDoc);
+}
+
 void main(List<String> arguments) async {
-  // Start the installer
-  print('[INFO] Nexus Tools $appVersion');
-  // Start analytics unless opted out
-  if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
-    print('[ OK ] Google Analytics are disabled.');
-  } else {
-    connectAnalytics();
-  }
   if (arguments.contains('-i') || arguments.contains('--install')) {
+    print('[INFO] Nexus Tools $appVersion');
+    // Start analytics unless opted out
+    if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
+      print('[ OK ] Google Analytics are disabled.');
+    } else {
+      connectAnalytics();
+    }
     // Start installation
     await checkInstall();
     await installPlatformTools();
@@ -243,12 +261,16 @@ void main(List<String> arguments) async {
     }
     print(
         '[INFO] Installation complete! Open a new $appName window to apply changes.');
-    print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
+    print(
+        '[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
     print('[INFO] Donate to support development: https://git.io/J4jct');
   } else if (arguments.contains('-r') || arguments.contains('--remove')) {
+    print('[INFO] Nexus Tools $appVersion');
     // Start removal
     await removePlatformTools();
+  } else if (arguments.contains('-h') || arguments.contains('--help')) {
+    printHelp();
   } else {
-    print('[EROR] No arguments used. Run nexustools -h for help!');
+    print('[EROR] Invalid arguments. Run nexustools -h for help!');
   }
 }
