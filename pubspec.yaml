@@ -15,3 +15,4 @@ dev_dependencies:
   io:
   uuid:
   archive: ^3.1.2
+  console:

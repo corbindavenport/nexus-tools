@@ -13,6 +13,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
+String appVersion = '5.0';
 
 // Function for obtaining Nexus Tools path
 // Credit: https://stackoverflow.com/a/25498458
@@ -62,10 +63,13 @@ Future installPlatformTools() async {
   }
   // Move files out of platform-tools subdirectory and delete the subdirectory
   if (io.Platform.isWindows) {
-    await io.Process.run('move', ['$dir\\platform-tools\\*', '$dir'], runInShell: true);
-    await io.Process.run('rmdir', ['/Q', '/S', '$dir\\platform-tools'], runInShell: true);
+    await io.Process.run('move', ['$dir\\platform-tools\\*', '$dir'],
+        runInShell: true);
+    await io.Process.run('rmdir', ['/Q', '/S', '$dir\\platform-tools'],
+        runInShell: true);
   } else {
-    await io.Process.run('/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
+    await io.Process.run(
+        '/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
     await io.Process.run('/bin/sh', ['-c', 'rm -rf $dir/platform-tools']);
   }
   // Mark binaries in directory as executable
@@ -79,14 +83,19 @@ Future installPlatformTools() async {
   // Add help link to folder
   if (io.Platform.isWindows || io.Platform.isMacOS) {
     var file = io.File('$dir\\About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString(
+        '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
-    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString(
+        '[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
   }
   // Install drivers on Windows
   if (io.Platform.isWindows) {
-    print('[WARN] Drivers may be required for ADB if they are not already installed.');
+    print(
+        '[WARN] Drivers may be required for ADB if they are not already installed.');
     io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() == 'y') {
@@ -99,15 +108,19 @@ Future installPlatformTools() async {
 // Drivers provided by ClockWorkMod: https://adb.clockworkmod.com/
 Future installWindowsDrivers(String dir) async {
   print('[....] Downloading drivers, please wait.');
-  var net = Uri.parse('https://github.com/koush/adb.clockworkmod.com/releases/latest/download/UniversalAdbDriverSetup.msi');
+  var net = Uri.parse(
+      'https://github.com/koush/adb.clockworkmod.com/releases/latest/download/UniversalAdbDriverSetup.msi');
   try {
     var data = await http.readBytes(net);
     var file = io.File('$dir\\ADB Drivers.msi');
     await file.writeAsBytes(data, mode: io.FileMode.writeOnly);
     print('[....] Opening driver installer.');
-    await io.Process.run('start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'], runInShell: true);
+    await io.Process.run(
+        'start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'],
+        runInShell: true);
   } catch (e) {
-    print('[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
+    print(
+        '[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
   }
 }
 
@@ -138,21 +151,15 @@ void connectAnalytics() async {
   }
 }
 
-void main(List<String> arguments) async {
-  // Start the installer
-  print('[INFO] Nexus Tools 5.0');
-  // Start analytics asynchronously
-  if (arguments.contains('no-analytics')) {
-    print('[ OK ] Google Analytics are disabled.');
-  } else {
-    connectAnalytics();
-  }
+// Pre-installation steps
+Future checkInstall() async {
   // Check if directory already exists
   var dir = nexusToolsDir();
   var installExists = false;
   installExists = await io.Directory('$dir').exists();
   if (installExists) {
-    io.stdout.write('[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
+    io.stdout.write(
+        '[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       return;
@@ -187,15 +194,33 @@ void main(List<String> arguments) async {
   } else if (isChromeOS) {
     print('[WARN] Chrome OS 75 or higher is required for USB support.');
   }
-  // Start main installation
-  await installPlatformTools();
-  // We're done!
-  sys.openWebpage('https://corbin.io/nexus-tools-exit.html');
-  var appName = '';
-  if (io.Platform.isWindows) {
-    appName = 'Command Line';
+}
+
+void main(List<String> arguments) async {
+  // Start the installer
+  print('[INFO] Nexus Tools $appVersion');
+  // Start analytics unless opted out
+  if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
+    print('[ OK ] Google Analytics are disabled.');
   } else {
-    appName = 'Terminal';
+    connectAnalytics();
   }
-  print('[INFO] Installation complete! Open a new $appName window to apply changes.');
+  if (arguments.contains('-i') || arguments.contains('--install')) {
+    // Start installation
+    await checkInstall();
+    await installPlatformTools();
+    // Post-install
+    var appName = '';
+    if (io.Platform.isWindows) {
+      appName = 'Command Line';
+    } else {
+      appName = 'Terminal';
+    }
+    print(
+        '[INFO] Installation complete! Open a new $appName window to apply changes.');
+    print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
+    print('[INFO] Donate to support development: https://git.io/J4jct');
+  } else {
+    print('[EROR] No arguments used. Run nexustools -h for help!');
+  }
 }
