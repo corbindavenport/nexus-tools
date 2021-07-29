@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:archive/archive.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:convert';
 import 'package:nexustools/sys.dart' as sys;
 
 String macZip =
@@ -13,7 +14,25 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-String appVersion = '5.0';
+double appVersion = 5.0;
+
+// Function for checking for update
+Future checkUpdate() async {
+  var net = Uri.parse(
+      'https://api.github.com/repos/corbindavenport/nexus-tools/releases/latest');
+  try {
+    var data = await http.read(net);
+    var parsedData = json.decode(data);
+    // Compare versions
+    if (double.parse(parsedData['tag_name']) >  appVersion) {
+      print('[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
+    } else {
+      print('[INFO] You have the latest version of Nexus Tools.');
+    }
+  } catch (e) {
+    print('[EROR] Could not check for updates.');
+  }
+}
 
 // Function for obtaining Nexus Tools path
 // Credit: https://stackoverflow.com/a/25498458
@@ -124,7 +143,7 @@ Future removePlatformTools() async {
       await io.Directory(dir).delete(recursive: true);
       print('[ OK ] Deleted directory at $dir.');
       print(
-          '[ OK ] Nexus Tools can be re-installed at https://github.com/corbindavenport/nexus-tools.');
+          '[ OK ] Nexus Tools can be re-installed at https://git.io/JBuTh.');
     }
   } else {
     print('[EROR] No installation found at $dir.');
@@ -235,6 +254,8 @@ Example: nexustools -i (this installs Platform Tools)
  -i, --install                 Install/update Android Platform Tools
  -r, --remove                  Remove Platform Tools
  -n, --no-analytics            Run Nexus Tools without Google Analytics
+                               (Analytics is only run on install)
+ -c, --check                   Check for Nexus Tools update
  -h, --help                    Display this help message
   ''';
   print(helpDoc);
@@ -243,6 +264,7 @@ Example: nexustools -i (this installs Platform Tools)
 void main(List<String> arguments) async {
   if (arguments.contains('-i') || arguments.contains('--install')) {
     print('[INFO] Nexus Tools $appVersion');
+    await checkUpdate();
     // Start analytics unless opted out
     if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
       print('[ OK ] Google Analytics are disabled.');
@@ -270,6 +292,8 @@ void main(List<String> arguments) async {
     await removePlatformTools();
   } else if (arguments.contains('-h') || arguments.contains('--help')) {
     printHelp();
+  } else if (arguments.contains('-c') || arguments.contains('--check')) {
+    await checkUpdate();
   } else {
     print('[EROR] Invalid arguments. Run nexustools -h for help!');
   }
