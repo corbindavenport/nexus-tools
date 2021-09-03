@@ -55,7 +55,7 @@ Future addPath(String path) async {
       print('[ OK ] Z Shell detected, added $path to ' + file.path);
     } else if (envVars['SHELL'].toString().contains('bash')) {
       // Bash
-      var file = io.File(envVars['HOME'] + '/.bashrc');
+      var file = io.File(envVars['HOME'] + '/.bash_profile');
       await file.writeAsString('\nexport PATH=\$PATH:$path', mode: io.FileMode.append);
       print('[ OK ] Bash Shell detected, added $path to ' + file.path);
     } else {
