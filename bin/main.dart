@@ -24,8 +24,9 @@ Future checkUpdate() async {
     var data = await http.read(net);
     var parsedData = json.decode(data);
     // Compare versions
-    if (double.parse(parsedData['tag_name']) >  appVersion) {
-      print('[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
+    if (double.parse(parsedData['tag_name']) > appVersion) {
+      print(
+          '[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
     }
@@ -138,13 +139,11 @@ Future removePlatformTools() async {
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       return;
-    } else {
-      // Proceed with deletion
-      await io.Directory(dir).delete(recursive: true);
-      print('[ OK ] Deleted directory at $dir.');
-      print(
-          '[ OK ] Nexus Tools can be re-installed at https://git.io/JBuTh.');
     }
+    // Proceed with deletion
+    await io.Directory(dir).delete(recursive: true);
+    print('[ OK ] Deleted directory at $dir.');
+    print('[ OK ] Nexus Tools can be re-installed at https://git.io/JBuTh.');
   } else {
     print('[EROR] No installation found at $dir.');
   }
@@ -181,7 +180,7 @@ void connectAnalytics() async {
   if (isWSL) {
     realOS = 'wsl';
   } else if (isChromeOS) {
-    realOS = 'chrome-os';
+    realOS = 'chromeos';
   } else {
     realOS = io.Platform.operatingSystem;
   }
@@ -208,7 +207,7 @@ Future checkInstall() async {
         '[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
-      return;
+      io.exit(0);
     }
   } else {
     // Make the directory
@@ -264,7 +263,11 @@ Example: nexustools -i (this installs Platform Tools)
 void main(List<String> arguments) async {
   if (arguments.contains('-i') || arguments.contains('--install')) {
     print('[INFO] Nexus Tools $appVersion');
-    await checkUpdate();
+    // Check version unless Nexus Tools is running from web (curl) installer
+    // The web installer adds the -w parameter
+    if (!arguments.contains('-w')) {
+      await checkUpdate();
+    }
     // Start analytics unless opted out
     if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
       print('[ OK ] Google Analytics are disabled.');
