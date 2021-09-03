@@ -100,12 +100,18 @@ Future installPlatformTools() async {
   print('[ OK ] Platform Tools now installed in $dir.');
   // Add binaries to path
   await sys.addPath(dir);
-  // Add help link to folder
-  if (io.Platform.isWindows || io.Platform.isMacOS) {
+  // Create help link
+  if (io.Platform.isWindows) {
     var file = io.File('$dir\\About Nexus Tools.url');
     await file.writeAsString(
         '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
         mode: io.FileMode.writeOnly);
+  } else if (io.Platform.isMacOS) {
+    var file = io.File('$dir/About Nexus Tools.url');
+    await file.writeAsString(
+        '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
+    print(file.path);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
     await file.writeAsString(
