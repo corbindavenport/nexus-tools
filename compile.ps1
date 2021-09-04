@@ -9,5 +9,5 @@ if ($dirCheck) {
 }
 
 dart compile exe "./bin/main.dart" -o "./dist/nexustools.exe"
-Compress-Archive -Path "./dist/nexustools.exe" -DestinationPath "./dist/$FileName.zip"
+Compress-Archive -Path "./dist/nexustools.exe" -DestinationPath "./dist/$FileName.zip" -Force
 del "./dist/nexustools.exe"
