@@ -207,7 +207,11 @@ Future checkInstall() async {
   // Check if directory already exists
   var dir = nexusToolsDir();
   var installExists = false;
-  installExists = await io.Directory('$dir').exists();
+  if (io.Platform.isWindows) {
+    installExists = await io.File('$dir\\adb.exe').exists();
+  } else {
+    installExists = await io.File('$dir/adb').exists();
+  }
   if (installExists) {
     io.stdout.write(
         '[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
@@ -250,7 +254,7 @@ Future checkInstall() async {
 void printHelp() {
   var helpDoc = '''
 Nexus Tools $appVersion
-A downloader/management app for Android SDK Platform Tools
+Downloader/management app for Android SDK Platform Tools
 
 Usage: nexustools [OPTIONS]
 
