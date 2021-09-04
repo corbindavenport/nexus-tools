@@ -148,7 +148,7 @@ Future removePlatformTools() async {
     print(
         '[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
     print(
-        '[WARN] This will also delete Nexus Tools if it is installed to that folder.');
+        '[WARN] This will also delete the Nexus Tools application.');
     io.stdout.write('[WARN] Continue with removal? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
@@ -157,7 +157,7 @@ Future removePlatformTools() async {
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
-    print('[ OK ] Nexus Tools can be re-installed at https://git.io/JBuTh.');
+    print('[INFO] Nexus Tools can be re-installed at https://git.io/JBuTh.');
   } else {
     print('[EROR] No installation found at $dir.');
   }
