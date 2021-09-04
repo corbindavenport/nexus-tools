@@ -28,7 +28,7 @@ You can also download the Windows version from the [latest release page](https:/
 
 ### Compatibility
 
-Nexus Tools is only available for x86 macOS, Linux, and Windows, because Google only provides native Platform Tools binaries for those platforms. On Macs with Apple Silicon, Nexus Tools runs in the [Rosetta 2 compatibility layer](https://support.apple.com/en-us/HT211861).
+Nexus Tools is only available for x86_64 macOS, Linux, and Windows, because Google only provides native Platform Tools binaries for those platforms. On Macs with Apple Silicon, Nexus Tools runs in the [Rosetta 2 compatibility layer](https://support.apple.com/en-us/HT211861).
 
 ### Analytics
 
