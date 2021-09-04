@@ -2,9 +2,9 @@
 
 Nexus Tools is an installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) package, which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, and other applications. Nexus Tools is writen in Dart, and can run on Linux, macOS, Windows, Windows Subsystem for Linux, and Chrome OS.
 
-Nexus Tools downloads the latest Platform tools package directly from Google's servers (so you're always getting the latest version), saves them to `~/.nexustools`, and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver).
+Nexus Tools downloads the latest Platform tools package directly from Google's servers (so you're always getting the latest version), saves them to `~/.nexustools` (`$Home\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver).
 
-Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. **You need to open a new terminal/command line window for changes to take effect.** To update, just run Nexus Tools again.
+Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands with no problems. **You need to open a new terminal/command line window after installation for changes to take effect.** The SDK Platform Tools can be updated by running `nexustools -i`, or you can uninstall everything by running `nexustools -r`.
 
 ### How to use on Linux, macOS, and Chrome OS
 
@@ -14,19 +14,17 @@ Paste this command into the Terminal app:
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
 ```
 
-To uninstall, run this command:
-
-```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/uninstall.sh)
-```
-
 You can also download the Mac and Linux versions from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from the Terminal.
 
 ### How to use on Windows
 
-Download the Windows application from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), and un-zip the file somewhere. Then run the executable in CMD.EXE or PowerShell.
+Open Windows PowerShell from the Start Menu and paste this command:
 
-Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands straight from the terminal. **You may need to open a new terminal window for changes to take effect.** To update, just run the installer again.
+```
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.ps1'))
+```
+
+You can also download the Windows version from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from Windows PowerShell or the Command Prompt.
 
 ### Compatibility
 
