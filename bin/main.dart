@@ -120,12 +120,21 @@ Future installPlatformTools() async {
   }
   // Install drivers on Windows
   if (io.Platform.isWindows) {
-    print(
-        '[WARN] Drivers may be required for ADB if they are not already installed.');
-    io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
-    var input = io.stdin.readLineSync();
-    if (input?.toLowerCase() == 'y') {
-      await installWindowsDrivers(dir);
+    // Check if Universal Adb Driver package is already installed
+    var info = await io.Process.run('wmic', ['product', 'get', 'Name']);
+    var parsedInfo = info.stdout.toString();
+    if (parsedInfo.contains('Universal Adb Driver')) {
+      print('[ OK ] Universal ADB Drivers already installed.');
+    } else {
+      // Prompt to install drivers
+      print(
+          '[WARN] Drivers may be required for ADB if they are not already installed.');
+      io.stdout
+          .write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
+      var input = io.stdin.readLineSync();
+      if (input?.toLowerCase() == 'y') {
+        await installWindowsDrivers(dir);
+      }
     }
   }
 }
@@ -234,7 +243,7 @@ Future checkInstall() async {
     print('[ OK ] Your hardware platform is supported, yay!');
   } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
     print(
-        '[WARN] Google doesn not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
+        '[WARN] Google does not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
   } else {
     print(
         '[EROR] Your hardware platform is detected as $cpu, but Google only provides Platform Tools for x86-based platforms.');
@@ -296,6 +305,7 @@ void main(List<String> arguments) async {
     }
     print(
         '[INFO] Installation complete! Open a new $appName window to apply changes.');
+    print('[INFO] Run "nexustools --help" at any time for more options.');
     print(
         '[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
     print('[INFO] Donate to support development: https://git.io/J4jct');
