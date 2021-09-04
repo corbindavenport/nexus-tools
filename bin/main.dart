@@ -111,7 +111,6 @@ Future installPlatformTools() async {
     await file.writeAsString(
         '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
         mode: io.FileMode.writeOnly);
-    print(file.path);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
     await file.writeAsString(
