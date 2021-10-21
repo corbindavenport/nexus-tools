@@ -10,7 +10,8 @@ $dirCheck = Test-Path "$Dir"
 if ($dirCheck) {
     # Do nothing
 } else {
-    mkdir -p "$Dir"
+    # Create folder and hide output
+    New-Item "$Dir" -ItemType Directory -ea 0 | Out-Null
 }
 
 # Start Dart executable
