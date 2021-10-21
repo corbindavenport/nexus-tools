@@ -1,7 +1,5 @@
 # Nexus Tools
 
-![alt text](https://i.imgur.com/gCS0RFZ.gif)
-
 Nexus Tools is an installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) package, which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, and other applications. Nexus Tools is writen in Dart, and can run on Linux, macOS, Windows, Windows Subsystem for Linux, and Chrome OS.
 
 Nexus Tools downloads the latest Platform tools package directly from Google's servers (so you're always getting the latest version), saves them to `~/.nexustools` (`$Home\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver).
@@ -34,7 +32,7 @@ Nexus Tools is only available for x86_64 macOS, Linux, and Windows, because Goog
 
 ### Analytics
 
-Nexus Tools uses Google Analytics to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable Google Analytics by adding the `--no-analytics` parameter to the install command, like this:
+Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
 
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh) --no-analytics
@@ -45,6 +43,8 @@ It also works when running Nexus Tools locally:
 ```
 nexustools --no-analytics
 ```
+
+This analytics data is viewable publicly at [plausible.io/nexustools.corbin.io](https://plausible.io/nexustools.corbin.io).
 
 ---------------------------------------
 

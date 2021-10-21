@@ -2,7 +2,6 @@ import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:archive/archive.dart';
-import 'package:uuid/uuid.dart';
 import 'dart:convert';
 import 'package:nexustools/sys.dart' as sys;
 
@@ -14,7 +13,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-double appVersion = 5.0;
+double appVersion = 5.1;
 
 // Function for checking for update
 Future checkUpdate() async {
@@ -147,8 +146,7 @@ Future removePlatformTools() async {
   if (installExists) {
     print(
         '[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
-    print(
-        '[WARN] This will also delete the Nexus Tools application.');
+    print('[WARN] This will also delete the Nexus Tools application.');
     io.stdout.write('[WARN] Continue with removal? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
@@ -183,10 +181,8 @@ Future installWindowsDrivers(String dir) async {
   }
 }
 
-// Function for Google Analytics reporting
+// Function for Plausible Analytics reporting
 void connectAnalytics() async {
-  var uuid = Uuid();
-  var id = uuid.v4();
   // Get exact operating system
   var realOS = '';
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
@@ -201,10 +197,15 @@ void connectAnalytics() async {
   realOS = Uri.encodeComponent(realOS);
   var cpu = await sys.getCPUArchitecture();
   // Send analytics data
-  var net = Uri.parse(
-      'https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-74707662-1&cid=$id&dp=$realOS%2F$cpu');
+  var net = Uri.parse('https://plausible.io/api/event');
+  var netHeaders = {
+    'user-agent': 'Nexus Tools',
+    'X-Forwarded-For': '127.0.0.1',
+    'Content-Type': 'application/json',
+  };
+  var netBody = '{"name":"pageview","url":"http://nexustools.corbin.io/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   try {
-    await http.get(net);
+    await http.post(net, headers: netHeaders, body: netBody);
   } catch (_) {
     // Do nothing
   }
@@ -270,8 +271,8 @@ Example: nexustools -i (this installs Platform Tools)
 
  -i, --install                 Install/update Android Platform Tools
  -r, --remove                  Remove Platform Tools
- -n, --no-analytics            Run Nexus Tools without Google Analytics
-                               (Analytics is only run on install)
+ -n, --no-analytics            Run Nexus Tools without Plausible Analytics
+                               (analytics is only run on install)
  -c, --check                   Check for Nexus Tools update
  -h, --help                    Display this help message
   ''';
@@ -288,7 +289,7 @@ void main(List<String> arguments) async {
     }
     // Start analytics unless opted out
     if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
-      print('[ OK ] Google Analytics are disabled.');
+      print('[ OK ] Plausible Analytics are disabled.');
     } else {
       connectAnalytics();
     }
