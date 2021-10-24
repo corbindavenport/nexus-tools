@@ -30,6 +30,20 @@ Future<String> getCPUArchitecture() async {
   if (io.Platform.isWindows) {
     var cpu = envVars['PROCESSOR_ARCHITECTURE'];
     return cpu;
+  } else if (io.Platform.isMacOS) {
+    // Get architecture reported by the system
+    var info = await io.Process.run('uname', ['-m']);
+    var cpu = info.stdout.toString().replaceAll('\n', '');
+    if (cpu == 'x86_64') {
+      // Check if running under Rosetta 2
+      var rosetta = await io.Process.run('sysctl', ['-in', 'sysctl.proc_translated']);
+      var rosettaStr = rosetta.stdout.toString();
+      // This command will run '1' if we're running under Rosetta 2
+      if (rosettaStr == '1') {
+        cpu = 'arm64';
+      }
+    }
+    return cpu;
   } else {
     var info = await io.Process.run('uname', ['-m']);
     var cpu = info.stdout.toString().replaceAll('\n', '');
@@ -61,19 +75,5 @@ Future addPath(String path) async {
     } else {
       print('[WARN] Shell could not be detected, you will need to manually add $path to your PATH.');
     }
-  }
-}
-
-// Function for opening a web page in the default browser
-void openWebpage(String url) async {
-  var isWSL = await io.Directory('/mnt/c/Windows').exists();
-  if (isWSL) {
-    await io.Process.run('/mnt/c/Windows/explorer.exe', [url]);
-  } else if (io.Platform.isWindows) {
-    await io.Process.run('explorer', [url]);
-  } else if (io.Platform.isMacOS) {
-    await io.Process.run('open', [url]);
-  } else if (io.Platform.isLinux) {
-    await io.Process.run('xdg-open', [url]);
   }
 }

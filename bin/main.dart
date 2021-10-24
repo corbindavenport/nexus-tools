@@ -196,7 +196,7 @@ void connectAnalytics() async {
   }
   realOS = Uri.encodeComponent(realOS);
   var cpu = await sys.getCPUArchitecture();
-  // Send analytics data
+  // Set data
   var net = Uri.parse('https://plausible.io/api/event');
   var netHeaders = {
     'user-agent': 'Nexus Tools',
@@ -204,6 +204,7 @@ void connectAnalytics() async {
     'Content-Type': 'application/json',
   };
   var netBody = '{"name":"pageview","url":"http://nexustools.corbin.io/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);
   } catch (_) {
@@ -288,7 +289,7 @@ void main(List<String> arguments) async {
       await checkUpdate();
     }
     // Start analytics unless opted out
-    if (arguments.contains('-n') || arguments.contains('--no-analytics')) {
+    if (arguments.contains('--no-analytics')) {
       print('[ OK ] Plausible Analytics are disabled.');
     } else {
       connectAnalytics();
