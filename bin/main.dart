@@ -203,7 +203,7 @@ void connectAnalytics() async {
     'X-Forwarded-For': '127.0.0.1',
     'Content-Type': 'application/json',
   };
-  var netBody = '{"name":"pageview","url":"http://nexustools.corbin.io/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);
