@@ -35,10 +35,8 @@ mkdir -p $DIR
 # Start Dart executable
 if [ "$OS" = "Darwin" ]; then # macOS
 	# Install Rosetta x86 emulation layer if needed
-	ROSETTA_STATUS=$(/bin/launchctl list | /usr/bin/grep "com.apple.oahd-root-helper")
-	ROSETTA_FOLDER="/Library/Apple/usr/share/rosetta"
 	if [ "$ARCH" = "arm64" ]; then
-		if [[ -e "${ROSETTA_FOLDER}" && "${ROSETTA_STATUS}" != "" ]]; then
+		if /usr/bin/pgrep oahd >/dev/null 2>&1; then
 			echo "[ OK ] Rosetta compatibility layer is already installed."
 		else
 			echo "[WARN] Apple Rosetta compatibility layer must be installed. Press ENTER to install or X to cancel."
