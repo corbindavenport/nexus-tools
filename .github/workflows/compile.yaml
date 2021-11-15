@@ -6,7 +6,7 @@ jobs:
   compile_linux:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
       # Install dependencies
       - name: Install Dart SDK
@@ -27,4 +27,24 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: nexustools-linux-x64
+          path: nexustools
+  compile_windows:
+    runs-on: windows-latest
+    steps:
+      # Checks-out repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v2
+      # Install dependencies
+      - name: Install Dart SDK
+        run: |
+          choco install dart-sdk
+      - name: Compile Dart executable
+        run: |
+          cd $GITHUB_WORKSPACE
+          dart pub get
+          dart compile exe "./bin/main.dart" -o "./nexustools.exe"
+      # Upload binary
+      - name: Upload Dart executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: nexustools-windows-x64
           path: nexustools
