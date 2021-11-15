@@ -31,17 +31,15 @@ jobs:
   compile_windows:
     runs-on: windows-latest
     steps:
-      # Checks-out repository under $GITHUB_WORKSPACE
-      - uses: actions/checkout@v2
       # Install dependencies
       - name: Install Dart SDK
         run: |
           choco install dart-sdk
+      - uses: actions/checkout@v2
       - name: Compile Dart executable
         run: |
-          cd $GITHUB_WORKSPACE
           C:\tools\dart-sdk\bin\dart pub get
-          C:\tools\dart-sdk\bin\dart compile exe "./bin/main.dart" -o "./nexustools.exe"
+          C:\tools\dart-sdk\bin\dart compile exe "bin\main.dart" -o "nexustools.exe"
       # Upload binary
       - name: Upload Dart executable
         uses: actions/upload-artifact@v2
