@@ -9,13 +9,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       # Install dependencies
-      - name: Install Dart
+      - name: Compile Nexus TOols
       - run: |
           sudo apt-get update
           sudo apt install dart -y
-      # Compile Nexus Tools
-      - name: Compile Nexus Tools
-      - run: |
           cd $GITHUB_WORKSPACE
           dart compile exe "./bin/main.dart" -o "./nexustools"
       # Upload binary
