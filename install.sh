@@ -8,6 +8,8 @@ ARCH=$(uname -m)
 BASEURL="https://github.com/corbindavenport/nexus-tools"
 DOWNLOAD=''
 PARAMS="$@"
+ROSETTA_STATUS=$(/bin/launchctl list | /usr/bin/grep "com.apple.oahd-root-helper")
+ROSETTA_FOLDER="/Library/Apple/usr/share/rosetta"
 
 _run_executable() {
 	cd $DIR
@@ -36,12 +38,12 @@ mkdir -p $DIR
 if [ "$OS" = "Darwin" ]; then # macOS
 	# Install Rosetta x86 emulation layer if needed
 	if [ "$ARCH" = "arm64" ]; then
-		if [[ ! -f "/Library/Apple/System/Library/LaunchDaemons/com.apple.oahd.plist" ]]; then
+		if [[ -e "${ROSETTA_FOLDER}" && "${ROSETTA_STATUS}" != "" ]]; then
+			echo "[ OK ] Rosetta compatibility layer is already installed."
+		else
 			echo "[WARN] Apple Rosetta compatibility layer must be installed. Press ENTER to install or X to cancel."
 			read -sn1 input
 			[ "$input" = "" ] && /usr/sbin/softwareupdate --install-rosetta --agree-to-license || exit
-		else
-			echo "[ OK ] Rosetta compatibility layer is already installed."
 		fi
 	fi
 	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"

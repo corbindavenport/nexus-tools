@@ -37,7 +37,7 @@ Future<String> getCPUArchitecture() async {
     if (cpu == 'x86_64') {
       // Check if running under Rosetta 2
       var rosetta = await io.Process.run('sysctl', ['-in', 'sysctl.proc_translated']);
-      var rosettaStr = rosetta.stdout.toString();
+      var rosettaStr = rosetta.stdout.toString().replaceAll('\n', '');
       // This command will run '1' if we're running under Rosetta 2
       if (rosettaStr == '1') {
         cpu = 'arm64';
