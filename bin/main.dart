@@ -194,7 +194,6 @@ void connectAnalytics() async {
   } else {
     realOS = io.Platform.operatingSystem;
   }
-  realOS = Uri.encodeComponent(realOS);
   var cpu = await sys.getCPUArchitecture();
   // Set data
   var net = Uri.parse('https://plausible.io/api/event');
