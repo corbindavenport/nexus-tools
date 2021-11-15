@@ -45,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: nexustools-windows-x64
-          path: nexustools
+          path: nexustools.exe
