@@ -37,12 +37,11 @@ jobs:
       - name: Install Dart SDK
         run: |
           choco install dart-sdk
-          refreshenv
       - name: Compile Dart executable
         run: |
           cd $GITHUB_WORKSPACE
-          dart pub get
-          dart compile exe "bin\main.dart" -o "nexustools.exe"
+          C:\tools\dart-sdk\bin\dart pub get
+          C:\tools\dart-sdk\bin\dart compile exe "./bin/main.dart" -o "./nexustools.exe"
       # Upload binary
       - name: Upload Dart executable
         uses: actions/upload-artifact@v2
