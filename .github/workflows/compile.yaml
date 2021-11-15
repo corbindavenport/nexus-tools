@@ -1,0 +1,26 @@
+name: Compile Nexus Tools
+on:
+  workflow_dispatch:
+
+jobs:
+  compile_linux:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      # Install dependencies
+      - name: Install Dart
+      - run: |
+          sudo apt-get update
+          sudo apt install dart -y
+      # Compile Nexus Tools
+      - name: Compile Nexus Tools
+      - run: |
+          cd $GITHUB_WORKSPACE
+          dart compile exe "./bin/main.dart" -o "./nexustools"
+      # Upload binary
+      - name: Upload Nexus Tools
+        uses: actions/upload-artifact@v2
+        with:
+          name: nexustools-linux-x64
+          path: nexustools
