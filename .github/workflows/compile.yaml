@@ -20,6 +20,7 @@ jobs:
       - name: Compile Dart executable
         run: |
           cd $GITHUB_WORKSPACE
+          dart pub get
           dart compile exe "./bin/main.dart" -o "./nexustools"
       # Upload binary
       - name: Upload Dart executable
