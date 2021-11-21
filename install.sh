@@ -36,13 +36,9 @@ mkdir -p $DIR
 if [ "$OS" = "Darwin" ]; then # macOS
 	# Install Rosetta x86 emulation layer if needed
 	if [ "$ARCH" = "arm64" ]; then
-		if /usr/bin/pgrep oahd >/dev/null 2>&1; then
-			echo "[ OK ] Rosetta compatibility layer is already installed."
-		else
-			echo "[WARN] Apple Rosetta compatibility layer must be installed. Press ENTER to install or X to cancel."
-			read -sn1 input
-			[ "$input" = "" ] && /usr/sbin/softwareupdate --install-rosetta --agree-to-license || exit
-		fi
+		echo "[WARN] Apple Rosetta compatibility layer will be enabled, if it has not been already. Press ENTER to install or X to cancel."
+		read -sn1 input
+		[ "$input" = "" ] && /usr/sbin/softwareupdate --install-rosetta --agree-to-license || exit
 	fi
 	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"
 	_run_executable

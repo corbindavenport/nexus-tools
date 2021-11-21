@@ -204,7 +204,7 @@ void connectAnalytics() async {
     'user-agent': 'Nexus Tools',
     'X-Forwarded-For': '127.0.0.1',
     'Content-Type': 'application/json',
-    'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$id'
+    'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'
   };
   var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
