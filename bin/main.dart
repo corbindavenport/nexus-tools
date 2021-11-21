@@ -2,6 +2,7 @@ import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:archive/archive.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:convert';
 import 'package:nexustools/sys.dart' as sys;
 
@@ -13,7 +14,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-double appVersion = 5.1;
+double appVersion = 5.2;
 
 // Function for checking for update
 Future checkUpdate() async {
@@ -183,6 +184,8 @@ Future installWindowsDrivers(String dir) async {
 
 // Function for Plausible Analytics reporting
 void connectAnalytics() async {
+  var uuid = Uuid();
+  var id = uuid.v4();
   // Get exact operating system
   var realOS = '';
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
@@ -201,6 +204,7 @@ void connectAnalytics() async {
     'user-agent': 'Nexus Tools',
     'X-Forwarded-For': '127.0.0.1',
     'Content-Type': 'application/json',
+    'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$id'
   };
   var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
