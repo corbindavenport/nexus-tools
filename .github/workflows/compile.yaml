@@ -31,7 +31,6 @@ jobs:
   compile_windows:
     runs-on: windows-latest
     steps:
-      # Install dependencies
       - name: Install Dart SDK
         run: |
           choco install dart-sdk
@@ -40,9 +39,25 @@ jobs:
         run: |
           C:\tools\dart-sdk\bin\dart pub get
           C:\tools\dart-sdk\bin\dart compile exe "bin\main.dart" -o "nexustools.exe"
-      # Upload binary
       - name: Upload Dart executable
         uses: actions/upload-artifact@v2
         with:
           name: nexustools-windows-x64
           path: nexustools.exe
+  compile_macos:
+    runs-on: macos-latest
+    steps:
+      - name: Install Dart SDK
+        run: |
+          brew tap dart-lang/dart
+          brew install dart
+      - uses: actions/checkout@v2
+      - name: Compile Dart executable
+        run: |
+          dart pub get
+          dart compile exe "./bin/main.dart" -o "./nexustools"
+      - name: Upload Dart executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: nexustools-macos-x64
+          path: nexustools
