@@ -59,8 +59,8 @@ Future addPath(String path) async {
   } else {
     // Directory needs to be added to $PATH
     if (io.Platform.isWindows) {
-      var newPath = envVars['PATH'].toString() + '$path';
-      await io.Process.run('setx', ['path', newPath]);
+      var newPath = envVars['PATH'].toString() + ';$path';
+      await io.Process.run('setx', ['path', '$newPath']);
       print('[ OK ] Added $path to user %PATH.');
     } else if (envVars['SHELL'].toString().contains('zsh')) {
       // Z Shell

@@ -14,7 +14,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-double appVersion = 5.2;
+double appVersion = 5.3;
 
 // Function for checking for update
 Future checkUpdate() async {
@@ -303,12 +303,12 @@ void main(List<String> arguments) async {
     // Post-install
     var appName = '';
     if (io.Platform.isWindows) {
-      appName = 'Command Line';
+      appName = 'Command Line window (not a new tab!)';
     } else {
-      appName = 'Terminal';
+      appName = 'Terminal window';
     }
     print(
-        '[INFO] Installation complete! Open a new $appName window to apply changes.');
+        '[INFO] Installation complete! Open a new $appName to apply changes.');
     print('[INFO] Run "nexustools --help" at any time for more options.');
     print(
         '[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
