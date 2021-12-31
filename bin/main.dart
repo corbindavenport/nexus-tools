@@ -14,7 +14,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-double appVersion = 5.3;
+double appVersion = 5.3.1;
 
 // Function for checking for update
 Future checkUpdate() async {
