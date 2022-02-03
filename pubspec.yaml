@@ -10,7 +10,6 @@ environment:
 #   path: ^1.8.0
 
 dev_dependencies:
-  pedantic: ^1.10.0
   http:
   io:
   uuid:

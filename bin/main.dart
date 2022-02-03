@@ -7,11 +7,11 @@ import 'dart:convert';
 import 'package:nexustools/sys.dart' as sys;
 
 String macZip =
-    'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
+    'https://dl.google.com/android/repository/e8b2b4cbe47c728c1e54c5f524440b52d4e1a33c.platform-tools_r31.0.3-darwin.zip';
 String linuxZip =
-    'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
+    'https://dl.google.com/android/repository/platform-tools_r31.0.3-linux.zip';
 String windowsZip =
-    'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
+    'https://dl.google.com/android/repository/platform-tools_r31.0.3-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
 double appVersion = 5.4;
@@ -73,7 +73,6 @@ Future installPlatformTools() async {
   var net = Uri.parse(zip);
   try {
     var data = await http.readBytes(net);
-    //await zipFile.writeAsBytes(data);
     var archive = ZipDecoder().decodeBytes(data);
     extractArchiveToDisk(archive, dir);
   } catch (e) {
