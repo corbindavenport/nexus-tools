@@ -1,17 +1,16 @@
 import 'package:archive/archive_io.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io' as io;
-import 'package:archive/archive.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 import 'package:nexustools/sys.dart' as sys;
 
 String macZip =
-    'https://dl.google.com/android/repository/e8b2b4cbe47c728c1e54c5f524440b52d4e1a33c.platform-tools_r31.0.3-darwin.zip';
+    'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
 String linuxZip =
-    'https://dl.google.com/android/repository/platform-tools_r31.0.3-linux.zip';
+    'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip =
-    'https://dl.google.com/android/repository/platform-tools_r31.0.3-windows.zip';
+    'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
 double appVersion = 5.4;
@@ -203,9 +202,11 @@ void connectAnalytics() async {
     'user-agent': 'Nexus Tools',
     'X-Forwarded-For': '127.0.0.1',
     'Content-Type': 'application/json',
-    'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'
+    'User-Agent':
+        'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'
   };
-  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  var netBody =
+      '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);

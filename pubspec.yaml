@@ -13,5 +13,5 @@ dev_dependencies:
   http:
   io:
   uuid:
-  archive: ^3.1.2
+  archive: ^3.2.2
   console:
