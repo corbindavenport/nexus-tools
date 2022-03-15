@@ -1,7 +1,5 @@
 # Nexus Tools
 
-**Note: Nexus Tools currently installs the previous version of Platform Tools, see [#68](https://github.com/corbindavenport/nexus-tools/issues/68) for details.**
-
 Nexus Tools is an installer for the [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) package, which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, and other applications. Nexus Tools is writen in Dart, and can run on Linux, macOS, Windows, Windows Subsystem for Linux, and Chrome OS.
 
 Nexus Tools downloads the latest Platform tools package directly from Google's servers (so you're always getting the latest version), saves them to `~/.nexustools` (`$Home\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver).
