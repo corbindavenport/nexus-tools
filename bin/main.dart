@@ -246,11 +246,10 @@ Future checkInstall() async {
   if (supportedCPUs.contains(cpu)) {
     print('[ OK ] Your hardware platform is supported, yay!');
   } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
-    print(
-        '[WARN] Google does not provide native Apple Silicon binaries yet, x86_64 binaries will be installed');
+    print('[ OK ] Your hardware platform is supported, yay!');
   } else {
     print(
-        '[EROR] Your hardware platform is detected as $cpu, but Google only provides Platform Tools for x86-based platforms.');
+        '[EROR] Your hardware platform is detected as $cpu. Google only provides Platform Tools for x86-based platforms.');
     io.exit(1);
   }
   // Display environment-specific warnings
