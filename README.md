@@ -6,6 +6,8 @@ Nexus Tools downloads the latest Platform tools package directly from Google's s
 
 Once Nexus Tools is finished, you can run `adb`, `fastboot`, and other commands with no problems. **You need to open a new terminal/command line window after installation for changes to take effect.** The SDK Platform Tools can be updated by running `nexustools -i`, or you can uninstall everything by running `nexustools -r`.
 
+_Featured on [MakeUseOf](https://www.makeuseof.com/how-to-unlock-android-device-bootloader), [XDA](https://www.xda-developers.com/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/), [Android Police](https://www.androidpolice.com/install-and-use-adb-on-windows-mac-linux-android-chromebooks-browser/), [9to5Google](https://9to5google.com/2021/12/02/how-to-downgrade-from-android-12-to-android-11-on-google-pixel/#:~:text=Nexus%20Tools), [Wccftech](https://wccftech.com/set-android-adb-fastboot-mac-os/), [Redmond Pie](https://www.redmondpie.com/how-to-install-android-5.0-lollipop-on-nexus-5-using-mac-the-easy-way/), and others!_
+
 ### How to use on Linux, macOS, and Chrome OS
 
 Paste this command into the Terminal app:
