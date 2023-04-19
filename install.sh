@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is just a wrapper to start the Dart executable from the GitHub releases page.
+# This script is just a wrapper to start the Dart executable from the GitHub releases page
 
 DIR="$HOME/.nexustools"
 OS=$(uname)
