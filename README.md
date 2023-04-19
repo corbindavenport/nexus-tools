@@ -13,7 +13,7 @@ _Featured on [MakeUseOf](https://www.makeuseof.com/how-to-unlock-android-device-
 Paste this command into the Terminal app:
 
 ```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh)
 ```
 
 You can also download the Mac and Linux versions from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from the Terminal.
@@ -23,7 +23,7 @@ You can also download the Mac and Linux versions from the [latest release page](
 Open Windows PowerShell from the Start Menu and paste this command:
 
 ```
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.ps1'))
 ```
 
 You can also download the Windows version from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from Windows PowerShell or the Command Prompt.
@@ -39,7 +39,7 @@ ADB, Fastboot, and other applications in the Platform Tools package are compiled
 Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process. This data is not sold or shared in any way, it's only for me to know which hardware platforms I should focus my attention on. You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
 
 ```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/master/install.sh) --no-analytics
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh) --no-analytics
 ```
 
 It also works when running Nexus Tools locally:
