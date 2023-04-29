@@ -13,7 +13,7 @@ String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
-double appVersion = 5.4;
+double appVersion = 5.5;
 
 // Function for checking for update
 Future checkUpdate() async {
@@ -43,7 +43,7 @@ String nexusToolsDir() {
   } else if (io.Platform.isLinux) {
     home = envVars['HOME'];
   } else if (io.Platform.isWindows) {
-    home = envVars['UserProfile'];
+    home = envVars['AppData'];
   }
   if (home.endsWith('/')) {
     home = home.substring(0, home.length - 1);
@@ -115,7 +115,7 @@ Future installPlatformTools() async {
         '[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
         mode: io.FileMode.writeOnly);
   }
-  // Install drivers on Windows
+  // Windows-specific functions
   if (io.Platform.isWindows) {
     // Check if Universal Adb Driver package is already installed
     var info = await io.Process.run('wmic', ['product', 'get', 'Name']);
@@ -132,6 +132,13 @@ Future installPlatformTools() async {
       if (input?.toLowerCase() == 'y') {
         await installWindowsDrivers(dir);
       }
+    }
+    // Check if old Nexus Tools directory needs to be deleted
+    var oldFolder = envVars['UserProfile'] + r'\' + 'NexusTools';
+    var oldFolderExists = await io.Directory(oldFolder).exists();
+    if (oldFolderExists) {
+      await io.Directory(oldFolder).delete(recursive: true);
+      print('[ OK ] Deleted old directory at $oldFolder.');
     }
   }
 }
