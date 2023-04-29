@@ -134,17 +134,31 @@ Future installPlatformTools() async {
       }
     }
     // Check if old Nexus Tools directory needs to be deleted
-    var oldFolder = envVars['UserProfile'] + r'\' + 'NexusTools';
+    var oldFolder = envVars['UserProfile'] + r'\NexusTools';
     var oldFolderExists = await io.Directory(oldFolder).exists();
     if (oldFolderExists) {
       await io.Directory(oldFolder).delete(recursive: true);
       print('[ OK ] Deleted old directory at $oldFolder.');
     }
+    // Add entry to Windows Installed Apps List
+    // Documentation: https://learn.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
+    var uninstallString = dir + r'\nexustools.exe';
+    var regEntry = 'Windows Registry Editor Version 5.00\n\n';
+    regEntry += r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
+    regEntry += '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
+    regEntry += '\n"Publisher"="Corbin Davenport"';
+    regEntry += '\n"URLInfoAbout"="https://github.com/corbindavenport/nexus-tools"';
+    regEntry += '\n"NoModify"=dword:00000001';
+    regEntry += '\n' + r'"UninstallString"="\"' + uninstallString.replaceAll(r'\', r'\\') + r'\" --remove"';
+    var regFile = await io.File('$dir/nexustools.reg');
+    await regFile.writeAsString(regEntry, mode: io.FileMode.writeOnly);
+    await io.Process.run('reg', ['import', '$dir/nexustools.reg']);
   }
 }
 
 // Function for removing Platform Tools package
 Future removePlatformTools() async {
+  // TODO: Add support for new directory on Windows
   // Nexus Tools 3.2+ (August 2016-Present) installs binaries in ~/.nexustools
   var dir = nexusToolsDir();
   var installExists = false;
@@ -161,6 +175,11 @@ Future removePlatformTools() async {
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
+    // Delete registry keys on Windows
+    if (io.Platform.isWindows) {
+      await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
+      print('[ OK ] Removed registry keys.');
+    }
     print('[INFO] Nexus Tools can be re-installed at https://git.io/JBuTh.');
   } else {
     print('[EROR] No installation found at $dir.');
