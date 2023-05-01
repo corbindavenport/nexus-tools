@@ -11,7 +11,6 @@ String linuxZip =
     'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip =
     'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
-List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
 double appVersion = 5.5;
 
@@ -267,17 +266,6 @@ Future checkInstall() async {
   sys.checkIfInstalled(dir, 'adb', 'ADB');
   // Check if Fastboot is already installed
   sys.checkIfInstalled(dir, 'fastboot', 'Fastboot');
-  // Check CPU architecture
-  var cpu = await sys.getCPUArchitecture();
-  if (supportedCPUs.contains(cpu)) {
-    print('[ OK ] Your hardware platform is supported, yay!');
-  } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
-    print('[ OK ] Your hardware platform is supported, yay!');
-  } else {
-    print(
-        '[EROR] Your hardware platform is detected as $cpu. Google only provides Platform Tools for x86-based platforms.');
-    io.exit(1);
-  }
   // Display environment-specific warnings
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
   var isChromeOS = await io.Directory('/usr/share/themes/CrosAdapta').exists();
