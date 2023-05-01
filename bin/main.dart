@@ -19,7 +19,7 @@ Future checkUpdate() async {
     var parsedData = json.decode(data);
     // Compare versions
     if (double.parse(parsedData['tag_name']) > appVersion) {
-      print('[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
+      print('[INFO] Nexus Tools update available! https://github.com/corbindavenport/nexus-tools/blob/main/README.md');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
     }
@@ -172,7 +172,7 @@ Future removePlatformTools() async {
     print('[ OK ] Removed registry keys.');
   }
   // Exit message
-  print('[INFO] Nexus Tools can be re-installed at https://git.io/JBuTh.');
+  print('[INFO] Nexus Tools can be re-installed from here: https://github.com/corbindavenport/nexus-tools');
 }
 
 // Function for installing Windows Universal ADB drivers
@@ -300,7 +300,7 @@ void main(List<String> arguments) async {
     print('[INFO] Installation complete! Open a new $appName to apply changes.');
     print('[INFO] Run "nexustools --help" at any time for more options.');
     print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
-    print('[INFO] Donate to support development: https://git.io/J4jct');
+    print('[INFO] Donate to support development: https://tinyurl.com/nexusdonate');
   } else if (arguments.contains('-r') || arguments.contains('--remove')) {
     print('[INFO] Nexus Tools $appVersion');
     // Start removal
