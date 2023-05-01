@@ -143,12 +143,18 @@ Future installPlatformTools() async {
     // Documentation: https://learn.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
     var uninstallString = dir + r'\nexustools.exe';
     var regEntry = 'Windows Registry Editor Version 5.00\n\n';
-    regEntry += r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
-    regEntry += '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
+    regEntry +=
+        r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
+    regEntry +=
+        '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
     regEntry += '\n"Publisher"="Corbin Davenport"';
-    regEntry += '\n"URLInfoAbout"="https://github.com/corbindavenport/nexus-tools"';
+    regEntry +=
+        '\n"URLInfoAbout"="https://github.com/corbindavenport/nexus-tools"';
     regEntry += '\n"NoModify"=dword:00000001';
-    regEntry += '\n' + r'"UninstallString"="\"' + uninstallString.replaceAll(r'\', r'\\') + r'\" --remove"';
+    regEntry += '\n' +
+        r'"UninstallString"="\"' +
+        uninstallString.replaceAll(r'\', r'\\') +
+        r'\" --remove"';
     var regFile = await io.File('$dir/nexustools.reg');
     await regFile.writeAsString(regEntry, mode: io.FileMode.writeOnly);
     await io.Process.run('reg', ['import', '$dir/nexustools.reg']);
@@ -157,32 +163,43 @@ Future installPlatformTools() async {
 
 // Function for removing Platform Tools package
 Future removePlatformTools() async {
+  print(
+      '[WARN] This will delete the Android System Tools (ADB, Fastboot, etc.) installed by Nexus Tools, as well as the Nexus Tools application.');
+  io.stdout.write('[WARN] Continue with removal? [Y/N] ');
+  var input = io.stdin.readLineSync();
+  if (input?.toLowerCase() != 'y') {
+    return;
+  }
+  // Delete primary directory if it exists
   // TODO: Add support for new directory on Windows
   // Nexus Tools 3.2+ (August 2016-Present) installs binaries in ~/.nexustools
   var dir = nexusToolsDir();
   var installExists = false;
   installExists = await io.Directory(dir).exists();
   if (installExists) {
-    print(
-        '[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
-    print('[WARN] This will also delete the Nexus Tools application.');
-    io.stdout.write('[WARN] Continue with removal? [Y/N] ');
-    var input = io.stdin.readLineSync();
-    if (input?.toLowerCase() != 'y') {
-      return;
-    }
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
-    // Delete registry keys on Windows
-    if (io.Platform.isWindows) {
-      await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
-      print('[ OK ] Removed registry keys.');
-    }
-    print('[INFO] Nexus Tools can be re-installed at https://git.io/JBuTh.');
-  } else {
-    print('[EROR] No installation found at $dir.');
   }
+  // Windows-specific functions
+  if (io.Platform.isWindows) {
+    var oldDir = envVars['UserProfile'] + r'\NexusTools';
+    var oldinstallExists = await io.Directory(oldDir).exists();
+    if (oldinstallExists) {
+      // Proceed with deletion
+      await io.Directory(oldDir).delete(recursive: true);
+      print('[ OK ] Deleted directory at $oldDir.');
+    }
+    // Clean up registry
+    await io.Process.run('reg', [
+      'delete',
+      r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools',
+      '/f'
+    ]);
+    print('[ OK ] Removed registry keys.');
+  }
+  // Exit message
+  print('[INFO] Nexus Tools can be re-installed at https://git.io/JBuTh.');
 }
 
 // Function for installing Windows Universal ADB drivers
@@ -287,7 +304,7 @@ Usage: nexustools [OPTIONS]
 Example: nexustools -i (this installs Platform Tools)
 
  -i, --install                 Install/update Android Platform Tools
- -r, --remove                  Remove Platform Tools
+ -r, --remove                  Remove Nexus Tools & Android Platform Tools
  -n, --no-analytics            Run Nexus Tools without Plausible Analytics
                                (analytics is only run on install)
  -c, --check                   Check for Nexus Tools update
