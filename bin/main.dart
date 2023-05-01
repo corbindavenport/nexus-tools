@@ -92,13 +92,13 @@ Future installPlatformTools() async {
   // Create help link
   if (io.Platform.isWindows) {
     var file = io.File('$dir\\About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
   } else if (io.Platform.isMacOS) {
     var file = io.File('$dir/About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
-    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
   }
   // Windows-specific functions
   if (io.Platform.isWindows) {
