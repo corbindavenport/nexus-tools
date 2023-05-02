@@ -4,7 +4,9 @@ Nexus Tools is an installer and updater for [Android SDK Platform Tools](https:/
 
 Nexus Tools downloads the latest Platform tools package directly from Google's servers, so you're always getting the latest version. The tools are installed to `~/.nexustools` (`%AppData%\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver). The SDK Platform Tools can be updated by running `nexustools -i`, or you can uninstall everything by running `nexustools -r`.
 
-(screenshot will go here)
+<center>
+<img src="https://i.imgur.com/af1Yaxc.png" />
+</center>
 
 ## How to use on Linux, macOS, and Chrome OS
 
@@ -28,7 +30,7 @@ You can also download the Windows version from the [latest release page](https:/
 
 ## Privacy & Analytics
 
-Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. This data is not sold or shared in any way. You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
+Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. This analytics data is viewable publicly at [plausible.io/nexustools.corbin.io](https://plausible.io/nexustools.corbin.io). You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
 
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh) --no-analytics
@@ -39,8 +41,6 @@ It also works when running Nexus Tools locally:
 ```
 nexustools --no-analytics
 ```
-
-This analytics data is viewable publicly at [plausible.io/nexustools.corbin.io](https://plausible.io/nexustools.corbin.io).
 
 ---
 

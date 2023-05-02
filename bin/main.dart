@@ -300,7 +300,7 @@ void main(List<String> arguments) async {
     print('[INFO] Installation complete! Open a new $appName to apply changes.');
     print('[INFO] Run "nexustools --help" at any time for more options.');
     print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
-    print('[INFO] Donate to support development: https://tinyurl.com/nexusdonate');
+    print('[INFO] Donate to support development: https://tinyurl.com/nexusdonate\n');
   } else if (arguments.contains('-r') || arguments.contains('--remove')) {
     print('[INFO] Nexus Tools $appVersion');
     // Start removal
@@ -310,6 +310,6 @@ void main(List<String> arguments) async {
   } else if (arguments.contains('-c') || arguments.contains('--check')) {
     await checkUpdate();
   } else {
-    print('[EROR] Invalid arguments. Run nexustools -h for help!');
+    print('[EROR] Invalid arguments. Run nexustools -h for help!\n');
   }
 }
