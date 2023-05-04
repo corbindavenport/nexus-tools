@@ -13,16 +13,12 @@ double appVersion = 5.5;
 
 // Function for checking for update
 Future checkUpdate() async {
+  print('[INFO] Your installed version of Nexus Tools: $appVersion');
   var net = Uri.parse('https://api.github.com/repos/corbindavenport/nexus-tools/releases/latest');
   try {
     var data = await http.read(net);
     var parsedData = json.decode(data);
-    // Compare versions
-    if (double.parse(parsedData['tag_name']) > appVersion) {
-      print('[INFO] Nexus Tools update available! https://github.com/corbindavenport/nexus-tools/blob/main/README.md');
-    } else {
-      print('[INFO] You have the latest version of Nexus Tools.');
-    }
+    print('[INFO] Latest available version: ' + parsedData['tag_name'] + '\n[INFO] Get the latest version: https://github.com/corbindavenport/nexus-tools/blob/main/README.md\n');
   } catch (e) {
     print('[EROR] Could not check for updates.');
   }
@@ -148,7 +144,6 @@ Future removePlatformTools() async {
     return;
   }
   // Delete primary directory if it exists
-  // TODO: Add support for new directory on Windows
   // Nexus Tools 3.2+ (August 2016-Present) installs binaries in ~/.nexustools
   var dir = nexusToolsDir();
   var installExists = false;
@@ -157,6 +152,8 @@ Future removePlatformTools() async {
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
+  } else {
+    print('[ OK ] No installation found at $dir');
   }
   // Windows-specific functions
   if (io.Platform.isWindows) {
@@ -172,7 +169,7 @@ Future removePlatformTools() async {
     print('[ OK ] Removed registry keys.');
   }
   // Exit message
-  print('[INFO] Nexus Tools can be re-installed from here: https://github.com/corbindavenport/nexus-tools');
+  print('[INFO] Nexus Tools can be re-installed from here: https://github.com/corbindavenport/nexus-tools\n');
 }
 
 // Function for installing Windows Universal ADB drivers
