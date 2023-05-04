@@ -10,15 +10,16 @@ String linuxZip = 'https://dl.google.com/android/repository/platform-tools-lates
 String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 Map envVars = io.Platform.environment;
 double appVersion = 5.5;
+String baseRepo = 'corbindavenport/nexus-tools';
 
 // Function for checking for update
 Future checkUpdate() async {
   print('[INFO] Your installed version of Nexus Tools: $appVersion');
-  var net = Uri.parse('https://api.github.com/repos/corbindavenport/nexus-tools/releases/latest');
+  var net = Uri.parse('https://api.github.com/repos/$baseRepo/releases/latest');
   try {
     var data = await http.read(net);
     var parsedData = json.decode(data);
-    print('[INFO] Latest available version: ' + parsedData['tag_name'] + '\n[INFO] Get the latest version: https://github.com/corbindavenport/nexus-tools/blob/main/README.md\n');
+    print('[INFO] Latest available version: ' + parsedData['tag_name'] + '[INFO] Get the latest version: https://github.com/$baseRepo/blob/main/README.md\n');
   } catch (e) {
     print('[EROR] Could not check for updates.');
   }
@@ -88,13 +89,13 @@ Future installPlatformTools() async {
   // Create help link
   if (io.Platform.isWindows) {
     var file = io.File('$dir\\About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/$baseRepo/blob/main/README.md', mode: io.FileMode.writeOnly);
   } else if (io.Platform.isMacOS) {
     var file = io.File('$dir/About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/$baseRepo/blob/main/README.md', mode: io.FileMode.writeOnly);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
-    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/main/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/$baseRepo/blob/main/README.md', mode: io.FileMode.writeOnly);
   }
   // Windows-specific functions
   if (io.Platform.isWindows) {
@@ -126,7 +127,7 @@ Future installPlatformTools() async {
     regEntry += r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
     regEntry += '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
     regEntry += '\n"Publisher"="Corbin Davenport"';
-    regEntry += '\n"URLInfoAbout"="https://github.com/corbindavenport/nexus-tools"';
+    regEntry += '\n"URLInfoAbout"="https://github.com/$baseRepo"';
     regEntry += '\n"NoModify"=dword:00000001';
     regEntry += '\n' + r'"UninstallString"="\"' + uninstallString.replaceAll(r'\', r'\\') + r'\" --remove"';
     var regFile = await io.File('$dir/nexustools.reg');
@@ -169,7 +170,7 @@ Future removePlatformTools() async {
     print('[ OK ] Removed registry keys.');
   }
   // Exit message
-  print('[INFO] Nexus Tools can be re-installed from here: https://github.com/corbindavenport/nexus-tools\n');
+  print('[INFO] Nexus Tools can be reinstalled from here: https://github.com/$baseRepo\n');
 }
 
 // Function for installing Windows Universal ADB drivers
