@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
+import 'package:dart_ipify/dart_ipify.dart';
 import 'package:nexustools/sys.dart' as sys;
 
 String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
@@ -210,7 +211,8 @@ void connectAnalytics() async {
   var cpu = await sys.getCPUArchitecture();
   // Set data
   var net = Uri.parse('https://plausible.io/api/event');
-  var netHeaders = {'user-agent': 'Nexus Tools', 'X-Forwarded-For': '127.0.0.1', 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'};
+  final ipv4 = await Ipify.ipv4();
+  var netHeaders = {'user-agent': 'Nexus Tools', 'X-Forwarded-For': ipv4, 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'};
   var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
   try {
