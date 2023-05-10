@@ -1,6 +1,6 @@
 # This script is just a wrapper to start the Dart executable from the GitHub releases page.
 
-$Dir = "$Home\NexusTools"
+$Dir = "$ENV:APPDATA\NexusTools"
 $Arch = $ENV:Processor_Architecture
 $BaseUrl = "https://github.com/corbindavenport/nexus-tools"
 $Download = "$BaseUrl/releases/latest/download/nexustools-windows-x64.zip"
