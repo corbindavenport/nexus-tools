@@ -3,25 +3,29 @@ import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
-import 'package:dart_ipify/dart_ipify.dart';
 import 'package:nexustools/sys.dart' as sys;
 
-String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
-String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
-String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
+String macZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
+String linuxZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
+String windowsZip =
+    'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 List supportedCPUs = ['amd64', 'x86_64', 'AMD64'];
 Map envVars = io.Platform.environment;
 double appVersion = 5.4;
 
 // Function for checking for update
 Future checkUpdate() async {
-  var net = Uri.parse('https://api.github.com/repos/corbindavenport/nexus-tools/releases/latest');
+  var net = Uri.parse(
+      'https://api.github.com/repos/corbindavenport/nexus-tools/releases/latest');
   try {
     var data = await http.read(net);
     var parsedData = json.decode(data);
     // Compare versions
     if (double.parse(parsedData['tag_name']) > appVersion) {
-      print('[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
+      print(
+          '[INFO] Nexus Tools update available! Download: https://git.io/JBuTh');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
     }
@@ -77,10 +81,13 @@ Future installPlatformTools() async {
   }
   // Move files out of platform-tools subdirectory and delete the subdirectory
   if (io.Platform.isWindows) {
-    await io.Process.run('move', ['$dir\\platform-tools\\*', '$dir'], runInShell: true);
-    await io.Process.run('rmdir', ['/Q', '/S', '$dir\\platform-tools'], runInShell: true);
+    await io.Process.run('move', ['$dir\\platform-tools\\*', '$dir'],
+        runInShell: true);
+    await io.Process.run('rmdir', ['/Q', '/S', '$dir\\platform-tools'],
+        runInShell: true);
   } else {
-    await io.Process.run('/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
+    await io.Process.run(
+        '/bin/sh', ['-c', 'mv -f -v $dir/platform-tools/* $dir/']);
     await io.Process.run('/bin/sh', ['-c', 'rm -rf $dir/platform-tools']);
   }
   // Mark binaries in directory as executable
@@ -94,13 +101,19 @@ Future installPlatformTools() async {
   // Create help link
   if (io.Platform.isWindows) {
     var file = io.File('$dir\\About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString(
+        '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
   } else if (io.Platform.isMacOS) {
     var file = io.File('$dir/About Nexus Tools.url');
-    await file.writeAsString('[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString(
+        '[InternetShortcut]\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
   } else if (io.Platform.isLinux) {
     var file = io.File('$dir/About Nexus Tools.desktop');
-    await file.writeAsString('[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md', mode: io.FileMode.writeOnly);
+    await file.writeAsString(
+        '[Desktop Entry]\nEncoding=UTF-8\nIcon=text-html\nType=Link\nName=About Nexus Tools\nURL=https://github.com/corbindavenport/nexus-tools/blob/master/README.md',
+        mode: io.FileMode.writeOnly);
   }
   // Install drivers on Windows
   if (io.Platform.isWindows) {
@@ -111,8 +124,10 @@ Future installPlatformTools() async {
       print('[ OK ] Universal ADB Drivers already installed.');
     } else {
       // Prompt to install drivers
-      print('[WARN] Drivers may be required for ADB if they are not already installed.');
-      io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
+      print(
+          '[WARN] Drivers may be required for ADB if they are not already installed.');
+      io.stdout
+          .write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
       var input = io.stdin.readLineSync();
       if (input?.toLowerCase() == 'y') {
         await installWindowsDrivers(dir);
@@ -128,7 +143,8 @@ Future removePlatformTools() async {
   var installExists = false;
   installExists = await io.Directory(dir).exists();
   if (installExists) {
-    print('[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
+    print(
+        '[WARN] Deleting $dir will delete Android System Tools (ADB, Fastboot, etc.).');
     print('[WARN] This will also delete the Nexus Tools application.');
     io.stdout.write('[WARN] Continue with removal? [Y/N] ');
     var input = io.stdin.readLineSync();
@@ -148,15 +164,19 @@ Future removePlatformTools() async {
 // Drivers provided by ClockWorkMod: https://adb.clockworkmod.com/
 Future installWindowsDrivers(String dir) async {
   print('[....] Downloading drivers, please wait.');
-  var net = Uri.parse('https://github.com/koush/adb.clockworkmod.com/releases/latest/download/UniversalAdbDriverSetup.msi');
+  var net = Uri.parse(
+      'https://github.com/koush/adb.clockworkmod.com/releases/latest/download/UniversalAdbDriverSetup.msi');
   try {
     var data = await http.readBytes(net);
     var file = io.File('$dir\\ADB Drivers.msi');
     await file.writeAsBytes(data, mode: io.FileMode.writeOnly);
     print('[....] Opening driver installer.');
-    await io.Process.run('start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'], runInShell: true);
+    await io.Process.run(
+        'start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'],
+        runInShell: true);
   } catch (e) {
-    print('[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
+    print(
+        '[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
   }
 }
 
@@ -178,9 +198,15 @@ void connectAnalytics() async {
   var cpu = await sys.getCPUArchitecture();
   // Set data
   var net = Uri.parse('https://plausible.io/api/event');
-  final ipv4 = await Ipify.ipv4();
-  var netHeaders = {'user-agent': 'Nexus Tools', 'X-Forwarded-For': ipv4, 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'};
-  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  var netHeaders = {
+    'user-agent': 'Nexus Tools',
+    'X-Forwarded-For': '127.0.0.1',
+    'Content-Type': 'application/json',
+    'User-Agent':
+        'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'
+  };
+  var netBody =
+      '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
   // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);
@@ -200,7 +226,8 @@ Future checkInstall() async {
     installExists = await io.File('$dir/adb').exists();
   }
   if (installExists) {
-    io.stdout.write('[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
+    io.stdout.write(
+        '[WARN] Platform tools already installed in $dir. Continue? [Y/N] ');
     var input = io.stdin.readLineSync();
     if (input?.toLowerCase() != 'y') {
       io.exit(0);
@@ -221,14 +248,16 @@ Future checkInstall() async {
   } else if (io.Platform.isMacOS && (cpu == 'arm64')) {
     print('[ OK ] Your hardware platform is supported, yay!');
   } else {
-    print('[EROR] Your hardware platform is detected as $cpu. Google only provides Platform Tools for x86-based platforms.');
+    print(
+        '[EROR] Your hardware platform is detected as $cpu. Google only provides Platform Tools for x86-based platforms.');
     io.exit(1);
   }
   // Display environment-specific warnings
   var isWSL = await io.Directory('/mnt/c/Windows').exists();
   var isChromeOS = await io.Directory('/usr/share/themes/CrosAdapta').exists();
   if (isWSL) {
-    print('[WARN] WSL does not support USB devices, you will only be able to use ADB over Wi-Fi.');
+    print(
+        '[WARN] WSL does not support USB devices, you will only be able to use ADB over Wi-Fi.');
   } else if (isChromeOS) {
     print('[WARN] Chrome OS 75 or higher is required for USB support.');
   }
@@ -277,9 +306,11 @@ void main(List<String> arguments) async {
     } else {
       appName = 'Terminal window';
     }
-    print('[INFO] Installation complete! Open a new $appName to apply changes.');
+    print(
+        '[INFO] Installation complete! Open a new $appName to apply changes.');
     print('[INFO] Run "nexustools --help" at any time for more options.');
-    print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
+    print(
+        '[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
     print('[INFO] Donate to support development: https://git.io/J4jct');
   } else if (arguments.contains('-r') || arguments.contains('--remove')) {
     print('[INFO] Nexus Tools $appVersion');

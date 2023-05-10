@@ -15,4 +15,3 @@ dev_dependencies:
   uuid:
   archive: ^3.2.2
   console:
-  dart_ipify: ^1.1.1
