@@ -1,54 +1,29 @@
 #!/bin/bash
 
-# This script is just a wrapper to start the Dart executable from the GitHub releases page
-
-DIR="$HOME/.nexustools"
 OS=$(uname)
-ARCH=$(uname -m)
-BASEURL="https://github.com/corbindavenport/nexus-tools"
-DOWNLOAD=''
-PARAMS="$@"
 
-_run_executable() {
-	cd $DIR
-	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
-	unzip -q -o ./temp.zip
-	rm ./temp.zip
-	chmod +x ./nexustools*
-	# Run Nexus Tools and pass parameters to the executable
-	./nexustools* -i -w "$PARAMS"
+_install_brew_macos() {
+	# Check if Brew is installed
+	if ! [ -x "$(command -v brew)" ]; then
+		echo "Setting up Brew..."
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	else
+		echo "Brew is already installed."
+	fi
+	# Install Platform Tools
+	brew install --force --cask android-platform-tools
+	echo -e "\nInstallation complete! Run this command to update in the future: brew upgrade --cask"
 }
 
-# Check that required applications are installed
-if ! [ -x "$(command -v curl)" ]; then
-  echo "[EROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
-  exit
-fi
-if ! [ -x "$(command -v unzip)" ]; then
-  echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
-  exit
-fi
-
-# Make the new directory
-mkdir -p $DIR
+echo "Nexus Tools is no longer supported. More details: https://github.com/corbindavenport/nexus-tools/README.md"
 
 # Start Dart executable
 if [ "$OS" = "Darwin" ]; then # macOS
-	# Install Rosetta x86 emulation layer if needed
-	if [ "$ARCH" = "arm64" ]; then
-		echo "[WARN] Rosetta 2 compatibility layer is required. If installation fails, run Nexus Tools again after running this command: /usr/sbin/softwareupdate --install-rosetta"
-	fi
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"
-	_run_executable
-elif [ "$OS" = "Linux" ] && [ "$ARCH" = "x86_64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
-	_run_executable
-elif [ "$OS" = "Linux" ] && [ "$ARCH" = "amd64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
-	_run_executable
+	echo "Android SDK Platform Tools can be installed using the Brew package manager: https://brew.sh"
+	echo "Do you want to install Brew (if not already installed)"
+	echo "Press ENTER to proceed or X to cancel."
+	read -sn1 udevinput
+	[ "$udevinput" = "" ] && _install_brew_macos
 else
-	echo "[EROR] Your OS or CPU architecture doesn't seem to be supported."
-	echo "[EROR] Detected OS: $OS"
-	echo "[EROR] Detected arch: $ARCH"
-	exit
+	# TODO: Linux steps
 fi
