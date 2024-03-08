@@ -128,13 +128,14 @@ Future installPlatformTools() async {
     // Add entry to Windows Installed Apps List
     // Documentation: https://learn.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
     var uninstallString = dir + r'\nexustools.exe';
+    var iconString = r'C:\Windows\System32\cmd.exe';
     var regEntry = 'Windows Registry Editor Version 5.00\n\n';
     regEntry += r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
     regEntry += '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
     regEntry += '\n"Publisher"="Corbin Davenport"';
-    regEntry += '\n"URLInfoAbout"="https://github.com/$baseRepo"';
-    regEntry += '\n"NoModify"=dword:00000001';
+    regEntry += '\n"HelpLink"="https://github.com/$baseRepo"';
     regEntry += '\n' + r'"UninstallString"="\"' + uninstallString.replaceAll(r'\', r'\\') + r'\" --remove"';
+    regEntry += '\n' + r'"DisplayIcon"="' + iconString.replaceAll(r'\', r'\\') + r'"';
     var regFile = await io.File('$dir/nexustools.reg');
     await regFile.writeAsString(regEntry, mode: io.FileMode.writeOnly);
     await io.Process.run('reg', ['import', '$dir/nexustools.reg']);
