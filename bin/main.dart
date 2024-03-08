@@ -162,9 +162,16 @@ Future removePlatformTools() async {
   var installExists = false;
   installExists = await io.Directory(dir).exists();
   if (installExists && (io.Platform.isWindows)) {
-    // Windows can't delete the folder while the executable is running
-    // TODO: The final rmdir command here still doesn't work, there's a slash before the path for some reason?
-    await io.Process.start('cmd.exe', ['/c', 'echo Deleting Nexus Tools folder at $dir, please wait. & ping localhost -n 5 > nul & rmdir /s /q "$dir"'], mode: io.ProcessStartMode.detached, runInShell: true);
+    // Create a temporary batch file to delete the Nexus Tools directory, because Windows executables can't delete themselves
+    var batchFile = await io.File(envVars['TEMP'] + r'\nexustoolsdelete.bat');
+    var batchFileContents = '''
+      @echo off
+      echo Deleting Nexus Tools folder at $dir, please wait.
+      ping localhost -n 5 > nul
+      rmdir /s /q "$dir"
+    ''';
+    await batchFile.writeAsString(batchFileContents, mode: io.FileMode.writeOnly);
+    io.Process.start('cmd.exe', ['/c', batchFile.path], mode: io.ProcessStartMode.detached, runInShell: true);
     print('[ OK ] Directory at $dir will be deleted in new window.');
   } else if (installExists) {
     // Proceed with deletion
