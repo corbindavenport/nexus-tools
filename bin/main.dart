@@ -153,6 +153,9 @@ Future removePlatformTools() async {
   if (input?.toLowerCase() != 'y') {
     return;
   }
+  // Stop ADB server
+  await io.Process.run('adb', ['kill-server']);
+  print('[ OK ] Shut down ADB server.');
   // Delete registry key on Windows hosts
   if (io.Platform.isWindows) {
     await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
