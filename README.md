@@ -4,7 +4,7 @@ Nexus Tools is an installer and updater for [Android SDK Platform Tools](https:/
 
 Nexus Tools downloads the latest Platform tools package directly from Google's servers, so you're always getting the latest version. The tools are installed to `~/.nexustools` (`%AppData%\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver). The SDK Platform Tools can be updated by running `nexustools -i`, or you can uninstall everything by running `nexustools -r`.
 
-![Screenshot of Nexus Tools on macOS and Windows 11](screenshot.png)
+![Screenshot of Nexus Tools on macOS and Windows 11](screen.png)
 
 ## How to use on Linux, macOS, and Chrome OS
 
