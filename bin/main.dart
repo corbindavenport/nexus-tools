@@ -10,7 +10,7 @@ String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-
 String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 Map envVars = io.Platform.environment;
-double appVersion = 5.5;
+double appVersion = 5.6;
 String baseRepo = 'corbindavenport/nexus-tools';
 
 // Function for checking for update
@@ -20,7 +20,7 @@ Future checkUpdate() async {
     var data = await http.read(net);
     var parsedData = json.decode(data);
     // Compare versions
-    if (double.parse(parsedData['tag_name']) > appVersion) {
+    if (double.parse(parsedData['tag_name']) != appVersion) {
       print('[INFO] Nexus Tools update available! https://github.com/$baseRepo/blob/main/README.md');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
@@ -34,9 +34,7 @@ Future checkUpdate() async {
 // Credit: https://stackoverflow.com/a/25498458
 String nexusToolsDir() {
   var home = '';
-  if (io.Platform.isMacOS) {
-    home = envVars['HOME'];
-  } else if (io.Platform.isLinux) {
+  if (io.Platform.isMacOS || io.Platform.isLinux) {
     home = envVars['HOME'];
   } else if (io.Platform.isWindows) {
     home = envVars['AppData'];
@@ -53,6 +51,7 @@ String nexusToolsDir() {
 
 // Function for installing Platform Tools package
 Future installPlatformTools() async {
+  print('[INFO] You agree to the Terms & Conditions by installing this software: https://developer.android.com/studio/terms');
   var dir = nexusToolsDir();
   // Get the proper ZIP file
   var zip = '';
@@ -71,8 +70,7 @@ Future installPlatformTools() async {
     var archive = ZipDecoder().decodeBytes(data);
     extractArchiveToDisk(archive, dir);
   } catch (e) {
-    var error = e.toString();
-    print('[EROR] There was an error downloading Platform Tools: $error');
+    print('[EROR] There was an error downloading Platform Tools: ' + e.toString());
     io.exit(1);
   }
   // Move files out of platform-tools subdirectory and delete the subdirectory
@@ -128,13 +126,14 @@ Future installPlatformTools() async {
     // Add entry to Windows Installed Apps List
     // Documentation: https://learn.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
     var uninstallString = dir + r'\nexustools.exe';
+    var iconString = r'C:\Windows\System32\cmd.exe';
     var regEntry = 'Windows Registry Editor Version 5.00\n\n';
     regEntry += r'[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools]';
     regEntry += '\n"DisplayName"="Nexus Tools (ADB, Fastboot, Android SDK Platform Tools)"';
     regEntry += '\n"Publisher"="Corbin Davenport"';
-    regEntry += '\n"URLInfoAbout"="https://github.com/$baseRepo"';
-    regEntry += '\n"NoModify"=dword:00000001';
+    regEntry += '\n"HelpLink"="https://github.com/$baseRepo"';
     regEntry += '\n' + r'"UninstallString"="\"' + uninstallString.replaceAll(r'\', r'\\') + r'\" --remove"';
+    regEntry += '\n' + r'"DisplayIcon"="' + iconString.replaceAll(r'\', r'\\') + r'"';
     var regFile = await io.File('$dir/nexustools.reg');
     await regFile.writeAsString(regEntry, mode: io.FileMode.writeOnly);
     await io.Process.run('reg', ['import', '$dir/nexustools.reg']);
@@ -142,6 +141,9 @@ Future installPlatformTools() async {
 }
 
 // Function for removing Platform Tools package
+// Nexus Tools 5.5+ (May 2023 - Present) on Windows installs files in %AppData%\NexusTools
+// Nexus Tools 5.0-5.4 (Sep 2021 - May 2023) on Windows installs files in $Home\NexusTools\
+// Nexus Tools 3.2+ (August 2016-Present) on Linux/macOS/ChromeOS installs files in ~/.nexustools
 Future removePlatformTools() async {
   print('[WARN] This will delete the Android System Tools (ADB, Fastboot, etc.) installed by Nexus Tools, as well as the Nexus Tools application.');
   io.stdout.write('[WARN] Continue with removal? [Y/N] ');
@@ -149,29 +151,40 @@ Future removePlatformTools() async {
   if (input?.toLowerCase() != 'y') {
     return;
   }
-  // Delete primary directory if it exists
-  // TODO: Add support for new directory on Windows
-  // Nexus Tools 3.2+ (August 2016-Present) installs binaries in ~/.nexustools
+  // Stop ADB server, if it's running it can prevent deletion (at least on Windows)
+  try {
+    await io.Process.run('adb', ['kill-server']);
+    print('[ OK ] Shut down ADB server.');
+  } catch (e) {
+    print('[WARN] Could not kill ADB server, attempting to continue.');
+  }
+  // Delete registry key on Windows hosts
+  if (io.Platform.isWindows) {
+    await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
+    print('[ OK ] Removed registry keys.');
+  }
+  // Delete current installation directory if it exists
   var dir = nexusToolsDir();
   var installExists = false;
   installExists = await io.Directory(dir).exists();
-  if (installExists) {
+  if (installExists && (io.Platform.isWindows)) {
+    // Create a temporary batch file to delete the Nexus Tools directory, because Windows executables can't delete themselves
+    var batchFile = await io.File(envVars['TEMP'] + r'\nexustoolsdelete.bat');
+    var batchFileContents = '''
+      @echo off
+      echo Deleting Nexus Tools folder at $dir, please wait.
+      ping localhost -n 5 > nul
+      rmdir /s /q "$dir"
+    ''';
+    await batchFile.writeAsString(batchFileContents, mode: io.FileMode.writeOnly);
+    io.Process.start('cmd.exe', ['/c', batchFile.path], mode: io.ProcessStartMode.detached, runInShell: true);
+    print('[ OK ] Directory at $dir will be deleted in new window.');
+  } else if (installExists) {
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
-  }
-  // Windows-specific functions
-  if (io.Platform.isWindows) {
-    var oldDir = envVars['UserProfile'] + r'\NexusTools';
-    var oldinstallExists = await io.Directory(oldDir).exists();
-    if (oldinstallExists) {
-      // Proceed with deletion
-      await io.Directory(oldDir).delete(recursive: true);
-      print('[ OK ] Deleted directory at $oldDir.');
-    }
-    // Clean up registry
-    await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
-    print('[ OK ] Removed registry keys.');
+  } else {
+    print('[ OK ] Nexus Tools directory not found.');
   }
   // Exit message
   print('[INFO] Nexus Tools can be reinstalled from here: https://github.com/$baseRepo\n');
