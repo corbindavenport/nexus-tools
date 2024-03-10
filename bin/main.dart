@@ -20,7 +20,7 @@ Future checkUpdate() async {
     var data = await http.read(net);
     var parsedData = json.decode(data);
     // Compare versions
-    if (double.parse(parsedData['tag_name']) > appVersion) {
+    if (double.parse(parsedData['tag_name']) != appVersion) {
       print('[INFO] Nexus Tools update available! https://github.com/$baseRepo/blob/main/README.md');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
@@ -53,6 +53,7 @@ String nexusToolsDir() {
 
 // Function for installing Platform Tools package
 Future installPlatformTools() async {
+  print('[INFO] You agree to the Terms & Conditions by installing this software: https://developer.android.com/studio/terms');
   var dir = nexusToolsDir();
   // Get the proper ZIP file
   var zip = '';
