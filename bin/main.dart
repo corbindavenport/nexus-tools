@@ -34,9 +34,7 @@ Future checkUpdate() async {
 // Credit: https://stackoverflow.com/a/25498458
 String nexusToolsDir() {
   var home = '';
-  if (io.Platform.isMacOS) {
-    home = envVars['HOME'];
-  } else if (io.Platform.isLinux) {
+  if (io.Platform.isMacOS || io.Platform.isLinux) {
     home = envVars['HOME'];
   } else if (io.Platform.isWindows) {
     home = envVars['AppData'];
@@ -72,8 +70,7 @@ Future installPlatformTools() async {
     var archive = ZipDecoder().decodeBytes(data);
     extractArchiveToDisk(archive, dir);
   } catch (e) {
-    var error = e.toString();
-    print('[EROR] There was an error downloading Platform Tools: $error');
+    print('[EROR] There was an error downloading Platform Tools: ' + e.toString());
     io.exit(1);
   }
   // Move files out of platform-tools subdirectory and delete the subdirectory
@@ -154,9 +151,13 @@ Future removePlatformTools() async {
   if (input?.toLowerCase() != 'y') {
     return;
   }
-  // Stop ADB server
-  await io.Process.run('adb', ['kill-server']);
-  print('[ OK ] Shut down ADB server.');
+  // Stop ADB server, if it's running it can prevent deletion (at least on Windows)
+  try {
+    await io.Process.run('adb', ['kill-server']);
+    print('[ OK ] Shut down ADB server.');
+  } catch (e) {
+    print('[WARN] Could not kill ADB server, attempting to continue.');
+  }
   // Delete registry key on Windows hosts
   if (io.Platform.isWindows) {
     await io.Process.run('reg', ['delete', r'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\NexusTools', '/f']);
@@ -182,6 +183,8 @@ Future removePlatformTools() async {
     // Proceed with deletion
     await io.Directory(dir).delete(recursive: true);
     print('[ OK ] Deleted directory at $dir.');
+  } else {
+    print('[ OK ] Nexus Tools directory not found.');
   }
   // Exit message
   print('[INFO] Nexus Tools can be reinstalled from here: https://github.com/$baseRepo\n');
