@@ -68,7 +68,7 @@ Future installPlatformTools() async {
   try {
     var data = await http.readBytes(net);
     var archive = ZipDecoder().decodeBytes(data);
-    extractArchiveToDisk(archive, dir);
+    await extractArchiveToDisk(archive, dir);
   } catch (e) {
     print('[EROR] There was an error downloading Platform Tools: ' + e.toString());
     io.exit(1);
