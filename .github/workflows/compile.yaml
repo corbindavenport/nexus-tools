@@ -45,7 +45,7 @@ jobs:
           name: nexustools-windows-x86
           path: nexustools.exe
   build_macos_x86:
-    runs-on: macos-latest-large
+    runs-on: macos-12
     steps:
       - name: Install Dart SDK
         run: |
