@@ -90,6 +90,7 @@ jobs:
           merge-multiple: true
       - name: Create universal binary
         run: |
+          ls -R
           lipo -create nexustools-macos-x64/nexustools nexustools-macos-arm64/nexustools -output nexustools
       - name: Upload universal binary
         uses: actions/upload-artifact@v4
