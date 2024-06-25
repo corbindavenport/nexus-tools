@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nexustools-macos-x64
-          path: nexustools-x64
+          path: nexustools
   build_macos_arm:
     runs-on: macos-latest
     steps:
@@ -77,22 +77,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nexustools-macos-arm64
-          path: nexustools-arm
+          path: nexustools
   build_macos_universal:
     runs-on: macos-latest
     needs: [build_macos_arm, build_macos_x64]
     steps:
-      - name: Download x64 executable
+      - name: Download x64 and ARM executables
         uses: actions/download-artifact@v4
         with:
-          name: nexustools-macos-x64
-      - name: Download ARM executable
-        uses: actions/download-artifact@v4
-        with:
-          name: nexustools-macos-arm64
+          path: nexustools-macos
+          pattern: nexustools-macos-*
+          merge-multiple: true
       - name: Create universal binary
         run: |
-          lipo -create nexustools-x64 nexustools-arm -output nexustools
+          lipo -create nexustools-macos-x64/nexustools nexustools-macos-arm64/nexustools -output nexustools
       - name: Upload universal binary
         uses: actions/upload-artifact@v4
         with:
