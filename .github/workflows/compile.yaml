@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_linux_x86:
+  build_linux_x64:
     runs-on: ubuntu-latest
     steps:
       # Checks-out repository under $GITHUB_WORKSPACE
@@ -26,9 +26,9 @@ jobs:
       - name: Upload Dart executable
         uses: actions/upload-artifact@v4
         with:
-          name: nexustools-linux-x86
+          name: nexustools-linux-x64
           path: nexustools
-  build_windows_x86:
+  build_windows_x64:
     runs-on: windows-latest
     steps:
       - name: Install Dart SDK
@@ -42,9 +42,9 @@ jobs:
       - name: Upload Dart executable
         uses: actions/upload-artifact@v4
         with:
-          name: nexustools-windows-x86
+          name: nexustools-windows-x64
           path: nexustools.exe
-  build_macos_x86:
+  build_macos_x64:
     runs-on: macos-12
     steps:
       - name: Install Dart SDK
@@ -59,8 +59,8 @@ jobs:
       - name: Upload Dart executable
         uses: actions/upload-artifact@v4
         with:
-          name: nexustools-macos-x86
-          path: nexustools
+          name: nexustools-macos-x64
+          path: nexustools-x64
   build_macos_arm:
     runs-on: macos-latest
     steps:
@@ -77,4 +77,24 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nexustools-macos-arm64
+          path: nexustools-arm
+  build_macos_universal:
+    runs-on: macos-latest
+    needs: [build_macos_arm, build_macos_x64]
+    steps:
+      - name: Download x64 executable
+        uses: actions/download-artifact@v4
+        with:
+          name: nexustools-macos-x64
+      - name: Download ARM executable
+        uses: actions/download-artifact@v4
+        with:
+          name: nexustools-macos-arm64
+      - name: Create universal binary
+        run: |
+          lipo -create nexustools-macos-x64 nexustools-macos-arm64 -output nexustools
+      - name: Upload universal binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexustools-macos-universal
           path: nexustools
