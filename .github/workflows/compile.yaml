@@ -92,7 +92,7 @@ jobs:
           name: nexustools-macos-arm64
       - name: Create universal binary
         run: |
-          lipo -create nexustools-macos-x64 nexustools-macos-arm64 -output nexustools
+          lipo -create nexustools-x64 nexustools-arm -output nexustools
       - name: Upload universal binary
         uses: actions/upload-artifact@v4
         with:
