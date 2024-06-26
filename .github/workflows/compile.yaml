@@ -78,21 +78,3 @@ jobs:
         with:
           name: nexustools-macos-arm64
           path: nexustools
-  build_macos_universal:
-    runs-on: macos-latest
-    needs: [build_macos_arm, build_macos_x64]
-    steps:
-      - name: Download x64 and ARM executables
-        uses: actions/download-artifact@v4
-        with:
-          path: nexustools-macos
-          pattern: nexustools-macos-*
-      - name: Create universal binary
-        run: |
-          ls -R
-          lipo -create ./nexustools-macos/nexustools-macos-arm64/nexustools ./nexustools-macos/nexustools-macos-x64/nexustools -output ./nexustools
-      - name: Upload universal binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: nexustools-macos-universal
-          path: nexustools

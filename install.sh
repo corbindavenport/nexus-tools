@@ -33,11 +33,10 @@ fi
 mkdir -p $DIR
 
 # Start Dart executable
-if [ "$OS" = "Darwin" ]; then # macOS
-	# Install Rosetta x86 emulation layer if needed
-	if [ "$ARCH" = "arm64" ]; then
-		echo "[WARN] Rosetta 2 compatibility layer is required. If installation fails, run Nexus Tools again after running this command: /usr/sbin/softwareupdate --install-rosetta"
-	fi
+if [ "$OS" = "Darwin" ] && [ "$ARCH" = "arm64" ]; then # Apple Silicon Mac
+	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-arm64.zip"
+	_run_executable
+elif [ "$OS" = "Darwin" ] && [ "$ARCH" = "x86_64" ]; then # Intel Mac
 	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"
 	_run_executable
 elif [ "$OS" = "Linux" ] && [ "$ARCH" = "x86_64" ]; then # Generic Linux 
