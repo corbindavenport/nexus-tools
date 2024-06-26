@@ -87,7 +87,6 @@ jobs:
         with:
           path: nexustools-macos
           pattern: nexustools-macos-*
-          merge-multiple: true
       - name: Create universal binary
         run: |
           ls -R
