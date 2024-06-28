@@ -207,7 +207,7 @@ Future installWindowsDrivers(String dir) async {
 }
 
 // Function for Plausible Analytics reporting
-void connectAnalytics() async {
+void connectAnalytics(String cpuArch) async {
   var uuid = Uuid();
   var id = uuid.v4();
   // Get exact operating system
@@ -221,12 +221,11 @@ void connectAnalytics() async {
   } else {
     realOS = io.Platform.operatingSystem;
   }
-  var cpu = await sys.getCPUArchitecture();
   // Set data
   var net = Uri.parse('https://plausible.io/api/event');
   final ipv4 = await Ipify.ipv4();
   var netHeaders = {'user-agent': 'Nexus Tools', 'X-Forwarded-For': ipv4, 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'};
-  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpuArch","domain":"nexustools.corbin.io"}';
   // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);
@@ -236,7 +235,7 @@ void connectAnalytics() async {
 }
 
 // Pre-installation steps
-Future checkInstall() async {
+Future checkInstall(String cpuArch) async {
   // Check if directory already exists
   var dir = nexusToolsDir();
   var installExists = false;
@@ -290,6 +289,7 @@ Example: nexustools -i (this installs Platform Tools)
 }
 
 void main(List<String> arguments) async {
+  var cpuArch = await sys.getCPUArchitecture();
   if (arguments.contains('-i') || arguments.contains('--install')) {
     print('[INFO] Nexus Tools $appVersion');
     // Check version unless Nexus Tools is running from web (curl) installer
@@ -301,10 +301,10 @@ void main(List<String> arguments) async {
     if (arguments.contains('--no-analytics')) {
       print('[ OK ] Plausible Analytics are disabled.');
     } else {
-      connectAnalytics();
+      connectAnalytics(cpuArch);
     }
     // Start installation
-    await checkInstall();
+    await checkInstall(cpuArch);
     await installPlatformTools();
     // Post-install
     var appName = '';

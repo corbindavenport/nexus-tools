@@ -25,24 +25,10 @@ void checkIfInstalled(String dir, String command, String commandName) async {
   }
 }
 
-// Function get current CPU architecture
+// Function to get the current CPU architecture, even when running in an emulated
 Future<String> getCPUArchitecture() async {
   if (io.Platform.isWindows) {
     var cpu = envVars['PROCESSOR_ARCHITECTURE'];
-    return cpu;
-  } else if (io.Platform.isMacOS) {
-    // Get architecture reported by the system
-    var info = await io.Process.run('uname', ['-m']);
-    var cpu = info.stdout.toString().replaceAll('\n', '');
-    if (cpu == 'x86_64') {
-      // Check if running under Rosetta 2
-      var rosetta = await io.Process.run('sysctl', ['-in', 'sysctl.proc_translated']);
-      var rosettaStr = rosetta.stdout.toString().replaceAll('\n', '');
-      // This command will run '1' if we're running under Rosetta 2
-      if (rosettaStr == '1') {
-        cpu = 'arm64';
-      }
-    }
     return cpu;
   } else {
     var info = await io.Process.run('uname', ['-m']);
