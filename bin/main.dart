@@ -104,19 +104,19 @@ Future installPlatformTools(cpuArch) async {
   if (io.Platform.isWindows) {
     // Install Universal Adb Driver package on x86_64 Windows
     if (cpuArch == 'AMD64') {
-      var info = await io.Process.run('wmic', ['product', 'get', 'Name']);
-    var parsedInfo = info.stdout.toString();
-    if (parsedInfo.contains('Universal Adb Driver')) {
-      print('[ OK ] Universal ADB Drivers already installed.');
-    } else {
-      // Prompt to install drivers
-      print('[WARN] Drivers may be required for ADB if they are not already installed.');
-      io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
-      var input = io.stdin.readLineSync();
-      if (input?.toLowerCase() == 'y') {
-        await installWindowsDrivers(dir);
+      var info = await io.Process.run('PowerShell', ['-Command', 'Get-WmiObject -Class Win32_Product | Select-Object -Property Name']);
+      var parsedInfo = info.stdout.toString();
+      if (parsedInfo.contains('Universal Adb Driver')) {
+        print('[ OK ] Universal ADB Drivers already installed.');
+      } else {
+        // Prompt to install drivers
+        print('[WARN] Drivers may be required for ADB if they are not already installed.');
+        io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
+        var input = io.stdin.readLineSync();
+        if (input?.toLowerCase() == 'y') {
+          await installWindowsDrivers(dir);
+        }
       }
-    }
     } else {
       print('[WARN] Universal ADB Driver package cannot be installed on $cpuArch, some devices might not work.');
     }
