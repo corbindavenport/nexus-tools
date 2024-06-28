@@ -10,7 +10,7 @@ String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-
 String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 Map envVars = io.Platform.environment;
-double appVersion = 5.6;
+double appVersion = 5.7;
 String baseRepo = 'corbindavenport/nexus-tools';
 
 // Function for checking for update
