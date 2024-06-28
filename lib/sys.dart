@@ -25,12 +25,20 @@ void checkIfInstalled(String dir, String command, String commandName) async {
   }
 }
 
-// Function to get the current CPU architecture, even when running in an emulated
+// Function to get the current CPU architecture
 Future<String> getCPUArchitecture() async {
   if (io.Platform.isWindows) {
+    // Possible values: AMD64, ARM64
     var cpu = envVars['PROCESSOR_ARCHITECTURE'];
+    // Check if being emulated in ARM and return true architecture
+    var isEmulated = await io.Directory('C:\Program Files (Arm)').exists();
+    if (isEmulated) {
+      cpu = 'ARM64';
+    }
     return cpu;
   } else {
+    // Possible values: x86_64, arm64
+    // This doesn't check for Rosetta emulation on macOS
     var info = await io.Process.run('uname', ['-m']);
     var cpu = info.stdout.toString().replaceAll('\n', '');
     return cpu;
