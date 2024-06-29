@@ -33,7 +33,7 @@ Future<String> getCPUArchitecture() async {
     // Check if being emulated in ARM and return true architecture
     try {
       var buildArch = await io.Process.run('reg', ['query', r'HKEY_LOCAL_MACHINE\SYSTEM\Software\Microsoft\BuildLayers\DesktopEditions', '/v', 'BuildArch']);
-      if (buildArch.stdout.toString().contains('arm64')) {
+      if (buildArch.stdout.toString().toLowerCase().contains('arm64')) {
         cpu = 'ARM64';
       }
     } catch (e) {
