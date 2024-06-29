@@ -4,7 +4,7 @@ version: 5.0.0
 homepage: https://github.com/corbindavenport/nexus-tools/
 
 environment:
-  sdk: '>=3.3.1'
+  sdk: '>=3.4.2'
 
 # dependencies:
 #   path: ^1.8.0
@@ -13,6 +13,6 @@ dev_dependencies:
   http:
   io:
   uuid:
-  archive: ^3.2.2
+  archive: ^3.6.1
   console:
   dart_ipify: ^1.1.1

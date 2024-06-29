@@ -10,7 +10,7 @@ String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-
 String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
 Map envVars = io.Platform.environment;
-double appVersion = 5.6;
+double appVersion = 5.7;
 String baseRepo = 'corbindavenport/nexus-tools';
 
 // Function for checking for update
@@ -50,7 +50,7 @@ String nexusToolsDir() {
 }
 
 // Function for installing Platform Tools package
-Future installPlatformTools() async {
+Future installPlatformTools(cpuArch) async {
   print('[INFO] You agree to the Terms & Conditions by installing this software: https://developer.android.com/studio/terms');
   var dir = nexusToolsDir();
   // Get the proper ZIP file
@@ -68,7 +68,7 @@ Future installPlatformTools() async {
   try {
     var data = await http.readBytes(net);
     var archive = ZipDecoder().decodeBytes(data);
-    extractArchiveToDisk(archive, dir);
+    await extractArchiveToDisk(archive, dir);
   } catch (e) {
     print('[EROR] There was an error downloading Platform Tools: ' + e.toString());
     io.exit(1);
@@ -102,19 +102,23 @@ Future installPlatformTools() async {
   }
   // Windows-specific functions
   if (io.Platform.isWindows) {
-    // Check if Universal Adb Driver package is already installed
-    var info = await io.Process.run('wmic', ['product', 'get', 'Name']);
-    var parsedInfo = info.stdout.toString();
-    if (parsedInfo.contains('Universal Adb Driver')) {
-      print('[ OK ] Universal ADB Drivers already installed.');
-    } else {
-      // Prompt to install drivers
-      print('[WARN] Drivers may be required for ADB if they are not already installed.');
-      io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
-      var input = io.stdin.readLineSync();
-      if (input?.toLowerCase() == 'y') {
-        await installWindowsDrivers(dir);
+    // Install Universal Adb Driver package on x86_64 Windows
+    if (cpuArch == 'AMD64') {
+      var info = await io.Process.run('PowerShell', ['-Command', 'Get-WmiObject -Class Win32_Product | Select-Object -Property Name']);
+      var parsedInfo = info.stdout.toString();
+      if (parsedInfo.contains('Universal Adb Driver')) {
+        print('[ OK ] Universal ADB Drivers already installed.');
+      } else {
+        // Prompt to install drivers
+        print('[WARN] Drivers may be required for ADB if they are not already installed.');
+        io.stdout.write('[WARN] Install drivers from adb.clockworkmod.com? [Y/N] ');
+        var input = io.stdin.readLineSync();
+        if (input?.toLowerCase() == 'y') {
+          await installWindowsDrivers(dir);
+        }
       }
+    } else {
+      print('[WARN] Universal ADB Driver package cannot be installed on $cpuArch, some devices might not work.');
     }
     // Check if old Nexus Tools directory needs to be deleted
     var oldFolder = envVars['UserProfile'] + r'\NexusTools';
@@ -207,7 +211,7 @@ Future installWindowsDrivers(String dir) async {
 }
 
 // Function for Plausible Analytics reporting
-void connectAnalytics() async {
+void connectAnalytics(String cpuArch) async {
   var uuid = Uuid();
   var id = uuid.v4();
   // Get exact operating system
@@ -221,12 +225,11 @@ void connectAnalytics() async {
   } else {
     realOS = io.Platform.operatingSystem;
   }
-  var cpu = await sys.getCPUArchitecture();
   // Set data
   var net = Uri.parse('https://plausible.io/api/event');
   final ipv4 = await Ipify.ipv4();
   var netHeaders = {'user-agent': 'Nexus Tools', 'X-Forwarded-For': ipv4, 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 ($realOS) AppleWebKit/500 (KHTML, like Gecko) Chrome/$appVersion $id'};
-  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpu","domain":"nexustools.corbin.io"}';
+  var netBody = '{"name":"pageview","url":"app://localhost/$realOS/$cpuArch","domain":"nexustools.corbin.io"}';
   // Send request
   try {
     await http.post(net, headers: netHeaders, body: netBody);
@@ -236,7 +239,7 @@ void connectAnalytics() async {
 }
 
 // Pre-installation steps
-Future checkInstall() async {
+Future checkInstall(String cpuArch) async {
   // Check if directory already exists
   var dir = nexusToolsDir();
   var installExists = false;
@@ -270,9 +273,9 @@ Future checkInstall() async {
   }
 }
 
-void printHelp() {
+void printHelp(cpuArch) {
   var helpDoc = '''
-Nexus Tools $appVersion
+Nexus Tools $appVersion on $cpuArch
 Downloader/management app for Android SDK Platform Tools
 
 Usage: nexustools [OPTIONS]
@@ -290,8 +293,9 @@ Example: nexustools -i (this installs Platform Tools)
 }
 
 void main(List<String> arguments) async {
+  var cpuArch = await sys.getCPUArchitecture();
   if (arguments.contains('-i') || arguments.contains('--install')) {
-    print('[INFO] Nexus Tools $appVersion');
+    print('[INFO] Nexus Tools $appVersion on $cpuArch');
     // Check version unless Nexus Tools is running from web (curl) installer
     // The web installer adds the -w parameter
     if (!arguments.contains('-w')) {
@@ -301,11 +305,11 @@ void main(List<String> arguments) async {
     if (arguments.contains('--no-analytics')) {
       print('[ OK ] Plausible Analytics are disabled.');
     } else {
-      connectAnalytics();
+      connectAnalytics(cpuArch);
     }
     // Start installation
-    await checkInstall();
-    await installPlatformTools();
+    await checkInstall(cpuArch);
+    await installPlatformTools(cpuArch);
     // Post-install
     var appName = '';
     if (io.Platform.isWindows) {
@@ -322,7 +326,7 @@ void main(List<String> arguments) async {
     // Start removal
     await removePlatformTools();
   } else if (arguments.contains('-h') || arguments.contains('--help')) {
-    printHelp();
+    printHelp(cpuArch);
   } else if (arguments.contains('-c') || arguments.contains('--check')) {
     await checkUpdate();
   } else {
