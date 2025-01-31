@@ -28,7 +28,7 @@ You can also download the Windows version from the [latest release page](https:/
 
 ## Privacy & Analytics
 
-Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. This analytics data is viewable publicly at [plausible.io/nexustools.corbin.io](https://plausible.io/nexustools.corbin.io). You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
+Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
 
 ```
 bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh) --no-analytics
