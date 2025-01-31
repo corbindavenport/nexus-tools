@@ -26,19 +26,9 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercon
 
 You can also download the Windows version from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from Windows PowerShell or the Command Prompt.
 
-## Privacy & Analytics
+## Privacy and analytics
 
-Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. You can disable analytics reporting by adding the `--no-analytics` parameter to the install command, like this:
-
-```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh) --no-analytics
-```
-
-It also works when running Nexus Tools locally:
-
-```
-nexustools --no-analytics
-```
+Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. See the [Privacy Policy](PRIVACY.md) for more information.
 
 ---
 
