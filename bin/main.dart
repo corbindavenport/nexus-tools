@@ -26,7 +26,7 @@ Future checkUpdate() async {
       print('[INFO] You have the latest version of Nexus Tools.');
     }
   } catch (e) {
-    print('[EROR] Could not check for updates.');
+    print('[ERROR] Could not check for updates.');
   }
 }
 
@@ -70,7 +70,7 @@ Future installPlatformTools(cpuArch) async {
     var archive = ZipDecoder().decodeBytes(data);
     await extractArchiveToDisk(archive, dir);
   } catch (e) {
-    print('[EROR] There was an error downloading Platform Tools: ' + e.toString());
+    print('[ERROR] There was an error downloading Platform Tools: ' + e.toString());
     io.exit(1);
   }
   // Move files out of platform-tools subdirectory and delete the subdirectory
@@ -206,7 +206,7 @@ Future installWindowsDrivers(String dir) async {
     print('[....] Opening driver installer.');
     await io.Process.run('start', ['/wait', 'msiexec.exe', '/i', '$dir\\ADB Drivers.msi'], runInShell: true);
   } catch (e) {
-    print('[EROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
+    print('[ERROR] There was an error downloading drivers, try downloading them from adb.clockworkmod.com.');
   }
 }
 
@@ -330,6 +330,6 @@ void main(List<String> arguments) async {
   } else if (arguments.contains('-c') || arguments.contains('--check')) {
     await checkUpdate();
   } else {
-    print('[EROR] Invalid arguments. Run nexustools -h for help!\n');
+    print('[ERROR] Invalid arguments. Run nexustools -h for help!\n');
   }
 }
