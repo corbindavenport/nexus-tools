@@ -9,8 +9,9 @@ import 'package:nexustools/sys.dart' as sys;
 String macZip = 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip';
 String linuxZip = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip';
 String windowsZip = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip';
+String exitPage = 'https://www.spacebar.news/nexus-tools-exit/';
 Map envVars = io.Platform.environment;
-double appVersion = 5.7;
+String appVersion = 'v5.8';
 String baseRepo = 'corbindavenport/nexus-tools';
 
 // Function for checking for update
@@ -20,7 +21,7 @@ Future checkUpdate() async {
     var data = await http.read(net);
     var parsedData = json.decode(data);
     // Compare versions
-    if (double.parse(parsedData['tag_name']) != appVersion) {
+    if (parsedData['tag_name'] != appVersion) {
       print('[INFO] Nexus Tools update available! https://github.com/$baseRepo/blob/main/README.md');
     } else {
       print('[INFO] You have the latest version of Nexus Tools.');
@@ -320,7 +321,9 @@ void main(List<String> arguments) async {
     print('[INFO] Installation complete! Open a new $appName to apply changes.');
     print('[INFO] Run "nexustools --help" at any time for more options.');
     print('[INFO] Join the Discord server: https://discord.com/invite/59wfy5cNHw');
-    print('[INFO] Donate to support development: https://tinyurl.com/nexusdonate\n');
+    if (arguments.contains('-w')) {
+      sys.openUrl(exitPage);
+    }
   } else if (arguments.contains('-r') || arguments.contains('--remove')) {
     print('[INFO] Nexus Tools $appVersion');
     // Start removal

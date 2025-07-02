@@ -75,3 +75,14 @@ Future addPath(String path) async {
     }
   }
 }
+
+// Function for opening a given URL in the default browser, and fail silently
+void openUrl(String url) {
+  if (io.Platform.isMacOS) {
+    io.Process.run('open', [url]);
+  } else if (io.Platform.isWindows) {
+    io.Process.run('start', [url], runInShell: true);
+  } else if (io.Platform.isLinux) {
+    io.Process.run('xdg-open', [url]);
+  }
+}
