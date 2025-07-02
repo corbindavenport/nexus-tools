@@ -20,7 +20,7 @@ void checkIfInstalled(String dir, String command, String commandName) async {
   } else {
     // Executable is installed but not inside the Nexus Tools directory
     var location = info.replaceAll('\n', '');
-    print('[EROR] $commandName is already installed at $location. Please uninstall $commandName and try again.');
+    print('[ERROR] $commandName is already installed at $location. Please uninstall $commandName and try again.');
     io.exit(1);
   }
 }

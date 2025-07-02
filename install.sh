@@ -11,7 +11,7 @@ PARAMS="$@"
 
 _run_executable() {
 	cd $DIR
-	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[EROR] Download failed."; exit; }
+	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[ERROR] Download failed."; exit; }
 	unzip -q -o ./temp.zip
 	rm ./temp.zip
 	chmod +x ./nexustools*
@@ -21,11 +21,11 @@ _run_executable() {
 
 # Check that required applications are installed
 if ! [ -x "$(command -v curl)" ]; then
-  echo "[EROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
+  echo "[ERROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
   exit
 fi
 if ! [ -x "$(command -v unzip)" ]; then
-  echo "[EROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
+  echo "[ERROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
   exit
 fi
 
@@ -46,8 +46,8 @@ elif [ "$OS" = "Linux" ] && [ "$ARCH" = "amd64" ]; then # Generic Linux
 	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
 	_run_executable
 else
-	echo "[EROR] Your OS or CPU architecture doesn't seem to be supported."
-	echo "[EROR] Detected OS: $OS"
-	echo "[EROR] Detected arch: $ARCH"
+	echo "[ERROR] Your OS or CPU architecture doesn't seem to be supported."
+	echo "[ERROR] Detected OS: $OS"
+	echo "[ERROR] Detected arch: $ARCH"
 	exit
 fi
