@@ -45,7 +45,7 @@ jobs:
           name: nexustools-windows-x64
           path: nexustools.exe
   build_macos_x64:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Install Dart SDK
         run: |
@@ -62,7 +62,7 @@ jobs:
           name: nexustools-macos-x64
           path: nexustools
   build_macos_arm:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - name: Install Dart SDK
         run: |
