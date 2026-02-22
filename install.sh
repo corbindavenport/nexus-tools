@@ -1,53 +1,32 @@
 #!/bin/bash
 
-# This script is just a wrapper to start the Dart executable from the GitHub releases page
+# This script only exists to avoid breaking guides and tutorials that include Nexus Tools.
 
-DIR="$HOME/.nexustools"
 OS=$(uname)
-ARCH=$(uname -m)
-BASEURL="https://github.com/corbindavenport/nexus-tools"
-DOWNLOAD=''
-PARAMS="$@"
 
-_run_executable() {
-	cd $DIR
-	curl -Lfs --progress-bar -o ./temp.zip $DOWNLOAD|| { echo "[ERROR] Download failed."; exit; }
-	unzip -q -o ./temp.zip
-	rm ./temp.zip
-	chmod +x ./nexustools*
-	# Run Nexus Tools and pass parameters to the executable
-	./nexustools* -i -w "$PARAMS"
-}
+# Show discontinued message
 
-# Check that required applications are installed
-if ! [ -x "$(command -v curl)" ]; then
-  echo "[ERROR] The 'curl' command is not installed. Please install it and run Nexus Tools again."
-  exit
-fi
-if ! [ -x "$(command -v unzip)" ]; then
-  echo "[ERROR] The 'unzip' command is not installed. Please install it and run Nexus Tools again."
-  exit
+echo -e "\nNexus Tools is now discontinued.\n"
+if [ "$OS" = "Darwin" ] && [ -e "/opt/homebrew/bin/brew" ]; then # macOS with Brew installed
+	echo -e "You already have Brew installed, you can install ADB and Fastboot with this command:\nbrew install --cask android-platform-tools"
+elif [ "$OS" = "Darwin" ]; then # macOS without Brew
+	echo -e "You can install ADB and Fastboot with the Brew package manager: https://brew.sh/\n\nThen run this command:\nbrew install --cask android-platform-tools"
+elif [ "$OS" = "Linux" ]; then # Generic Linux 
+	echo -e "ADB and Fastboot are probably in your package manager, with one of the below commands.\n\nUbuntu, Debian, Linux Mint, Pop OS, etc:\nsudo apt install android-sdk-platform-tools\n\nFedora:\ndnf install android-tools\n\nArch Linux:\npacman -S android-tools\n"
 fi
 
-# Make the new directory
-mkdir -p $DIR
+# Ask user to remove existing installation
 
-# Start Dart executable
-if [ "$OS" = "Darwin" ] && [ "$ARCH" = "arm64" ]; then # Apple Silicon Mac
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-arm64.zip"
-	_run_executable
-elif [ "$OS" = "Darwin" ] && [ "$ARCH" = "x86_64" ]; then # Intel Mac
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-macos-x64.zip"
-	_run_executable
-elif [ "$OS" = "Linux" ] && [ "$ARCH" = "x86_64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
-	_run_executable
-elif [ "$OS" = "Linux" ] && [ "$ARCH" = "amd64" ]; then # Generic Linux 
-	DOWNLOAD="$BASEURL/releases/latest/download/nexustools-linux-x64.zip"
-	_run_executable
-else
-	echo "[ERROR] Your OS or CPU architecture doesn't seem to be supported."
-	echo "[ERROR] Detected OS: $OS"
-	echo "[ERROR] Detected arch: $ARCH"
-	exit
+if [ -e "$HOME/.nexustools/adb" ]; then
+	echo -e "\n==========\n\nADB and Fastboot have already been installed with Nexus Tools. You should delete them before installing with another method."
+	read -p "Delete Nexus Tools installation? [Y/N] " prompt
+	if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
+	then
+		rm -rf "$HOME/.nexustools/"
+		echo "Done!"
+	else
+		exit 0
+	fi
 fi
+
+echo ""

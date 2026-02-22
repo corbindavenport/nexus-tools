@@ -1,35 +1,48 @@
-# Nexus Tools
+Nexus Tools has been discontinued. If you used Nexus Tools, you should delete its installation directory, then install ADB and Fastboot with another method.
 
-Nexus Tools is an installer and updater for [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools), which includes [ADB](https://developer.android.com/studio/command-line/adb.html), Fastboot, and other applications. Nexus Tools is writen in Dart, and can run on Linux, macOS, Windows, and Chrome OS.
-
-Nexus Tools downloads the latest Platform tools package directly from Google's servers, so you're always getting the latest version. The tools are installed to `~/.nexustools` (`%AppData%\NexusTools` on Windows), and adds the directory to your system's path. On Windows, Nexus Tools can optionally install [Koush's Universal ADB Driver](https://github.com/koush/UniversalAdbDriver). The SDK Platform Tools can be updated by running `nexustools -i`, or you can uninstall everything by running `nexustools -r`.
-
-![Screenshot of Nexus Tools on macOS and Windows 11](screen.png)
-
-## How to use on Linux, macOS, and Chrome OS
-
-Paste this command into your Terminal app:
+**Remove Nexus Tools on Mac and Linux:**
 
 ```
-bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/uninstall.sh)
 ```
 
-You can also download the Mac and Linux versions from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from the Terminal.
-
-## How to use on Windows
-
-Open Windows PowerShell from the Start Menu and paste this command:
-
+**Remove Nexus Tools on Windows:**
 ```
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/install.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/uninstall.ps1'))
 ```
 
-You can also download the Windows version from the [latest release page](https://github.com/corbindavenport/nexus-tools/releases/), un-zip the file, and run it from Windows PowerShell or the Command Prompt.
+## Install ADB and Fastboot on Mac
 
-## Privacy and analytics
+You can install the [Brew package manager](https://brew.sh/), then run the below command to install ADB and Fastboot:
 
-Nexus Tools uses [Plausible Analytics](https://plausible.io) to transmit your operating system and CPU architecture during the installation process for development purposes. See the [Privacy Policy](PRIVACY.md) for more information.
+```
+brew install --cask android-platform-tools
+```
 
----
+## Install ADB and Fastboot on Linux
 
-Nexus Tools has been featured on [MakeUseOf](https://www.makeuseof.com/how-to-unlock-android-device-bootloader), [XDA](https://www.xda-developers.com/set-up-adb-and-fastboot-on-linux-mac-os-x-and-chrome-os-with-a-single-command/), [Android Police](https://www.androidpolice.com/install-and-use-adb-on-windows-mac-linux-android-chromebooks-browser/), [9to5Google](https://9to5google.com/2021/12/02/how-to-downgrade-from-android-12-to-android-11-on-google-pixel/#:~:text=Nexus%20Tools), [Wccftech](https://wccftech.com/set-android-adb-fastboot-mac-os/), [Redmond Pie](https://www.redmondpie.com/how-to-install-android-5.0-lollipop-on-nexus-5-using-mac-the-easy-way/), and other places.
+Most Linux distributions have updated versions of ADB, Fastboot, and other Android Platform Tools in their software repositories.
+
+**Ubuntu, Debian, Pop!_OS, Linux Mint, and other distributions based on Ubuntu or Debian:**
+
+```
+sudo apt install android-sdk-platform-tools
+```
+
+**Fedora and Fedora-based distributions:**
+
+```
+dnf install android-tools
+```
+
+**Arch Linux or Arch-based distributions:**
+
+```
+pacman -S android-tools
+```
+
+You can also try installing the [Brew package manager](https://brew.sh/), then installing Platform Tools through Brew:
+
+```
+brew install --cask android-platform-tools
+```

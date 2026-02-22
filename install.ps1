@@ -1,4 +1,4 @@
-# This script is just a wrapper to start the Dart executable from the GitHub releases page.
+# This script only exists to avoid breaking guides and tutorials that include Nexus Tools.
 
 $Dir = "$ENV:APPDATA\NexusTools"
 $Arch = $ENV:Processor_Architecture
