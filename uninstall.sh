@@ -3,6 +3,7 @@
 OS=$(uname)
 
 if [ -d $HOME/.nexustools ]; then
+	adb kill-server
 	rm -rf "$HOME/.nexustools/"
 	echo "Done!"
 else

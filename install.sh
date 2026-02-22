@@ -12,7 +12,7 @@ if [ "$OS" = "Darwin" ] && [ -e "/opt/homebrew/bin/brew" ]; then # macOS with Br
 elif [ "$OS" = "Darwin" ]; then # macOS without Brew
 	echo -e "You can install ADB and Fastboot with the Brew package manager: https://brew.sh/\n\nThen run this command:\nbrew install --cask android-platform-tools"
 elif [ "$OS" = "Linux" ]; then # Generic Linux 
-	echo -e "ADB and Fastboot are probably in your package manager, with one of the below commands.\n\nUbuntu, Debian, Linux Mint, Pop OS, etc:\nsudo apt install android-sdk-platform-tools\n\nFedora:\ndnf install android-tools\n\nArch Linux:\npacman -S android-tools\n"
+	echo -e "ADB and Fastboot are probably in your package manager, with one of the below commands.\n\nUbuntu, Debian, Linux Mint, Pop OS, etc:\nsudo apt install android-sdk-platform-tools\n\nFedora:\ndnf install android-tools\n\nArch Linux:\npacman -S android-tools"
 fi
 
 # Ask user to remove existing installation
@@ -22,6 +22,7 @@ if [ -e "$HOME/.nexustools/adb" ]; then
 	read -p "Delete Nexus Tools installation? [Y/N] " prompt
 	if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
 	then
+		adb kill-server
 		rm -rf "$HOME/.nexustools/"
 		echo "Done!"
 	else
