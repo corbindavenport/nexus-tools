@@ -11,6 +11,16 @@ bash <(curl -s https://raw.githubusercontent.com/corbindavenport/nexus-tools/mai
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/corbindavenport/nexus-tools/main/uninstall.ps1'))
 ```
 
+## Install ADB and Fastboot on Windows
+
+You can use Winget to install ADB and Fastboot:
+
+```
+winget install -e --id Google.PlatformTools
+```
+
+Winget should be included in your Windows installation. If not, [download it from the Microsoft Store](https://apps.microsoft.com/detail/9nblggh4nns1).
+
 ## Install ADB and Fastboot on Mac
 
 You can install the [Brew package manager](https://brew.sh/), then run the below command to install ADB and Fastboot:
